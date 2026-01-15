@@ -1,0 +1,5 @@
+# 301 Permanent Redirects for SEO
+# Redirect trailing slash URLs to non-trailing slash versions
+
+/farzi-ayn/ /farzi-ayn 301
+/downloads/ /downloads 301

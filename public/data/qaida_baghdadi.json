@@ -1,0 +1,3589 @@
+{
+  "moduleId": 1,
+  "moduleTitle": "Ҳарфҳо ва асосҳои хондан",
+  "lessons": [
+    {
+      "id": 1,
+      "title": "Дарси 1: Алифбо",
+      "lessonType": "alifba",
+      "difficulty": "beginner",
+      "estimatedMinutes": 5,
+      "tags": [
+        "letters",
+        "beginner",
+        "alifba"
+      ],
+      "objectives": [
+        "Шинохти ҳамаи ҳарфҳои арабӣ.",
+        "Шунидан ва такрори талаффузи ҳарфҳо."
+      ],
+      "content": [
+        {
+          "subtype": "text",
+          "textKey": "qaida.lesson1.intro"
+        },
+        {
+          "subtype": "audio",
+          "audioKey": "qaida.lesson1.alifba_full"
+        },
+        {
+          "subtype": "letters_chart",
+          "letters": [
+            {
+              "id": "alif",
+              "letter": "ا",
+              "name": "алиф"
+            },
+            {
+              "id": "ba",
+              "letter": "ب",
+              "name": "ба"
+            },
+            {
+              "id": "ta",
+              "letter": "ت",
+              "name": "та"
+            },
+            {
+              "id": "tha",
+              "letter": "ث",
+              "name": "са"
+            },
+            {
+              "id": "jim",
+              "letter": "ج",
+              "name": "ҷим"
+            },
+            {
+              "id": "ha",
+              "letter": "ح",
+              "name": "ҳа"
+            },
+            {
+              "id": "kha",
+              "letter": "خ",
+              "name": "ха"
+            },
+            {
+              "id": "dal",
+              "letter": "د",
+              "name": "дал"
+            },
+            {
+              "id": "dhal",
+              "letter": "ذ",
+              "name": "зал"
+            },
+            {
+              "id": "ra",
+              "letter": "ر",
+              "name": "ро"
+            },
+            {
+              "id": "zay",
+              "letter": "ز",
+              "name": "за"
+            },
+            {
+              "id": "sin",
+              "letter": "س",
+              "name": "син"
+            },
+            {
+              "id": "shin",
+              "letter": "ش",
+              "name": "шин"
+            },
+            {
+              "id": "sad",
+              "letter": "ص",
+              "name": "сод"
+            },
+            {
+              "id": "dad",
+              "letter": "ض",
+              "name": "зод"
+            },
+            {
+              "id": "tta",
+              "letter": "ط",
+              "name": "тто"
+            },
+            {
+              "id": "za",
+              "letter": "ظ",
+              "name": "зо"
+            },
+            {
+              "id": "ayn",
+              "letter": "ع",
+              "name": "ъайн"
+            },
+            {
+              "id": "ghayn",
+              "letter": "غ",
+              "name": "ғайн"
+            },
+            {
+              "id": "fa",
+              "letter": "ف",
+              "name": "фа"
+            },
+            {
+              "id": "qaf",
+              "letter": "ق",
+              "name": "қоф"
+            },
+            {
+              "id": "kaf",
+              "letter": "ك",
+              "name": "каф"
+            },
+            {
+              "id": "lam",
+              "letter": "ل",
+              "name": "лам"
+            },
+            {
+              "id": "mim",
+              "letter": "م",
+              "name": "мим"
+            },
+            {
+              "id": "nun",
+              "letter": "ن",
+              "name": "нун"
+            },
+            {
+              "id": "waw",
+              "letter": "و",
+              "name": "вау"
+            },
+            {
+              "id": "ha2",
+              "letter": "ه",
+              "name": "ҳа"
+            },
+            {
+              "id": "lam_alif",
+              "letter": "لا",
+              "name": "лам-алиф"
+            },
+            {
+              "id": "hamza",
+              "letter": "ء",
+              "name": "ҳамза"
+            },
+            {
+              "id": "ya",
+              "letter": "ي",
+              "name": "й"
+            }
+          ]
+        },
+        {
+          "subtype": "quiz",
+          "quizType": "dynamic",
+          "config": {
+            "source": "letters_chart",
+            "mode": "letter_to_sound",
+            "itemsPerQuiz": 10,
+            "shuffle": true,
+            "difficulty": "easy"
+          }
+        }
+      ],
+      "nextLessonId": 2
+    },
+    {
+      "id": 2,
+      "title": "Дарси 2: Талаффузи ҳарфҳо",
+      "lessonType": "pronunciation",
+      "difficulty": "beginner",
+      "estimatedMinutes": 6,
+      "tags": [
+        "letters",
+        "beginner",
+        "pronunciation",
+        "fatha"
+      ],
+      "objectives": [
+        "Омӯхтани талаффузи ҳарфҳо бо фатҳа.",
+        "Шинохти садои ҳарфҳо."
+      ],
+      "content": [
+        {
+          "subtype": "text",
+          "textKey": "qaida.lesson2.intro"
+        },
+        {
+          "subtype": "syllables_examples",
+          "examples": [
+            {
+              "id": "alif_fatha",
+              "letter": "ا",
+              "vowel": "َ",
+              "syllable": "а"
+            },
+            {
+              "id": "ba_fatha",
+              "letter": "ب",
+              "vowel": "َ",
+              "syllable": "ба"
+            },
+            {
+              "id": "ta_fatha",
+              "letter": "ت",
+              "vowel": "َ",
+              "syllable": "та"
+            },
+            {
+              "id": "tha_fatha",
+              "letter": "ث",
+              "vowel": "َ",
+              "syllable": "Са"
+            },
+            {
+              "id": "jim_fatha",
+              "letter": "ج",
+              "vowel": "َ",
+              "syllable": "ҷа"
+            },
+            {
+              "id": "ha_fatha",
+              "letter": "ح",
+              "vowel": "َ",
+              "syllable": "ҳҳа"
+            },
+            {
+              "id": "kha_fatha",
+              "letter": "خ",
+              "vowel": "َ",
+              "syllable": "ха"
+            },
+            {
+              "id": "dal_fatha",
+              "letter": "د",
+              "vowel": "َ",
+              "syllable": "да"
+            },
+            {
+              "id": "dhal_fatha",
+              "letter": "ذ",
+              "vowel": "َ",
+              "syllable": "За"
+            },
+            {
+              "id": "ra_fatha",
+              "letter": "ر",
+              "vowel": "َ",
+              "syllable": "ра"
+            },
+            {
+              "id": "zay_fatha",
+              "letter": "ز",
+              "vowel": "َ",
+              "syllable": "за"
+            },
+            {
+              "id": "sin_fatha",
+              "letter": "س",
+              "vowel": "َ",
+              "syllable": "са"
+            },
+            {
+              "id": "shin_fatha",
+              "letter": "ش",
+              "vowel": "َ",
+              "syllable": "ша"
+            },
+            {
+              "id": "sad_fatha",
+              "letter": "ص",
+              "vowel": "َ",
+              "syllable": "сса"
+            },
+            {
+              "id": "dad_fatha",
+              "letter": "ض",
+              "vowel": "َ",
+              "syllable": "зза"
+            },
+            {
+              "id": "tta_fatha",
+              "letter": "ط",
+              "vowel": "َ",
+              "syllable": "тта"
+            },
+            {
+              "id": "za_fatha",
+              "letter": "ظ",
+              "vowel": "َ",
+              "syllable": "Зза"
+            },
+            {
+              "id": "ayn_fatha",
+              "letter": "ع",
+              "vowel": "َ",
+              "syllable": "ъъа"
+            },
+            {
+              "id": "ghayn_fatha",
+              "letter": "غ",
+              "vowel": "َ",
+              "syllable": "ға"
+            },
+            {
+              "id": "fa_fatha",
+              "letter": "ف",
+              "vowel": "َ",
+              "syllable": "фа"
+            },
+            {
+              "id": "qaf_fatha",
+              "letter": "ق",
+              "vowel": "َ",
+              "syllable": "қа"
+            },
+            {
+              "id": "kaf_fatha",
+              "letter": "ك",
+              "vowel": "َ",
+              "syllable": "ка"
+            },
+            {
+              "id": "lam_fatha",
+              "letter": "ل",
+              "vowel": "َ",
+              "syllable": "ла"
+            },
+            {
+              "id": "mim_fatha",
+              "letter": "م",
+              "vowel": "َ",
+              "syllable": "ма"
+            },
+            {
+              "id": "nun_fatha",
+              "letter": "ن",
+              "vowel": "َ",
+              "syllable": "на"
+            },
+            {
+              "id": "waw_fatha",
+              "letter": "و",
+              "vowel": "َ",
+              "syllable": "ва"
+            },
+            {
+              "id": "ha2_fatha",
+              "letter": "ه",
+              "vowel": "َ",
+              "syllable": "ҳа"
+            },
+            {
+              "id": "lam_alif_fatha",
+              "letter": "لا",
+              "vowel": "َ",
+              "syllable": "ла"
+            },
+            {
+              "id": "hamza_fatha",
+              "letter": "ء",
+              "vowel": "َ",
+              "syllable": "ъа"
+            },
+            {
+              "id": "ya_fatha",
+              "letter": "ي",
+              "vowel": "َ",
+              "syllable": "йа"
+            }
+          ]
+        },
+        {
+          "subtype": "quiz",
+          "quizType": "dynamic",
+          "config": {
+            "source": "syllables_examples",
+            "mode": "sound_to_letter",
+            "itemsPerQuiz": 12,
+            "shuffle": true,
+            "difficulty": "easy"
+          }
+        }
+      ],
+      "nextLessonId": 3
+    },
+    {
+      "id": 3,
+      "title": "Дарси 3: Ҳаракатҳо - Садонокҳо",
+      "lessonType": "vowels_syllables",
+      "difficulty": "beginner",
+      "estimatedMinutes": 10,
+      "tags": [
+        "letters",
+        "beginner",
+        "vowels",
+        "harakat"
+      ],
+      "objectives": [
+        "Шинохти ҳаракатҳои асосӣ (фатҳа, касра, замма).",
+        "Хондани ҳаракатҳо (садонокҳо) бо ҳарфҳо."
+      ],
+      "content": [
+        {
+          "subtype": "text",
+          "textKey": "qaida.lesson3.intro"
+        },
+        {
+          "subtype": "vowels_chart",
+          "vowels": [
+            {
+              "id": "fatha",
+              "symbol": "َ",
+              "nameKey": "qaida.vowel.fatha",
+              "category": "basic"
+            },
+            {
+              "id": "kasra",
+              "symbol": "ِ",
+              "nameKey": "qaida.vowel.kasra",
+              "category": "basic"
+            },
+            {
+              "id": "damma",
+              "symbol": "ُ",
+              "nameKey": "qaida.vowel.damma",
+              "category": "basic"
+            }
+          ]
+        },
+        {
+          "subtype": "syllables_examples",
+          "examples": [
+            {
+              "id": "alif_fatha",
+              "letter": "ا",
+              "vowel": "َ",
+              "syllable": "а"
+            },
+            {
+              "id": "alif_kasra",
+              "letter": "ا",
+              "vowel": "ِ",
+              "syllable": "и"
+            },
+            {
+              "id": "alif_damma",
+              "letter": "ا",
+              "vowel": "ُ",
+              "syllable": "у"
+            },
+            {
+              "id": "ba_fatha",
+              "letter": "ب",
+              "vowel": "َ",
+              "syllable": "ба"
+            },
+            {
+              "id": "ba_kasra",
+              "letter": "ب",
+              "vowel": "ِ",
+              "syllable": "би"
+            },
+            {
+              "id": "ba_damma",
+              "letter": "ب",
+              "vowel": "ُ",
+              "syllable": "бу"
+            },
+            {
+              "id": "ta_fatha",
+              "letter": "ت",
+              "vowel": "َ",
+              "syllable": "та"
+            },
+            {
+              "id": "ta_kasra",
+              "letter": "ت",
+              "vowel": "ِ",
+              "syllable": "ти"
+            },
+            {
+              "id": "ta_damma",
+              "letter": "ت",
+              "vowel": "ُ",
+              "syllable": "ту"
+            },
+            {
+              "id": "tha_fatha",
+              "letter": "ث",
+              "vowel": "َ",
+              "syllable": "Са"
+            },
+            {
+              "id": "tha_kasra",
+              "letter": "ث",
+              "vowel": "ِ",
+              "syllable": "Си"
+            },
+            {
+              "id": "tha_damma",
+              "letter": "ث",
+              "vowel": "ُ",
+              "syllable": "Су"
+            },
+            {
+              "id": "jim_fatha",
+              "letter": "ج",
+              "vowel": "َ",
+              "syllable": "ҷа"
+            },
+            {
+              "id": "jim_kasra",
+              "letter": "ج",
+              "vowel": "ِ",
+              "syllable": "ҷи"
+            },
+            {
+              "id": "jim_damma",
+              "letter": "ج",
+              "vowel": "ُ",
+              "syllable": "ҷу"
+            },
+            {
+              "id": "ha_fatha",
+              "letter": "ح",
+              "vowel": "َ",
+              "syllable": "ҳҳа"
+            },
+            {
+              "id": "ha_kasra",
+              "letter": "ح",
+              "vowel": "ِ",
+              "syllable": "ҳҳи"
+            },
+            {
+              "id": "ha_damma",
+              "letter": "ح",
+              "vowel": "ُ",
+              "syllable": "ҳҳу"
+            },
+            {
+              "id": "kha_fatha",
+              "letter": "خ",
+              "vowel": "َ",
+              "syllable": "ха"
+            },
+            {
+              "id": "kha_kasra",
+              "letter": "خ",
+              "vowel": "ِ",
+              "syllable": "хи"
+            },
+            {
+              "id": "kha_damma",
+              "letter": "خ",
+              "vowel": "ُ",
+              "syllable": "ху"
+            },
+            {
+              "id": "dal_fatha",
+              "letter": "د",
+              "vowel": "َ",
+              "syllable": "да"
+            },
+            {
+              "id": "dal_kasra",
+              "letter": "د",
+              "vowel": "ِ",
+              "syllable": "ди"
+            },
+            {
+              "id": "dal_damma",
+              "letter": "د",
+              "vowel": "ُ",
+              "syllable": "ду"
+            },
+            {
+              "id": "dhal_fatha",
+              "letter": "ذ",
+              "vowel": "َ",
+              "syllable": "За"
+            },
+            {
+              "id": "dhal_kasra",
+              "letter": "ذ",
+              "vowel": "ِ",
+              "syllable": "Зи"
+            },
+            {
+              "id": "dhal_damma",
+              "letter": "ذ",
+              "vowel": "ُ",
+              "syllable": "Зу"
+            },
+            {
+              "id": "ra_fatha",
+              "letter": "ر",
+              "vowel": "َ",
+              "syllable": "ра"
+            },
+            {
+              "id": "ra_kasra",
+              "letter": "ر",
+              "vowel": "ِ",
+              "syllable": "ри"
+            },
+            {
+              "id": "ra_damma",
+              "letter": "ر",
+              "vowel": "ُ",
+              "syllable": "ру"
+            },
+            {
+              "id": "zay_fatha",
+              "letter": "ز",
+              "vowel": "َ",
+              "syllable": "за"
+            },
+            {
+              "id": "zay_kasra",
+              "letter": "ز",
+              "vowel": "ِ",
+              "syllable": "зи"
+            },
+            {
+              "id": "zay_damma",
+              "letter": "ز",
+              "vowel": "ُ",
+              "syllable": "зу"
+            },
+            {
+              "id": "sin_fatha",
+              "letter": "س",
+              "vowel": "َ",
+              "syllable": "са"
+            },
+            {
+              "id": "sin_kasra",
+              "letter": "س",
+              "vowel": "ِ",
+              "syllable": "си"
+            },
+            {
+              "id": "sin_damma",
+              "letter": "س",
+              "vowel": "ُ",
+              "syllable": "су"
+            },
+            {
+              "id": "shin_fatha",
+              "letter": "ش",
+              "vowel": "َ",
+              "syllable": "ша"
+            },
+            {
+              "id": "shin_kasra",
+              "letter": "ش",
+              "vowel": "ِ",
+              "syllable": "ши"
+            },
+            {
+              "id": "shin_damma",
+              "letter": "ش",
+              "vowel": "ُ",
+              "syllable": "шу"
+            },
+            {
+              "id": "sad_fatha",
+              "letter": "ص",
+              "vowel": "َ",
+              "syllable": "сса"
+            },
+            {
+              "id": "sad_kasra",
+              "letter": "ص",
+              "vowel": "ِ",
+              "syllable": "сси"
+            },
+            {
+              "id": "sad_damma",
+              "letter": "ص",
+              "vowel": "ُ",
+              "syllable": "ссу"
+            },
+            {
+              "id": "dad_fatha",
+              "letter": "ض",
+              "vowel": "َ",
+              "syllable": "зза"
+            },
+            {
+              "id": "dad_kasra",
+              "letter": "ض",
+              "vowel": "ِ",
+              "syllable": "ззи"
+            },
+            {
+              "id": "dad_damma",
+              "letter": "ض",
+              "vowel": "ُ",
+              "syllable": "ззу"
+            },
+            {
+              "id": "tta_fatha",
+              "letter": "ط",
+              "vowel": "َ",
+              "syllable": "тта"
+            },
+            {
+              "id": "tta_kasra",
+              "letter": "ط",
+              "vowel": "ِ",
+              "syllable": "тти"
+            },
+            {
+              "id": "tta_damma",
+              "letter": "ط",
+              "vowel": "ُ",
+              "syllable": "тту"
+            },
+            {
+              "id": "za_fatha",
+              "letter": "ظ",
+              "vowel": "َ",
+              "syllable": "Зза"
+            },
+            {
+              "id": "za_kasra",
+              "letter": "ظ",
+              "vowel": "ِ",
+              "syllable": "Ззи"
+            },
+            {
+              "id": "za_damma",
+              "letter": "ظ",
+              "vowel": "ُ",
+              "syllable": "Ззу"
+            },
+            {
+              "id": "ayn_fatha",
+              "letter": "ع",
+              "vowel": "َ",
+              "syllable": "ъъа"
+            },
+            {
+              "id": "ayn_kasra",
+              "letter": "ع",
+              "vowel": "ِ",
+              "syllable": "ъъи"
+            },
+            {
+              "id": "ayn_damma",
+              "letter": "ع",
+              "vowel": "ُ",
+              "syllable": "ъъу"
+            },
+            {
+              "id": "ghayn_fatha",
+              "letter": "غ",
+              "vowel": "َ",
+              "syllable": "ға"
+            },
+            {
+              "id": "ghayn_kasra",
+              "letter": "غ",
+              "vowel": "ِ",
+              "syllable": "ғи"
+            },
+            {
+              "id": "ghayn_damma",
+              "letter": "غ",
+              "vowel": "ُ",
+              "syllable": "ғу"
+            },
+            {
+              "id": "fa_fatha",
+              "letter": "ف",
+              "vowel": "َ",
+              "syllable": "фа"
+            },
+            {
+              "id": "fa_kasra",
+              "letter": "ف",
+              "vowel": "ِ",
+              "syllable": "фи"
+            },
+            {
+              "id": "fa_damma",
+              "letter": "ف",
+              "vowel": "ُ",
+              "syllable": "фу"
+            },
+            {
+              "id": "qaf_fatha",
+              "letter": "ق",
+              "vowel": "َ",
+              "syllable": "қа"
+            },
+            {
+              "id": "qaf_kasra",
+              "letter": "ق",
+              "vowel": "ِ",
+              "syllable": "қи"
+            },
+            {
+              "id": "qaf_damma",
+              "letter": "ق",
+              "vowel": "ُ",
+              "syllable": "қу"
+            },
+            {
+              "id": "kaf_fatha",
+              "letter": "ك",
+              "vowel": "َ",
+              "syllable": "ка"
+            },
+            {
+              "id": "kaf_kasra",
+              "letter": "ك",
+              "vowel": "ِ",
+              "syllable": "ки"
+            },
+            {
+              "id": "kaf_damma",
+              "letter": "ك",
+              "vowel": "ُ",
+              "syllable": "ку"
+            },
+            {
+              "id": "lam_fatha",
+              "letter": "ل",
+              "vowel": "َ",
+              "syllable": "ла"
+            },
+            {
+              "id": "lam_kasra",
+              "letter": "ل",
+              "vowel": "ِ",
+              "syllable": "ли"
+            },
+            {
+              "id": "lam_damma",
+              "letter": "ل",
+              "vowel": "ُ",
+              "syllable": "лу"
+            },
+            {
+              "id": "mim_fatha",
+              "letter": "م",
+              "vowel": "َ",
+              "syllable": "ма"
+            },
+            {
+              "id": "mim_kasra",
+              "letter": "م",
+              "vowel": "ِ",
+              "syllable": "ми"
+            },
+            {
+              "id": "mim_damma",
+              "letter": "م",
+              "vowel": "ُ",
+              "syllable": "му"
+            },
+            {
+              "id": "nun_fatha",
+              "letter": "ن",
+              "vowel": "َ",
+              "syllable": "на"
+            },
+            {
+              "id": "nun_kasra",
+              "letter": "ن",
+              "vowel": "ِ",
+              "syllable": "ни"
+            },
+            {
+              "id": "nun_damma",
+              "letter": "ن",
+              "vowel": "ُ",
+              "syllable": "ну"
+            },
+            {
+              "id": "waw_fatha",
+              "letter": "و",
+              "vowel": "َ",
+              "syllable": "ва"
+            },
+            {
+              "id": "waw_kasra",
+              "letter": "و",
+              "vowel": "ِ",
+              "syllable": "ви"
+            },
+            {
+              "id": "waw_damma",
+              "letter": "و",
+              "vowel": "ُ",
+              "syllable": "ву"
+            },
+            {
+              "id": "ha2_fatha",
+              "letter": "ه",
+              "vowel": "َ",
+              "syllable": "ҳа"
+            },
+            {
+              "id": "ha2_kasra",
+              "letter": "ه",
+              "vowel": "ِ",
+              "syllable": "ҳи"
+            },
+            {
+              "id": "ha2_damma",
+              "letter": "ه",
+              "vowel": "ُ",
+              "syllable": "ҳу"
+            },
+            {
+              "id": "hamza_fatha",
+              "letter": "ء",
+              "vowel": "َ",
+              "syllable": "ъа"
+            },
+            {
+              "id": "hamza_kasra",
+              "letter": "ء",
+              "vowel": "ِ",
+              "syllable": "ъи"
+            },
+            {
+              "id": "hamza_damma",
+              "letter": "ء",
+              "vowel": "ُ",
+              "syllable": "ъу"
+            },
+            {
+              "id": "ya_fatha",
+              "letter": "ي",
+              "vowel": "َ",
+              "syllable": "я"
+            },
+            {
+              "id": "ya_kasra",
+              "letter": "ي",
+              "vowel": "ِ",
+              "syllable": "йи"
+            },
+            {
+              "id": "ya_damma",
+              "letter": "ي",
+              "vowel": "ُ",
+              "syllable": "ю"
+            }
+          ]
+        },
+        {
+          "subtype": "quiz",
+          "quizType": "dynamic",
+          "config": {
+            "source": "syllables_examples",
+            "mode": "sound_to_letter",
+            "itemsPerQuiz": 15,
+            "shuffle": true,
+            "difficulty": "easy"
+          }
+        }
+      ],
+      "nextLessonId": 4
+    },
+    {
+      "id": 4,
+      "title": "Дарси 4: Танвин",
+      "lessonType": "tanween",
+      "difficulty": "beginner",
+      "estimatedMinutes": 10,
+      "tags": [
+        "letters",
+        "beginner",
+        "tanween",
+        "tanwin"
+      ],
+      "content": [
+        {
+          "subtype": "text",
+          "textKey": "qaida.lesson5.intro"
+        },
+        {
+          "subtype": "vowels_chart",
+          "vowels": [
+            {
+              "id": "tanwin_fatha",
+              "symbol": "ً",
+              "nameKey": "qaida.vowel.tanwin_fatha",
+              "category": "tanween"
+            },
+            {
+              "id": "tanwin_kasra",
+              "symbol": "ٍ",
+              "nameKey": "qaida.vowel.tanwin_kasra",
+              "category": "tanween"
+            },
+            {
+              "id": "tanwin_damma",
+              "symbol": "ٌ",
+              "nameKey": "qaida.vowel.tanwin_damma",
+              "category": "tanween"
+            }
+          ]
+        },
+        {
+          "subtype": "syllables_examples",
+          "examples": [
+            {
+              "id": "alif_tanwin_fatha",
+              "letter": "ا",
+              "vowel": "ً",
+              "syllable": "ан"
+            },
+            {
+              "id": "alif_tanwin_kasra",
+              "letter": "ا",
+              "vowel": "ٍ",
+              "syllable": "ин"
+            },
+            {
+              "id": "alif_tanwin_damma",
+              "letter": "ا",
+              "vowel": "ٌ",
+              "syllable": "ун"
+            },
+            {
+              "id": "ba_tanwin_fatha",
+              "letter": "ب",
+              "vowel": "ً",
+              "syllable": "бан"
+            },
+            {
+              "id": "ba_tanwin_kasra",
+              "letter": "ب",
+              "vowel": "ٍ",
+              "syllable": "бин"
+            },
+            {
+              "id": "ba_tanwin_damma",
+              "letter": "ب",
+              "vowel": "ٌ",
+              "syllable": "бун"
+            },
+            {
+              "id": "ta_tanwin_fatha",
+              "letter": "ت",
+              "vowel": "ً",
+              "syllable": "тан"
+            },
+            {
+              "id": "ta_tanwin_kasra",
+              "letter": "ت",
+              "vowel": "ٍ",
+              "syllable": "тин"
+            },
+            {
+              "id": "ta_tanwin_damma",
+              "letter": "ت",
+              "vowel": "ٌ",
+              "syllable": "тун"
+            },
+            {
+              "id": "tha_tanwin_fatha",
+              "letter": "ث",
+              "vowel": "ً",
+              "syllable": "Сан"
+            },
+            {
+              "id": "tha_tanwin_kasra",
+              "letter": "ث",
+              "vowel": "ٍ",
+              "syllable": "Син"
+            },
+            {
+              "id": "tha_tanwin_damma",
+              "letter": "ث",
+              "vowel": "ٌ",
+              "syllable": "Сун"
+            },
+            {
+              "id": "jim_tanwin_fatha",
+              "letter": "ج",
+              "vowel": "ً",
+              "syllable": "ҷан"
+            },
+            {
+              "id": "jim_tanwin_kasra",
+              "letter": "ج",
+              "vowel": "ٍ",
+              "syllable": "ҷин"
+            },
+            {
+              "id": "jim_tanwin_damma",
+              "letter": "ج",
+              "vowel": "ٌ",
+              "syllable": "ҷун"
+            },
+            {
+              "id": "ha_tanwin_fatha",
+              "letter": "ح",
+              "vowel": "ً",
+              "syllable": "ҳҳан"
+            },
+            {
+              "id": "ha_tanwin_kasra",
+              "letter": "ح",
+              "vowel": "ٍ",
+              "syllable": "ҳҳин"
+            },
+            {
+              "id": "ha_tanwin_damma",
+              "letter": "ح",
+              "vowel": "ٌ",
+              "syllable": "ҳҳун"
+            },
+            {
+              "id": "kha_tanwin_fatha",
+              "letter": "خ",
+              "vowel": "ً",
+              "syllable": "хан"
+            },
+            {
+              "id": "kha_tanwin_kasra",
+              "letter": "خ",
+              "vowel": "ٍ",
+              "syllable": "хин"
+            },
+            {
+              "id": "kha_tanwin_damma",
+              "letter": "خ",
+              "vowel": "ٌ",
+              "syllable": "хун"
+            },
+            {
+              "id": "dal_tanwin_fatha",
+              "letter": "د",
+              "vowel": "ً",
+              "syllable": "дан"
+            },
+            {
+              "id": "dal_tanwin_kasra",
+              "letter": "د",
+              "vowel": "ٍ",
+              "syllable": "дин"
+            },
+            {
+              "id": "dal_tanwin_damma",
+              "letter": "د",
+              "vowel": "ٌ",
+              "syllable": "дун"
+            },
+            {
+              "id": "dhal_tanwin_fatha",
+              "letter": "ذ",
+              "vowel": "ً",
+              "syllable": "Зан"
+            },
+            {
+              "id": "dhal_tanwin_kasra",
+              "letter": "ذ",
+              "vowel": "ٍ",
+              "syllable": "Зин"
+            },
+            {
+              "id": "dhal_tanwin_damma",
+              "letter": "ذ",
+              "vowel": "ٌ",
+              "syllable": "Зун"
+            },
+            {
+              "id": "ra_tanwin_fatha",
+              "letter": "ر",
+              "vowel": "ً",
+              "syllable": "ран"
+            },
+            {
+              "id": "ra_tanwin_kasra",
+              "letter": "ر",
+              "vowel": "ٍ",
+              "syllable": "рин"
+            },
+            {
+              "id": "ra_tanwin_damma",
+              "letter": "ر",
+              "vowel": "ٌ",
+              "syllable": "рун"
+            },
+            {
+              "id": "zay_tanwin_fatha",
+              "letter": "ز",
+              "vowel": "ً",
+              "syllable": "зан"
+            },
+            {
+              "id": "zay_tanwin_kasra",
+              "letter": "ز",
+              "vowel": "ٍ",
+              "syllable": "зин"
+            },
+            {
+              "id": "zay_tanwin_damma",
+              "letter": "ز",
+              "vowel": "ٌ",
+              "syllable": "зун"
+            },
+            {
+              "id": "sin_tanwin_fatha",
+              "letter": "س",
+              "vowel": "ً",
+              "syllable": "сан"
+            },
+            {
+              "id": "sin_tanwin_kasra",
+              "letter": "س",
+              "vowel": "ٍ",
+              "syllable": "син"
+            },
+            {
+              "id": "sin_tanwin_damma",
+              "letter": "س",
+              "vowel": "ٌ",
+              "syllable": "сун"
+            },
+            {
+              "id": "shin_tanwin_fatha",
+              "letter": "ش",
+              "vowel": "ً",
+              "syllable": "шан"
+            },
+            {
+              "id": "shin_tanwin_kasra",
+              "letter": "ش",
+              "vowel": "ٍ",
+              "syllable": "шин"
+            },
+            {
+              "id": "shin_tanwin_damma",
+              "letter": "ش",
+              "vowel": "ٌ",
+              "syllable": "шун"
+            },
+            {
+              "id": "sad_tanwin_fatha",
+              "letter": "ص",
+              "vowel": "ً",
+              "syllable": "ссан"
+            },
+            {
+              "id": "sad_tanwin_kasra",
+              "letter": "ص",
+              "vowel": "ٍ",
+              "syllable": "ссин"
+            },
+            {
+              "id": "sad_tanwin_damma",
+              "letter": "ص",
+              "vowel": "ٌ",
+              "syllable": "ссун"
+            },
+            {
+              "id": "dad_tanwin_fatha",
+              "letter": "ض",
+              "vowel": "ً",
+              "syllable": "ззан"
+            },
+            {
+              "id": "dad_tanwin_kasra",
+              "letter": "ض",
+              "vowel": "ٍ",
+              "syllable": "ззин"
+            },
+            {
+              "id": "dad_tanwin_damma",
+              "letter": "ض",
+              "vowel": "ٌ",
+              "syllable": "ззун"
+            },
+            {
+              "id": "tta_tanwin_fatha",
+              "letter": "ط",
+              "vowel": "ً",
+              "syllable": "ттан"
+            },
+            {
+              "id": "tta_tanwin_kasra",
+              "letter": "ط",
+              "vowel": "ٍ",
+              "syllable": "ттин"
+            },
+            {
+              "id": "tta_tanwin_damma",
+              "letter": "ط",
+              "vowel": "ٌ",
+              "syllable": "ттун"
+            },
+            {
+              "id": "za_tanwin_fatha",
+              "letter": "ظ",
+              "vowel": "ً",
+              "syllable": "Ззан"
+            },
+            {
+              "id": "za_tanwin_kasra",
+              "letter": "ظ",
+              "vowel": "ٍ",
+              "syllable": "Ззин"
+            },
+            {
+              "id": "za_tanwin_damma",
+              "letter": "ظ",
+              "vowel": "ٌ",
+              "syllable": "Ззун"
+            },
+            {
+              "id": "ayn_tanwin_fatha",
+              "letter": "ع",
+              "vowel": "ً",
+              "syllable": "ъъан"
+            },
+            {
+              "id": "ayn_tanwin_kasra",
+              "letter": "ع",
+              "vowel": "ٍ",
+              "syllable": "ъъин"
+            },
+            {
+              "id": "ayn_tanwin_damma",
+              "letter": "ع",
+              "vowel": "ٌ",
+              "syllable": "ъъун"
+            },
+            {
+              "id": "ghayn_tanwin_fatha",
+              "letter": "غ",
+              "vowel": "ً",
+              "syllable": "ған"
+            },
+            {
+              "id": "ghayn_tanwin_kasra",
+              "letter": "غ",
+              "vowel": "ٍ",
+              "syllable": "ғин"
+            },
+            {
+              "id": "ghayn_tanwin_damma",
+              "letter": "غ",
+              "vowel": "ٌ",
+              "syllable": "ғун"
+            },
+            {
+              "id": "fa_tanwin_fatha",
+              "letter": "ف",
+              "vowel": "ً",
+              "syllable": "фан"
+            },
+            {
+              "id": "fa_tanwin_kasra",
+              "letter": "ف",
+              "vowel": "ٍ",
+              "syllable": "фин"
+            },
+            {
+              "id": "fa_tanwin_damma",
+              "letter": "ف",
+              "vowel": "ٌ",
+              "syllable": "фун"
+            },
+            {
+              "id": "qaf_tanwin_fatha",
+              "letter": "ق",
+              "vowel": "ً",
+              "syllable": "қан"
+            },
+            {
+              "id": "qaf_tanwin_kasra",
+              "letter": "ق",
+              "vowel": "ٍ",
+              "syllable": "қин"
+            },
+            {
+              "id": "qaf_tanwin_damma",
+              "letter": "ق",
+              "vowel": "ٌ",
+              "syllable": "қун"
+            },
+            {
+              "id": "kaf_tanwin_fatha",
+              "letter": "ك",
+              "vowel": "ً",
+              "syllable": "кан"
+            },
+            {
+              "id": "kaf_tanwin_kasra",
+              "letter": "ك",
+              "vowel": "ٍ",
+              "syllable": "кин"
+            },
+            {
+              "id": "kaf_tanwin_damma",
+              "letter": "ك",
+              "vowel": "ٌ",
+              "syllable": "кун"
+            },
+            {
+              "id": "lam_tanwin_fatha",
+              "letter": "ل",
+              "vowel": "ً",
+              "syllable": "лан"
+            },
+            {
+              "id": "lam_tanwin_kasra",
+              "letter": "ل",
+              "vowel": "ٍ",
+              "syllable": "лин"
+            },
+            {
+              "id": "lam_tanwin_damma",
+              "letter": "ل",
+              "vowel": "ٌ",
+              "syllable": "лун"
+            },
+            {
+              "id": "mim_tanwin_fatha",
+              "letter": "م",
+              "vowel": "ً",
+              "syllable": "ман"
+            },
+            {
+              "id": "mim_tanwin_kasra",
+              "letter": "م",
+              "vowel": "ٍ",
+              "syllable": "мин"
+            },
+            {
+              "id": "mim_tanwin_damma",
+              "letter": "م",
+              "vowel": "ٌ",
+              "syllable": "мун"
+            },
+            {
+              "id": "nun_tanwin_fatha",
+              "letter": "ن",
+              "vowel": "ً",
+              "syllable": "нан"
+            },
+            {
+              "id": "nun_tanwin_kasra",
+              "letter": "ن",
+              "vowel": "ٍ",
+              "syllable": "нин"
+            },
+            {
+              "id": "nun_tanwin_damma",
+              "letter": "ن",
+              "vowel": "ٌ",
+              "syllable": "нун"
+            },
+            {
+              "id": "waw_tanwin_fatha",
+              "letter": "و",
+              "vowel": "ً",
+              "syllable": "ван"
+            },
+            {
+              "id": "waw_tanwin_kasra",
+              "letter": "و",
+              "vowel": "ٍ",
+              "syllable": "вин"
+            },
+            {
+              "id": "waw_tanwin_damma",
+              "letter": "و",
+              "vowel": "ٌ",
+              "syllable": "вун"
+            },
+            {
+              "id": "ha2_tanwin_fatha",
+              "letter": "ه",
+              "vowel": "ً",
+              "syllable": "ҳан"
+            },
+            {
+              "id": "ha2_tanwin_kasra",
+              "letter": "ه",
+              "vowel": "ٍ",
+              "syllable": "ҳин"
+            },
+            {
+              "id": "ha2_tanwin_damma",
+              "letter": "ه",
+              "vowel": "ٌ",
+              "syllable": "ҳун"
+            },
+            {
+              "id": "ya_tanwin_fatha",
+              "letter": "ي",
+              "vowel": "ً",
+              "syllable": "йан"
+            },
+            {
+              "id": "ya_tanwin_kasra",
+              "letter": "ي",
+              "vowel": "ٍ",
+              "syllable": "йин"
+            },
+            {
+              "id": "ya_tanwin_damma",
+              "letter": "ي",
+              "vowel": "ٌ",
+              "syllable": "юн"
+            }
+          ]
+        },
+        {
+          "subtype": "quiz",
+          "quizType": "dynamic",
+          "config": {
+            "source": "syllables_examples",
+            "mode": "sound_to_letter",
+            "itemsPerQuiz": 15,
+            "shuffle": true,
+            "difficulty": "easy"
+          }
+        }
+      ],
+      "nextLessonId": 5
+    },
+    {
+      "id": 5,
+      "title": "Дарси 5: Шакли ҳарфҳо дар калима",
+      "lessonType": "letter_forms",
+      "difficulty": "beginner",
+      "estimatedMinutes": 8,
+      "tags": [
+        "letters",
+        "beginner",
+        "forms"
+      ],
+      "objectives": [
+        "Шинохтани ҳарфҳо дар дохили калима (дар аввал, байн ва охир).",
+        "Пайваст кардани ҳарфҳо ба ҳам дар калима."
+      ],
+      "content": [
+        {
+          "subtype": "text",
+          "textKey": "qaida.lesson2.intro"
+        },
+        {
+          "subtype": "letters_forms_chart",
+          "letters": [
+            {
+              "id": "alif",
+              "letter": "ا",
+              "name": "алиф",
+              "forms": {
+                "isolated": "ا",
+                "initial": "ا",
+                "medial": "ـا",
+                "final": "ـا"
+              },
+              "examples": {
+                "initial": "اَللّٰه",
+                "medial": "سَاعَة",
+                "final": "دُعَا"
+              }
+            },
+            {
+              "id": "ba",
+              "letter": "ب",
+              "name": "ба",
+              "forms": {
+                "isolated": "ب",
+                "initial": "بـ",
+                "medial": "ـبـ",
+                "final": "ـب"
+              },
+              "examples": {
+                "initial": "بَيْت",
+                "medial": "كِتَاب",
+                "final": "كَلْب"
+              }
+            },
+            {
+              "id": "ta",
+              "letter": "ت",
+              "name": "та",
+              "forms": {
+                "isolated": "ت",
+                "initial": "تـ",
+                "medial": "ـتـ",
+                "final": "ـت"
+              },
+              "examples": {
+                "initial": "تَوْبَة",
+                "medial": "فَتَحَ",
+                "final": "بِنْت"
+              }
+            },
+            {
+              "id": "tha",
+              "letter": "ث",
+              "name": "са",
+              "forms": {
+                "isolated": "ث",
+                "initial": "ثـ",
+                "medial": "ـثـ",
+                "final": "ـث"
+              },
+              "examples": {
+                "initial": "ثَوَاب",
+                "medial": "مَثَل",
+                "final": "حَدِيث"
+              }
+            },
+            {
+              "id": "jim",
+              "letter": "ج",
+              "name": "ҷим",
+              "forms": {
+                "isolated": "ج",
+                "initial": "جـ",
+                "medial": "ـجـ",
+                "final": "ـج"
+              },
+              "examples": {
+                "initial": "جَنَّة",
+                "medial": "رَجُل",
+                "final": "بُرْج"
+              }
+            },
+            {
+              "id": "ha",
+              "letter": "ح",
+              "name": "ҳа",
+              "forms": {
+                "isolated": "ح",
+                "initial": "حـ",
+                "medial": "ـحـ",
+                "final": "ـح"
+              },
+              "examples": {
+                "initial": "حَقّ",
+                "medial": "بَحْر",
+                "final": "مِفْتَاح"
+              }
+            },
+            {
+              "id": "kha",
+              "letter": "خ",
+              "name": "ха",
+              "forms": {
+                "isolated": "خ",
+                "initial": "خـ",
+                "medial": "ـخـ",
+                "final": "ـخ"
+              },
+              "examples": {
+                "initial": "خَيْر",
+                "medial": "دَخَلَ",
+                "final": "شَيْخ"
+              }
+            },
+            {
+              "id": "dal",
+              "letter": "د",
+              "name": "дал",
+              "forms": {
+                "isolated": "د",
+                "initial": "د",
+                "medial": "ـد",
+                "final": "ـد"
+              },
+              "examples": {
+                "initial": "دِين",
+                "medial": "مَدْرَسَة",
+                "final": "وَلَد"
+              }
+            },
+            {
+              "id": "dhal",
+              "letter": "ذ",
+              "name": "зал",
+              "forms": {
+                "isolated": "ذ",
+                "initial": "ذ",
+                "medial": "ـذ",
+                "final": "ـذ"
+              },
+              "examples": {
+                "initial": "ذِكْر",
+                "medial": "مَذْهَب",
+                "final": "أُسْتَاذ"
+              }
+            },
+            {
+              "id": "ra",
+              "letter": "ر",
+              "name": "ро",
+              "forms": {
+                "isolated": "ر",
+                "initial": "ر",
+                "medial": "ـر",
+                "final": "ـر"
+              },
+              "examples": {
+                "initial": "رَحْمَة",
+                "medial": "مَرْيَم",
+                "final": "قَدَر"
+              }
+            },
+            {
+              "id": "zay",
+              "letter": "ز",
+              "name": "за",
+              "forms": {
+                "isolated": "ز",
+                "initial": "ز",
+                "medial": "ـز",
+                "final": "ـز"
+              },
+              "examples": {
+                "initial": "زَكَاة",
+                "medial": "مِيزَان",
+                "final": "عَزِيز"
+              }
+            },
+            {
+              "id": "sin",
+              "letter": "س",
+              "name": "син",
+              "forms": {
+                "isolated": "س",
+                "initial": "سـ",
+                "medial": "ـسـ",
+                "final": "ـس"
+              },
+              "examples": {
+                "initial": "سَلَام",
+                "medial": "مَسْجِد",
+                "final": "نَاس"
+              }
+            },
+            {
+              "id": "shin",
+              "letter": "ش",
+              "name": "шин",
+              "forms": {
+                "isolated": "ش",
+                "initial": "شـ",
+                "medial": "ـشـ",
+                "final": "ـش"
+              },
+              "examples": {
+                "initial": "شَمْس",
+                "medial": "مَشْرِق",
+                "final": "عَرْش"
+              }
+            },
+            {
+              "id": "sad",
+              "letter": "ص",
+              "name": "сод",
+              "forms": {
+                "isolated": "ص",
+                "initial": "صـ",
+                "medial": "ـصـ",
+                "final": "ـص"
+              },
+              "examples": {
+                "initial": "صِرَاط",
+                "medial": "مَصِير",
+                "final": "خَالِص"
+              }
+            },
+            {
+              "id": "dad",
+              "letter": "ض",
+              "name": "зод",
+              "forms": {
+                "isolated": "ض",
+                "initial": "ضـ",
+                "medial": "ـضـ",
+                "final": "ـض"
+              },
+              "examples": {
+                "initial": "ضَلَال",
+                "medial": "مَرَض",
+                "final": "أَرْض"
+              }
+            },
+            {
+              "id": "tta",
+              "letter": "ط",
+              "name": "тта",
+              "forms": {
+                "isolated": "ط",
+                "initial": "طـ",
+                "medial": "ـطـ",
+                "final": "ـط"
+              },
+              "examples": {
+                "initial": "طَيِّب",
+                "medial": "مَطَر",
+                "final": "قِسْط"
+              }
+            },
+            {
+              "id": "za",
+              "letter": "ظ",
+              "name": "за",
+              "forms": {
+                "isolated": "ظ",
+                "initial": "ظـ",
+                "medial": "ـظـ",
+                "final": "ـظ"
+              },
+              "examples": {
+                "initial": "ظُلْم",
+                "medial": "يَظْلِم",
+                "final": "غَلِيظ"
+              }
+            },
+            {
+              "id": "ayn",
+              "letter": "ع",
+              "name": "ъайн",
+              "forms": {
+                "isolated": "ع",
+                "initial": "عـ",
+                "medial": "ـعـ",
+                "final": "ـع"
+              },
+              "examples": {
+                "initial": "عِلْم",
+                "medial": "نَعْمَة",
+                "final": "سَمِيع"
+              }
+            },
+            {
+              "id": "ghayn",
+              "letter": "غ",
+              "name": "ғайн",
+              "forms": {
+                "isolated": "غ",
+                "initial": "غـ",
+                "medial": "ـغـ",
+                "final": "ـغ"
+              },
+              "examples": {
+                "initial": "غَفُور",
+                "medial": "مَغْفِرَة",
+                "final": "بَالِغ"
+              }
+            },
+            {
+              "id": "fa",
+              "letter": "ف",
+              "name": "фа",
+              "forms": {
+                "isolated": "ف",
+                "initial": "فـ",
+                "medial": "ـفـ",
+                "final": "ـف"
+              },
+              "examples": {
+                "initial": "فَلَاح",
+                "medial": "مُفْلِح",
+                "final": "خَوْف"
+              }
+            },
+            {
+              "id": "qaf",
+              "letter": "ق",
+              "name": "қоф",
+              "forms": {
+                "isolated": "ق",
+                "initial": "قـ",
+                "medial": "ـقـ",
+                "final": "ـق"
+              },
+              "examples": {
+                "initial": "قُرْآن",
+                "medial": "حَقِيقَة",
+                "final": "خَلَق"
+              }
+            },
+            {
+              "id": "kaf",
+              "letter": "ك",
+              "name": "каф",
+              "forms": {
+                "isolated": "ك",
+                "initial": "كـ",
+                "medial": "ـكـ",
+                "final": "ـك"
+              },
+              "examples": {
+                "initial": "كِتَاب",
+                "medial": "ذِكْر",
+                "final": "مَلَك"
+              }
+            },
+            {
+              "id": "lam",
+              "letter": "ل",
+              "name": "лам",
+              "forms": {
+                "isolated": "ل",
+                "initial": "لـ",
+                "medial": "ـلـ",
+                "final": "ـل"
+              },
+              "examples": {
+                "initial": "لَيْل",
+                "medial": "قَلْب",
+                "final": "عَمَل"
+              }
+            },
+            {
+              "id": "mim",
+              "letter": "م",
+              "name": "мим",
+              "forms": {
+                "isolated": "م",
+                "initial": "مـ",
+                "medial": "ـمـ",
+                "final": "ـم"
+              },
+              "examples": {
+                "initial": "مَال",
+                "medial": "رَحْمَة",
+                "final": "عِلْم"
+              }
+            },
+            {
+              "id": "nun",
+              "letter": "ن",
+              "name": "нун",
+              "forms": {
+                "isolated": "ن",
+                "initial": "نـ",
+                "medial": "ـنـ",
+                "final": "ـن"
+              },
+              "examples": {
+                "initial": "نُور",
+                "medial": "مِنْهَاج",
+                "final": "حَسَن"
+              }
+            },
+            {
+              "id": "waw",
+              "letter": "و",
+              "name": "вау",
+              "forms": {
+                "isolated": "و",
+                "initial": "و",
+                "medial": "ـو",
+                "final": "ـو"
+              },
+              "examples": {
+                "initial": "وَحْي",
+                "medial": "قَوْم",
+                "final": "هُوَ"
+              }
+            },
+            {
+              "id": "ha2",
+              "letter": "ه",
+              "name": "ҳа",
+              "forms": {
+                "isolated": "ه",
+                "initial": "هـ",
+                "medial": "ـهـ",
+                "final": "ـه"
+              },
+              "examples": {
+                "initial": "هُدًى",
+                "medial": "يَهْدِي",
+                "final": "رَحْمَه"
+              }
+            },
+            {
+              "id": "ya",
+              "letter": "ي",
+              "name": "я",
+              "forms": {
+                "isolated": "ي",
+                "initial": "يـ",
+                "medial": "ـيـ",
+                "final": "ـي"
+              },
+              "examples": {
+                "initial": "يَوْم",
+                "medial": "قَيَام",
+                "final": "عَلِيّ"
+              }
+            }
+          ]
+        },
+        {
+          "subtype": "quiz",
+          "quizType": "dynamic",
+          "config": {
+            "source": "letters_forms_chart",
+            "mode": "identify_form",
+            "itemsPerQuiz": 12,
+            "shuffle": true,
+            "difficulty": "easy"
+          }
+        }
+      ],
+      "nextLessonId": 6
+    },
+    {
+      "id": 6,
+      "title": "Дарси 6: Ташдид/Шадда",
+      "lessonType": "shadda",
+      "difficulty": "beginner",
+      "estimatedMinutes": 10,
+      "tags": [
+        "letters",
+        "beginner",
+        "shadda",
+        "tashdid"
+      ],
+      "content": [
+        {
+          "subtype": "text",
+          "textKey": "qaida.lesson6.intro"
+        },
+        {
+          "subtype": "vowels_chart",
+          "vowels": [
+            {
+              "id": "shadda",
+              "symbol": "ّ",
+              "nameKey": "qaida.vowel.shadda",
+              "category": "shadda"
+            }
+          ]
+        },
+        {
+          "subtype": "syllables_examples",
+          "examples": [
+            {
+              "id": "alif_shadda",
+              "letter": "ا",
+              "vowel": "ّ",
+              "syllable": "алла",
+              "withFatha": true
+            },
+            {
+              "id": "ba_shadda",
+              "letter": "ب",
+              "vowel": "ّ",
+              "syllable": "балла",
+              "withFatha": true
+            },
+            {
+              "id": "ta_shadda",
+              "letter": "ت",
+              "vowel": "ّ",
+              "syllable": "талла",
+              "withFatha": true
+            },
+            {
+              "id": "tha_shadda",
+              "letter": "ث",
+              "vowel": "ّ",
+              "syllable": "Салла",
+              "withFatha": true
+            },
+            {
+              "id": "jim_shadda",
+              "letter": "ج",
+              "vowel": "ّ",
+              "syllable": "ҷалла",
+              "withFatha": true
+            },
+            {
+              "id": "ha_shadda",
+              "letter": "ح",
+              "vowel": "ّ",
+              "syllable": "ҳҳалла",
+              "withFatha": true
+            },
+            {
+              "id": "kha_shadda",
+              "letter": "خ",
+              "vowel": "ّ",
+              "syllable": "халла",
+              "withFatha": true
+            },
+            {
+              "id": "dal_shadda",
+              "letter": "د",
+              "vowel": "ّ",
+              "syllable": "далла",
+              "withFatha": true
+            },
+            {
+              "id": "dhal_shadda",
+              "letter": "ذ",
+              "vowel": "ّ",
+              "syllable": "Залла",
+              "withFatha": true
+            },
+            {
+              "id": "ra_shadda",
+              "letter": "ر",
+              "vowel": "ّ",
+              "syllable": "ралла",
+              "withFatha": true
+            },
+            {
+              "id": "zay_shadda",
+              "letter": "ز",
+              "vowel": "ّ",
+              "syllable": "залла",
+              "withFatha": true
+            },
+            {
+              "id": "sin_shadda",
+              "letter": "س",
+              "vowel": "ّ",
+              "syllable": "салла",
+              "withFatha": true
+            },
+            {
+              "id": "shin_shadda",
+              "letter": "ش",
+              "vowel": "ّ",
+              "syllable": "шалла",
+              "withFatha": true
+            },
+            {
+              "id": "sad_shadda",
+              "letter": "ص",
+              "vowel": "ّ",
+              "syllable": "ссалла",
+              "withFatha": true
+            },
+            {
+              "id": "dad_shadda",
+              "letter": "ض",
+              "vowel": "ّ",
+              "syllable": "ззалла",
+              "withFatha": true
+            },
+            {
+              "id": "tta_shadda",
+              "letter": "ط",
+              "vowel": "ّ",
+              "syllable": "тталла",
+              "withFatha": true
+            },
+            {
+              "id": "za_shadda",
+              "letter": "ظ",
+              "vowel": "ّ",
+              "syllable": "Ззалла",
+              "withFatha": true
+            },
+            {
+              "id": "ayn_shadda",
+              "letter": "ع",
+              "vowel": "ّ",
+              "syllable": "ъъалла",
+              "withFatha": true
+            },
+            {
+              "id": "ghayn_shadda",
+              "letter": "غ",
+              "vowel": "ّ",
+              "syllable": "ғалла",
+              "withFatha": true
+            },
+            {
+              "id": "fa_shadda",
+              "letter": "ف",
+              "vowel": "ّ",
+              "syllable": "фалла",
+              "withFatha": true
+            },
+            {
+              "id": "qaf_shadda",
+              "letter": "ق",
+              "vowel": "ّ",
+              "syllable": "қалла",
+              "withFatha": true
+            },
+            {
+              "id": "kaf_shadda",
+              "letter": "ك",
+              "vowel": "ّ",
+              "syllable": "калла",
+              "withFatha": true
+            },
+            {
+              "id": "lam_shadda",
+              "letter": "ل",
+              "vowel": "ّ",
+              "syllable": "лалла",
+              "withFatha": true
+            },
+            {
+              "id": "mim_shadda",
+              "letter": "م",
+              "vowel": "ّ",
+              "syllable": "малла",
+              "withFatha": true
+            },
+            {
+              "id": "nun_shadda",
+              "letter": "ن",
+              "vowel": "ّ",
+              "syllable": "налла",
+              "withFatha": true
+            },
+            {
+              "id": "waw_shadda",
+              "letter": "و",
+              "vowel": "ّ",
+              "syllable": "валла",
+              "withFatha": true
+            },
+            {
+              "id": "ha2_shadda",
+              "letter": "ه",
+              "vowel": "ّ",
+              "syllable": "ҳалла",
+              "withFatha": true
+            },
+            {
+              "id": "lam_alif_hamza",
+              "letter": "لا",
+              "vowel": "ء",
+              "syllable": "лаъ"
+            },
+            {
+              "id": "ya_shadda",
+              "letter": "ي",
+              "vowel": "ّ",
+              "syllable": "йалла",
+              "withFatha": true
+            }
+          ]
+        },
+        {
+          "subtype": "quiz",
+          "quizType": "dynamic",
+          "config": {
+            "source": "syllables_examples",
+            "mode": "sound_to_letter",
+            "itemsPerQuiz": 15,
+            "shuffle": true,
+            "difficulty": "easy"
+          }
+        }
+      ],
+      "nextLessonId": 7
+    },
+    {
+      "id": 7,
+      "title": "Дарси 7: Сукун",
+      "lessonType": "sukun",
+      "difficulty": "beginner",
+      "estimatedMinutes": 10,
+      "tags": [
+        "letters",
+        "beginner",
+        "sukun"
+      ],
+      "content": [
+        {
+          "subtype": "text",
+          "textKey": "qaida.lesson7.intro"
+        },
+        {
+          "subtype": "vowels_chart",
+          "vowels": [
+            {
+              "id": "sukun",
+              "symbol": "ْ",
+              "nameKey": "qaida.vowel.sukoon",
+              "category": "sukun"
+            }
+          ]
+        },
+        {
+          "subtype": "syllables_examples",
+          "examples": [
+            {
+              "id": "alif_sukun",
+              "letter": "ا",
+              "vowel": "ْ",
+              "syllable": "инни"
+            },
+            {
+              "id": "ba_sukun",
+              "letter": "ب",
+              "vowel": "ْ",
+              "syllable": "бинни"
+            },
+            {
+              "id": "ta_sukun",
+              "letter": "ت",
+              "vowel": "ْ",
+              "syllable": "тинни"
+            },
+            {
+              "id": "tha_sukun",
+              "letter": "ث",
+              "vowel": "ْ",
+              "syllable": "Синни"
+            },
+            {
+              "id": "jim_sukun",
+              "letter": "ج",
+              "vowel": "ْ",
+              "syllable": "ҷинни"
+            },
+            {
+              "id": "ha_sukun",
+              "letter": "ح",
+              "vowel": "ْ",
+              "syllable": "ҳҳинни"
+            },
+            {
+              "id": "kha_sukun",
+              "letter": "خ",
+              "vowel": "ْ",
+              "syllable": "хинни"
+            },
+            {
+              "id": "dal_sukun",
+              "letter": "د",
+              "vowel": "ْ",
+              "syllable": "динни"
+            },
+            {
+              "id": "dhal_sukun",
+              "letter": "ذ",
+              "vowel": "ْ",
+              "syllable": "Зинни"
+            },
+            {
+              "id": "ra_sukun",
+              "letter": "ر",
+              "vowel": "ْ",
+              "syllable": "ринни"
+            },
+            {
+              "id": "zay_sukun",
+              "letter": "ز",
+              "vowel": "ْ",
+              "syllable": "зинни"
+            },
+            {
+              "id": "sin_sukun",
+              "letter": "س",
+              "vowel": "ْ",
+              "syllable": "синни"
+            },
+            {
+              "id": "shin_sukun",
+              "letter": "ش",
+              "vowel": "ْ",
+              "syllable": "шинни"
+            },
+            {
+              "id": "sad_sukun",
+              "letter": "ص",
+              "vowel": "ْ",
+              "syllable": "ссинни"
+            },
+            {
+              "id": "dad_sukun",
+              "letter": "ض",
+              "vowel": "ْ",
+              "syllable": "ззинни"
+            },
+            {
+              "id": "tta_sukun",
+              "letter": "ط",
+              "vowel": "ْ",
+              "syllable": "ттинни"
+            },
+            {
+              "id": "za_sukun",
+              "letter": "ظ",
+              "vowel": "ْ",
+              "syllable": "Ззинни"
+            },
+            {
+              "id": "ayn_sukun",
+              "letter": "ع",
+              "vowel": "ْ",
+              "syllable": "ъъинни"
+            },
+            {
+              "id": "ghayn_sukun",
+              "letter": "غ",
+              "vowel": "ْ",
+              "syllable": "ғинни"
+            },
+            {
+              "id": "fa_sukun",
+              "letter": "ف",
+              "vowel": "ْ",
+              "syllable": "финни"
+            },
+            {
+              "id": "qaf_sukun",
+              "letter": "ق",
+              "vowel": "ْ",
+              "syllable": "қинни"
+            },
+            {
+              "id": "kaf_sukun",
+              "letter": "ك",
+              "vowel": "ْ",
+              "syllable": "кинни"
+            },
+            {
+              "id": "lam_sukun",
+              "letter": "ل",
+              "vowel": "ْ",
+              "syllable": "линни"
+            },
+            {
+              "id": "mim_sukun",
+              "letter": "م",
+              "vowel": "ْ",
+              "syllable": "минни"
+            },
+            {
+              "id": "nun_sukun",
+              "letter": "ن",
+              "vowel": "ْ",
+              "syllable": "нинни"
+            },
+            {
+              "id": "waw_sukun",
+              "letter": "و",
+              "vowel": "ْ",
+              "syllable": "винни"
+            },
+            {
+              "id": "ha2_sukun",
+              "letter": "ه",
+              "vowel": "ْ",
+              "syllable": "ҳинни"
+            },
+            {
+              "id": "lam_alif_hamza",
+              "letter": "لا",
+              "vowel": "ء",
+              "syllable": "лаъ"
+            },
+            {
+              "id": "ya_sukun",
+              "letter": "ي",
+              "vowel": "ْ",
+              "syllable": "йинни"
+            }
+          ]
+        },
+        {
+          "subtype": "quiz",
+          "quizType": "dynamic",
+          "config": {
+            "source": "syllables_examples",
+            "mode": "sound_to_letter",
+            "itemsPerQuiz": 15,
+            "shuffle": true,
+            "difficulty": "easy"
+          }
+        }
+      ],
+      "nextLessonId": 8
+    },
+    {
+      "id": 8,
+      "title": "Дарси 8: Ҳарфҳои мад",
+      "lessonType": "madd",
+      "difficulty": "beginner",
+      "estimatedMinutes": 10,
+      "tags": [
+        "letters",
+        "beginner",
+        "madd"
+      ],
+      "content": [
+        {
+          "subtype": "text",
+          "textKey": "qaida.lesson8.intro"
+        },
+        {
+          "subtype": "vowels_chart",
+          "vowels": [
+            {
+              "id": "madd_alif",
+              "symbol": "ا",
+              "nameKey": "qaida.madd.alif",
+              "category": "madd"
+            },
+            {
+              "id": "madd_waw",
+              "symbol": "و",
+              "nameKey": "qaida.madd.waw",
+              "category": "madd"
+            },
+            {
+              "id": "madd_ya",
+              "symbol": "ي",
+              "nameKey": "qaida.madd.ya",
+              "category": "madd"
+            }
+          ]
+        },
+        {
+          "subtype": "syllables_examples",
+          "examples": [
+            {
+              "id": "alif_madd_an",
+              "letter": "آ",
+              "vowel": "نَ",
+              "syllable": "аана"
+            },
+            {
+              "id": "alif_madd_awn",
+              "letter": "ا",
+              "vowel": "َوْنَ",
+              "syllable": "ауна"
+            },
+            {
+              "id": "alif_madd_un",
+              "letter": "ا",
+              "vowel": "ُوْنَ",
+              "syllable": "увна"
+            },
+            {
+              "id": "alif_madd_ayn",
+              "letter": "ا",
+              "vowel": "َيْنَ",
+              "syllable": "айна"
+            },
+            {
+              "id": "alif_madd_iin",
+              "letter": "ا",
+              "vowel": "ِيْنَ",
+              "syllable": "ийна"
+            },
+            {
+              "id": "alif_madd_an_tanween",
+              "letter": "آ",
+              "vowel": "نٌ",
+              "syllable": "аанун"
+            },
+            {
+              "id": "ba_madd_an",
+              "letter": "ب",
+              "vowel": "َانَ",
+              "syllable": "баана"
+            },
+            {
+              "id": "ba_madd_awn",
+              "letter": "ب",
+              "vowel": "َوْنَ",
+              "syllable": "бауна"
+            },
+            {
+              "id": "ba_madd_un",
+              "letter": "ب",
+              "vowel": "ُوْنَ",
+              "syllable": "бувна"
+            },
+            {
+              "id": "ba_madd_ayn",
+              "letter": "ب",
+              "vowel": "َيْنَ",
+              "syllable": "байна"
+            },
+            {
+              "id": "ba_madd_iin",
+              "letter": "ب",
+              "vowel": "ِيْنَ",
+              "syllable": "бийна"
+            },
+            {
+              "id": "ba_madd_an_tanween",
+              "letter": "ب",
+              "vowel": "َانٌ",
+              "syllable": "баанун"
+            },
+            {
+              "id": "ta_madd_an",
+              "letter": "ت",
+              "vowel": "َانَ",
+              "syllable": "таана"
+            },
+            {
+              "id": "ta_madd_awn",
+              "letter": "ت",
+              "vowel": "َوْنَ",
+              "syllable": "тауна"
+            },
+            {
+              "id": "ta_madd_un",
+              "letter": "ت",
+              "vowel": "ُوْنَ",
+              "syllable": "тувна"
+            },
+            {
+              "id": "ta_madd_ayn",
+              "letter": "ت",
+              "vowel": "َيْنَ",
+              "syllable": "тайна"
+            },
+            {
+              "id": "ta_madd_iin",
+              "letter": "ت",
+              "vowel": "ِيْنَ",
+              "syllable": "тийна"
+            },
+            {
+              "id": "ta_madd_an_tanween",
+              "letter": "ت",
+              "vowel": "َانٌ",
+              "syllable": "таанун"
+            },
+            {
+              "id": "tha_madd_an",
+              "letter": "ث",
+              "vowel": "َانَ",
+              "syllable": "Саана"
+            },
+            {
+              "id": "tha_madd_awn",
+              "letter": "ث",
+              "vowel": "َوْنَ",
+              "syllable": "Сауна"
+            },
+            {
+              "id": "tha_madd_un",
+              "letter": "ث",
+              "vowel": "ُوْنَ",
+              "syllable": "Сувна"
+            },
+            {
+              "id": "tha_madd_ayn",
+              "letter": "ث",
+              "vowel": "َيْنَ",
+              "syllable": "Сайна"
+            },
+            {
+              "id": "tha_madd_iin",
+              "letter": "ث",
+              "vowel": "ِيْنَ",
+              "syllable": "Сийна"
+            },
+            {
+              "id": "tha_madd_an_tanween",
+              "letter": "ث",
+              "vowel": "َانٌ",
+              "syllable": "Саанун"
+            },
+            {
+              "id": "jim_madd_an",
+              "letter": "ج",
+              "vowel": "َانَ",
+              "syllable": "ҷаана"
+            },
+            {
+              "id": "jim_madd_awn",
+              "letter": "ج",
+              "vowel": "َوْنَ",
+              "syllable": "ҷауна"
+            },
+            {
+              "id": "jim_madd_un",
+              "letter": "ج",
+              "vowel": "ُوْنَ",
+              "syllable": "ҷувна"
+            },
+            {
+              "id": "jim_madd_ayn",
+              "letter": "ج",
+              "vowel": "َيْنَ",
+              "syllable": "ҷайна"
+            },
+            {
+              "id": "jim_madd_iin",
+              "letter": "ج",
+              "vowel": "ِيْنَ",
+              "syllable": "ҷийна"
+            },
+            {
+              "id": "jim_madd_an_tanween",
+              "letter": "ج",
+              "vowel": "َانٌ",
+              "syllable": "ҷаанун"
+            },
+            {
+              "id": "ha_madd_an",
+              "letter": "ح",
+              "vowel": "َانَ",
+              "syllable": "ҳҳаана"
+            },
+            {
+              "id": "ha_madd_awn",
+              "letter": "ح",
+              "vowel": "َوْنَ",
+              "syllable": "ҳҳауна"
+            },
+            {
+              "id": "ha_madd_un",
+              "letter": "ح",
+              "vowel": "ُوْنَ",
+              "syllable": "ҳҳувна"
+            },
+            {
+              "id": "ha_madd_ayn",
+              "letter": "ح",
+              "vowel": "َيْنَ",
+              "syllable": "ҳҳайна"
+            },
+            {
+              "id": "ha_madd_iin",
+              "letter": "ح",
+              "vowel": "ِيْنَ",
+              "syllable": "ҳҳийна"
+            },
+            {
+              "id": "ha_madd_an_tanween",
+              "letter": "ح",
+              "vowel": "َانٌ",
+              "syllable": "ҳҳаанун"
+            },
+            {
+              "id": "kha_madd_an",
+              "letter": "خ",
+              "vowel": "َانَ",
+              "syllable": "хаана"
+            },
+            {
+              "id": "kha_madd_awn",
+              "letter": "خ",
+              "vowel": "َوْنَ",
+              "syllable": "хауна"
+            },
+            {
+              "id": "kha_madd_un",
+              "letter": "خ",
+              "vowel": "ُوْنَ",
+              "syllable": "хувна"
+            },
+            {
+              "id": "kha_madd_ayn",
+              "letter": "خ",
+              "vowel": "َيْنَ",
+              "syllable": "хайна"
+            },
+            {
+              "id": "kha_madd_iin",
+              "letter": "خ",
+              "vowel": "ِيْنَ",
+              "syllable": "хийна"
+            },
+            {
+              "id": "kha_madd_an_tanween",
+              "letter": "خ",
+              "vowel": "َانٌ",
+              "syllable": "хаанун"
+            },
+            {
+              "id": "dal_madd_an",
+              "letter": "د",
+              "vowel": "َانَ",
+              "syllable": "даана"
+            },
+            {
+              "id": "dal_madd_awn",
+              "letter": "د",
+              "vowel": "َوْنَ",
+              "syllable": "дауна"
+            },
+            {
+              "id": "dal_madd_un",
+              "letter": "د",
+              "vowel": "ُوْنَ",
+              "syllable": "дувна"
+            },
+            {
+              "id": "dal_madd_ayn",
+              "letter": "د",
+              "vowel": "َيْنَ",
+              "syllable": "дайна"
+            },
+            {
+              "id": "dal_madd_iin",
+              "letter": "د",
+              "vowel": "ِيْنَ",
+              "syllable": "дийна"
+            },
+            {
+              "id": "dal_madd_an_tanween",
+              "letter": "د",
+              "vowel": "َانٌ",
+              "syllable": "даанун"
+            },
+            {
+              "id": "dhal_madd_an",
+              "letter": "ذ",
+              "vowel": "َانَ",
+              "syllable": "Заана"
+            },
+            {
+              "id": "dhal_madd_awn",
+              "letter": "ذ",
+              "vowel": "َوْنَ",
+              "syllable": "Зауна"
+            },
+            {
+              "id": "dhal_madd_un",
+              "letter": "ذ",
+              "vowel": "ُوْنَ",
+              "syllable": "Зувна"
+            },
+            {
+              "id": "dhal_madd_ayn",
+              "letter": "ذ",
+              "vowel": "َيْنَ",
+              "syllable": "Зайна"
+            },
+            {
+              "id": "dhal_madd_iin",
+              "letter": "ذ",
+              "vowel": "ِيْنَ",
+              "syllable": "Зийна"
+            },
+            {
+              "id": "dhal_madd_an_tanween",
+              "letter": "ذ",
+              "vowel": "َانٌ",
+              "syllable": "Заанун"
+            },
+            {
+              "id": "ra_madd_an",
+              "letter": "ر",
+              "vowel": "َانَ",
+              "syllable": "раана"
+            },
+            {
+              "id": "ra_madd_awn",
+              "letter": "ر",
+              "vowel": "َوْنَ",
+              "syllable": "рауна"
+            },
+            {
+              "id": "ra_madd_un",
+              "letter": "ر",
+              "vowel": "ُوْنَ",
+              "syllable": "рувна"
+            },
+            {
+              "id": "ra_madd_ayn",
+              "letter": "ر",
+              "vowel": "َيْنَ",
+              "syllable": "райна"
+            },
+            {
+              "id": "ra_madd_iin",
+              "letter": "ر",
+              "vowel": "ِيْنَ",
+              "syllable": "рийна"
+            },
+            {
+              "id": "ra_madd_an_tanween",
+              "letter": "ر",
+              "vowel": "َانٌ",
+              "syllable": "раанун"
+            },
+            {
+              "id": "zay_madd_an",
+              "letter": "ز",
+              "vowel": "َانَ",
+              "syllable": "заана"
+            },
+            {
+              "id": "zay_madd_awn",
+              "letter": "ز",
+              "vowel": "َوْنَ",
+              "syllable": "зауна"
+            },
+            {
+              "id": "zay_madd_un",
+              "letter": "ز",
+              "vowel": "ُوْنَ",
+              "syllable": "зувна"
+            },
+            {
+              "id": "zay_madd_ayn",
+              "letter": "ز",
+              "vowel": "َيْنَ",
+              "syllable": "зайна"
+            },
+            {
+              "id": "zay_madd_iin",
+              "letter": "ز",
+              "vowel": "ِيْنَ",
+              "syllable": "зийна"
+            },
+            {
+              "id": "zay_madd_an_tanween",
+              "letter": "ز",
+              "vowel": "َانٌ",
+              "syllable": "заанун"
+            },
+            {
+              "id": "sin_madd_an",
+              "letter": "س",
+              "vowel": "َانَ",
+              "syllable": "саана"
+            },
+            {
+              "id": "sin_madd_awn",
+              "letter": "س",
+              "vowel": "َوْنَ",
+              "syllable": "сауна"
+            },
+            {
+              "id": "sin_madd_un",
+              "letter": "س",
+              "vowel": "ُوْنَ",
+              "syllable": "сувна"
+            },
+            {
+              "id": "sin_madd_ayn",
+              "letter": "س",
+              "vowel": "َيْنَ",
+              "syllable": "сайна"
+            },
+            {
+              "id": "sin_madd_iin",
+              "letter": "س",
+              "vowel": "ِيْنَ",
+              "syllable": "сийна"
+            },
+            {
+              "id": "sin_madd_an_tanween",
+              "letter": "س",
+              "vowel": "َانٌ",
+              "syllable": "саанун"
+            },
+            {
+              "id": "shin_madd_an",
+              "letter": "ش",
+              "vowel": "َانَ",
+              "syllable": "шаана"
+            },
+            {
+              "id": "shin_madd_awn",
+              "letter": "ش",
+              "vowel": "َوْنَ",
+              "syllable": "шауна"
+            },
+            {
+              "id": "shin_madd_un",
+              "letter": "ش",
+              "vowel": "ُوْنَ",
+              "syllable": "шувна"
+            },
+            {
+              "id": "shin_madd_ayn",
+              "letter": "ش",
+              "vowel": "َيْنَ",
+              "syllable": "шайна"
+            },
+            {
+              "id": "shin_madd_iin",
+              "letter": "ش",
+              "vowel": "ِيْنَ",
+              "syllable": "шийна"
+            },
+            {
+              "id": "shin_madd_an_tanween",
+              "letter": "ش",
+              "vowel": "َانٌ",
+              "syllable": "шаанун"
+            },
+            {
+              "id": "sad_madd_an",
+              "letter": "ص",
+              "vowel": "َانَ",
+              "syllable": "ссаана"
+            },
+            {
+              "id": "sad_madd_awn",
+              "letter": "ص",
+              "vowel": "َوْنَ",
+              "syllable": "ссауна"
+            },
+            {
+              "id": "sad_madd_un",
+              "letter": "ص",
+              "vowel": "ُوْنَ",
+              "syllable": "ссувна"
+            },
+            {
+              "id": "sad_madd_ayn",
+              "letter": "ص",
+              "vowel": "َيْنَ",
+              "syllable": "ссайна"
+            },
+            {
+              "id": "sad_madd_iin",
+              "letter": "ص",
+              "vowel": "ِيْنَ",
+              "syllable": "ссийна"
+            },
+            {
+              "id": "sad_madd_an_tanween",
+              "letter": "ص",
+              "vowel": "َانٌ",
+              "syllable": "ссаанун"
+            },
+            {
+              "id": "dad_madd_an",
+              "letter": "ض",
+              "vowel": "َانَ",
+              "syllable": "ззаана"
+            },
+            {
+              "id": "dad_madd_awn",
+              "letter": "ض",
+              "vowel": "َوْنَ",
+              "syllable": "ззауна"
+            },
+            {
+              "id": "dad_madd_un",
+              "letter": "ض",
+              "vowel": "ُوْنَ",
+              "syllable": "ззувна"
+            },
+            {
+              "id": "dad_madd_ayn",
+              "letter": "ض",
+              "vowel": "َيْنَ",
+              "syllable": "ззайна"
+            },
+            {
+              "id": "dad_madd_iin",
+              "letter": "ض",
+              "vowel": "ِيْنَ",
+              "syllable": "ззийна"
+            },
+            {
+              "id": "dad_madd_an_tanween",
+              "letter": "ض",
+              "vowel": "َانٌ",
+              "syllable": "ззаанун"
+            },
+            {
+              "id": "tta_madd_an",
+              "letter": "ط",
+              "vowel": "َانَ",
+              "syllable": "ттаана"
+            },
+            {
+              "id": "tta_madd_awn",
+              "letter": "ط",
+              "vowel": "َوْنَ",
+              "syllable": "ттауна"
+            },
+            {
+              "id": "tta_madd_un",
+              "letter": "ط",
+              "vowel": "ُوْنَ",
+              "syllable": "ттувна"
+            },
+            {
+              "id": "tta_madd_ayn",
+              "letter": "ط",
+              "vowel": "َيْنَ",
+              "syllable": "ттайна"
+            },
+            {
+              "id": "tta_madd_iin",
+              "letter": "ط",
+              "vowel": "ِيْنَ",
+              "syllable": "ттийна"
+            },
+            {
+              "id": "tta_madd_an_tanween",
+              "letter": "ط",
+              "vowel": "َانٌ",
+              "syllable": "ттаанун"
+            },
+            {
+              "id": "za_madd_an",
+              "letter": "ظ",
+              "vowel": "َانَ",
+              "syllable": "Ззаана"
+            },
+            {
+              "id": "za_madd_awn",
+              "letter": "ظ",
+              "vowel": "َوْنَ",
+              "syllable": "Ззауна"
+            },
+            {
+              "id": "za_madd_un",
+              "letter": "ظ",
+              "vowel": "ُوْنَ",
+              "syllable": "Ззувна"
+            },
+            {
+              "id": "za_madd_ayn",
+              "letter": "ظ",
+              "vowel": "َيْنَ",
+              "syllable": "Ззайна"
+            },
+            {
+              "id": "za_madd_iin",
+              "letter": "ظ",
+              "vowel": "ِيْنَ",
+              "syllable": "Ззийна"
+            },
+            {
+              "id": "za_madd_an_tanween",
+              "letter": "ظ",
+              "vowel": "َانٌ",
+              "syllable": "Ззаанун"
+            },
+            {
+              "id": "ayn_madd_an",
+              "letter": "ع",
+              "vowel": "َانَ",
+              "syllable": "ъъаана"
+            },
+            {
+              "id": "ayn_madd_awn",
+              "letter": "ع",
+              "vowel": "َوْنَ",
+              "syllable": "ъъауна"
+            },
+            {
+              "id": "ayn_madd_un",
+              "letter": "ع",
+              "vowel": "ُوْنَ",
+              "syllable": "ъъувна"
+            },
+            {
+              "id": "ayn_madd_ayn",
+              "letter": "ع",
+              "vowel": "َيْنَ",
+              "syllable": "ъъайна"
+            },
+            {
+              "id": "ayn_madd_iin",
+              "letter": "ع",
+              "vowel": "ِيْنَ",
+              "syllable": "ъъийна"
+            },
+            {
+              "id": "ayn_madd_an_tanween",
+              "letter": "ع",
+              "vowel": "َانٌ",
+              "syllable": "ъъаанун"
+            },
+            {
+              "id": "ghayn_madd_an",
+              "letter": "غ",
+              "vowel": "َانَ",
+              "syllable": "ғаана"
+            },
+            {
+              "id": "ghayn_madd_awn",
+              "letter": "غ",
+              "vowel": "َوْنَ",
+              "syllable": "ғауна"
+            },
+            {
+              "id": "ghayn_madd_un",
+              "letter": "غ",
+              "vowel": "ُوْنَ",
+              "syllable": "ғувна"
+            },
+            {
+              "id": "ghayn_madd_ayn",
+              "letter": "غ",
+              "vowel": "َيْنَ",
+              "syllable": "ғайна"
+            },
+            {
+              "id": "ghayn_madd_iin",
+              "letter": "غ",
+              "vowel": "ِيْنَ",
+              "syllable": "ғийна"
+            },
+            {
+              "id": "ghayn_madd_an_tanween",
+              "letter": "غ",
+              "vowel": "َانٌ",
+              "syllable": "ғаанун"
+            },
+            {
+              "id": "fa_madd_an",
+              "letter": "ف",
+              "vowel": "َانَ",
+              "syllable": "фаана"
+            },
+            {
+              "id": "fa_madd_awn",
+              "letter": "ف",
+              "vowel": "َوْنَ",
+              "syllable": "фауна"
+            },
+            {
+              "id": "fa_madd_un",
+              "letter": "ف",
+              "vowel": "ُوْنَ",
+              "syllable": "фувна"
+            },
+            {
+              "id": "fa_madd_ayn",
+              "letter": "ف",
+              "vowel": "َيْنَ",
+              "syllable": "файна"
+            },
+            {
+              "id": "fa_madd_iin",
+              "letter": "ف",
+              "vowel": "ِيْنَ",
+              "syllable": "фийна"
+            },
+            {
+              "id": "fa_madd_an_tanween",
+              "letter": "ف",
+              "vowel": "َانٌ",
+              "syllable": "фаанун"
+            },
+            {
+              "id": "qaf_madd_an",
+              "letter": "ق",
+              "vowel": "َانَ",
+              "syllable": "қаана"
+            },
+            {
+              "id": "qaf_madd_awn",
+              "letter": "ق",
+              "vowel": "َوْنَ",
+              "syllable": "қауна"
+            },
+            {
+              "id": "qaf_madd_un",
+              "letter": "ق",
+              "vowel": "ُوْنَ",
+              "syllable": "қувна"
+            },
+            {
+              "id": "qaf_madd_ayn",
+              "letter": "ق",
+              "vowel": "َيْنَ",
+              "syllable": "қайна"
+            },
+            {
+              "id": "qaf_madd_iin",
+              "letter": "ق",
+              "vowel": "ِيْنَ",
+              "syllable": "қийна"
+            },
+            {
+              "id": "qaf_madd_an_tanween",
+              "letter": "ق",
+              "vowel": "َانٌ",
+              "syllable": "қаанун"
+            },
+            {
+              "id": "kaf_madd_an",
+              "letter": "ك",
+              "vowel": "َانَ",
+              "syllable": "каана"
+            },
+            {
+              "id": "kaf_madd_awn",
+              "letter": "ك",
+              "vowel": "َوْنَ",
+              "syllable": "кауна"
+            },
+            {
+              "id": "kaf_madd_un",
+              "letter": "ك",
+              "vowel": "ُوْنَ",
+              "syllable": "кувна"
+            },
+            {
+              "id": "kaf_madd_ayn",
+              "letter": "ك",
+              "vowel": "َيْنَ",
+              "syllable": "кайна"
+            },
+            {
+              "id": "kaf_madd_iin",
+              "letter": "ك",
+              "vowel": "ِيْنَ",
+              "syllable": "кийна"
+            },
+            {
+              "id": "kaf_madd_an_tanween",
+              "letter": "ك",
+              "vowel": "َانٌ",
+              "syllable": "каанун"
+            },
+            {
+              "id": "lam_madd_an",
+              "letter": "ل",
+              "vowel": "َانَ",
+              "syllable": "лаана"
+            },
+            {
+              "id": "lam_madd_awn",
+              "letter": "ل",
+              "vowel": "َوْنَ",
+              "syllable": "лауна"
+            },
+            {
+              "id": "lam_madd_un",
+              "letter": "ل",
+              "vowel": "ُوْنَ",
+              "syllable": "лувна"
+            },
+            {
+              "id": "lam_madd_ayn",
+              "letter": "ل",
+              "vowel": "َيْنَ",
+              "syllable": "лайна"
+            },
+            {
+              "id": "lam_madd_iin",
+              "letter": "ل",
+              "vowel": "ِيْنَ",
+              "syllable": "лийна"
+            },
+            {
+              "id": "lam_madd_an_tanween",
+              "letter": "ل",
+              "vowel": "َانٌ",
+              "syllable": "лаанун"
+            },
+            {
+              "id": "mim_madd_an",
+              "letter": "م",
+              "vowel": "َانَ",
+              "syllable": "маана"
+            },
+            {
+              "id": "mim_madd_awn",
+              "letter": "م",
+              "vowel": "َوْنَ",
+              "syllable": "мауна"
+            },
+            {
+              "id": "mim_madd_un",
+              "letter": "م",
+              "vowel": "ُوْنَ",
+              "syllable": "мувна"
+            },
+            {
+              "id": "mim_madd_ayn",
+              "letter": "م",
+              "vowel": "َيْنَ",
+              "syllable": "майна"
+            },
+            {
+              "id": "mim_madd_iin",
+              "letter": "م",
+              "vowel": "ِيْنَ",
+              "syllable": "мийна"
+            },
+            {
+              "id": "mim_madd_an_tanween",
+              "letter": "م",
+              "vowel": "َانٌ",
+              "syllable": "маанун"
+            },
+            {
+              "id": "nun_madd_an",
+              "letter": "ن",
+              "vowel": "َانَ",
+              "syllable": "наана"
+            },
+            {
+              "id": "nun_madd_awn",
+              "letter": "ن",
+              "vowel": "َوْنَ",
+              "syllable": "науна"
+            },
+            {
+              "id": "nun_madd_un",
+              "letter": "ن",
+              "vowel": "ُوْنَ",
+              "syllable": "нувна"
+            },
+            {
+              "id": "nun_madd_ayn",
+              "letter": "ن",
+              "vowel": "َيْنَ",
+              "syllable": "найна"
+            },
+            {
+              "id": "nun_madd_iin",
+              "letter": "ن",
+              "vowel": "ِيْنَ",
+              "syllable": "нийна"
+            },
+            {
+              "id": "nun_madd_an_tanween",
+              "letter": "ن",
+              "vowel": "َانٌ",
+              "syllable": "наанун"
+            },
+            {
+              "id": "waw_madd_an",
+              "letter": "و",
+              "vowel": "َانَ",
+              "syllable": "ваана"
+            },
+            {
+              "id": "waw_madd_awn",
+              "letter": "و",
+              "vowel": "َوْنَ",
+              "syllable": "вауна"
+            },
+            {
+              "id": "waw_madd_un",
+              "letter": "و",
+              "vowel": "ُوْنَ",
+              "syllable": "вувна"
+            },
+            {
+              "id": "waw_madd_ayn",
+              "letter": "و",
+              "vowel": "َيْنَ",
+              "syllable": "вайна"
+            },
+            {
+              "id": "waw_madd_iin",
+              "letter": "و",
+              "vowel": "ِيْنَ",
+              "syllable": "вийна"
+            },
+            {
+              "id": "waw_madd_an_tanween",
+              "letter": "و",
+              "vowel": "َانٌ",
+              "syllable": "ваанун"
+            },
+            {
+              "id": "ha2_madd_an",
+              "letter": "ه",
+              "vowel": "َانَ",
+              "syllable": "ҳаана"
+            },
+            {
+              "id": "ha2_madd_awn",
+              "letter": "ه",
+              "vowel": "َوْنَ",
+              "syllable": "ҳауна"
+            },
+            {
+              "id": "ha2_madd_un",
+              "letter": "ه",
+              "vowel": "ُوْنَ",
+              "syllable": "ҳувна"
+            },
+            {
+              "id": "ha2_madd_ayn",
+              "letter": "ه",
+              "vowel": "َيْنَ",
+              "syllable": "ҳайна"
+            },
+            {
+              "id": "ha2_madd_iin",
+              "letter": "ه",
+              "vowel": "ِيْنَ",
+              "syllable": "ҳийна"
+            },
+            {
+              "id": "ha2_madd_an_tanween",
+              "letter": "ه",
+              "vowel": "َانٌ",
+              "syllable": "ҳаанун"
+            },
+            {
+              "id": "ya_madd_an",
+              "letter": "ي",
+              "vowel": "َانَ",
+              "syllable": "йаана"
+            },
+            {
+              "id": "ya_madd_awn",
+              "letter": "ي",
+              "vowel": "َوْنَ",
+              "syllable": "йауна"
+            },
+            {
+              "id": "ya_madd_un",
+              "letter": "ي",
+              "vowel": "ُوْنَ",
+              "syllable": "йувна"
+            },
+            {
+              "id": "ya_madd_ayn",
+              "letter": "ي",
+              "vowel": "َيْنَ",
+              "syllable": "йайна"
+            },
+            {
+              "id": "ya_madd_iin",
+              "letter": "ي",
+              "vowel": "ِيْنَ",
+              "syllable": "йийна"
+            },
+            {
+              "id": "ya_madd_an_tanween",
+              "letter": "ي",
+              "vowel": "َانٌ",
+              "syllable": "йаанун"
+            }
+          ]
+        },
+        {
+          "subtype": "quiz",
+          "quizType": "dynamic",
+          "config": {
+            "source": "syllables_examples",
+            "mode": "sound_to_letter",
+            "itemsPerQuiz": 12,
+            "shuffle": true,
+            "difficulty": "easy"
+          }
+        }
+      ],
+      "nextLessonId": null
+    }
+  ]
+}

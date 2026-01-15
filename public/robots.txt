@@ -1,0 +1,27 @@
+# robots.txt for quran.tj
+# SEO-optimized for Cloudflare Pages static deployment
+#
+# Structure: Allow everything by default, then disallow specific non-SEO routes
+# Query parameter URLs (e.g., /surah/2?verse=255) are handled via canonical tags,
+# not robots.txt blocking, ensuring proper indexing without blocking content.
+
+User-agent: *
+
+# Allow all content by default (including all surah and verse pages)
+Allow: /
+
+# Disallow non-SEO dynamic routes (UI-only, media, interactive features)
+# These routes don't need to be indexed as standalone pages
+Disallow: /youtube/
+Disallow: /live/
+Disallow: /qaida/lesson/*/letter/
+Disallow: /vocabulary/lesson/*/word/
+Disallow: /vocabulary/lesson/*/quiz/
+Disallow: /settings/
+Disallow: /bookmarks/
+Disallow: /audio-home/library/
+Disallow: /audio-home/player/
+
+# Sitemap location
+Sitemap: https://www.quran.tj/sitemap.xml
+

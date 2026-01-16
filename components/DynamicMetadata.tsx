@@ -1,7 +1,6 @@
 'use client';
 
 import { useEffect } from 'react';
-import { useSearchParams } from 'next/navigation';
 
 interface DynamicMetadataProps {
   title: string;
@@ -10,8 +9,6 @@ interface DynamicMetadataProps {
 }
 
 export default function DynamicMetadata({ title, description, canonical }: DynamicMetadataProps) {
-  const searchParams = useSearchParams();
-  
   useEffect(() => {
     // Update document title
     document.title = title;
@@ -88,7 +85,7 @@ export default function DynamicMetadata({ title, description, canonical }: Dynam
     if (robotsTag && robotsTag.content.includes('noindex')) {
       robotsTag.setAttribute('content', 'index, follow');
     }
-  }, [title, description, canonical, searchParams]);
+  }, [title, description, canonical]);
   
   return null;
 }

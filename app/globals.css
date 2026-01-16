@@ -91,49 +91,49 @@
 /* New Light Theme (default) - Равшан */
 :root,
 [data-theme="newLight"] {
-  --color-primary: #08584E;
-  --color-primary-variant: #0F4F5F;
-  --color-secondary: #8F5A24;
+  --color-primary: #2c3e50;
+  --color-primary-variant: #34495e;
+  --color-secondary: #8e44ad;
   --color-surface: #FFFFFF;
-  --color-surface-variant: #F5F4F0;
-  --color-background: #FDFBF5;
+  --color-surface-variant: #f8f9fa;
+  --color-background: #f8f9fa;
   --color-error: #E63946;
-  --color-on-primary: #FCFEFF;
-  --color-on-surface: #0C0B0A;
-  --color-on-background: #0C0B0A;
-  --color-on-error: #FAFAF9;
-  --color-outline: #E6E5E2;
-  --color-outline-variant: #E6E5E2;
-  --color-text-primary: #0C0B0A;
-  --color-text-secondary: #73726F;
+  --color-on-primary: #FFFFFF;
+  --color-on-surface: #1a1a1a;
+  --color-on-background: #1a1a1a;
+  --color-on-error: #FFFFFF;
+  --color-outline: #e0e0e0;
+  --color-outline-variant: #e0e0e0;
+  --color-text-primary: #1a1a1a;
+  --color-text-secondary: #666666;
   --color-text-disabled: #999999;
-  --color-primary-container: #08584E;
-  --color-primary-container-low-opacity: rgba(8, 88, 78, 0.1);
-  --color-primary-low-opacity: rgba(8, 88, 78, 0.3);
+  --color-primary-container: #2c3e50;
+  --color-primary-container-low-opacity: rgba(44, 62, 80, 0.1);
+  --color-primary-low-opacity: rgba(44, 62, 80, 0.3);
   --surah-svg-filter: none; /* No filter for light theme - SVGs are dark */
 }
 
-/* New Dark Theme - Торик */
+/* New Dark Theme - Торик (Golden Glint) */
 [data-theme="newDark"] {
-  --color-primary: #08584E;
-  --color-primary-variant: #0F4F5F;
-  --color-secondary: #A36629;
-  --color-surface: #1E1E26;
-  --color-surface-variant: #29292A;
-  --color-background: #14141A;
-  --color-error: #9E2A2A;
-  --color-on-primary: #FCFEFF;
-  --color-on-surface: #FAFAFA;
-  --color-on-background: #FAFAFA;
+  --color-primary: #D4AF37;
+  --color-primary-variant: #B8941F;
+  --color-secondary: #C9A961;
+  --color-surface: #1E1E1E;
+  --color-surface-variant: #2A2A2A;
+  --color-background: #141414;
+  --color-error: #D32F2F;
+  --color-on-primary: #1A1A1A;
+  --color-on-surface: #FAF8F3;
+  --color-on-background: #FAF8F3;
   --color-on-error: #FAFAFA;
-  --color-outline: #29292A;
-  --color-outline-variant: #29292A;
-  --color-text-primary: #FAFAFA;
-  --color-text-secondary: #A5A5A8;
-  --color-text-disabled: #666666;
-  --color-primary-container: #08584E;
-  --color-primary-container-low-opacity: rgba(8, 88, 78, 0.2);
-  --color-primary-low-opacity: rgba(8, 88, 78, 0.4);
+  --color-outline: #3A3A3A;
+  --color-outline-variant: #2F2F2F;
+  --color-text-primary: #FAF8F3;
+  --color-text-secondary: #C9A961;
+  --color-text-disabled: #6B6B6B;
+  --color-primary-container: #D4AF37;
+  --color-primary-container-low-opacity: rgba(212, 175, 55, 0.15);
+  --color-primary-low-opacity: rgba(212, 175, 55, 0.3);
   --surah-svg-filter: invert(1) brightness(1.2); /* Invert for dark theme to make SVGs visible */
 }
 
@@ -909,5 +909,158 @@ body:focus-within::-webkit-scrollbar-thumb:hover {
   
   .card:hover {
     box-shadow: var(--elevation-2); /* Less pronounced hover on touch */
+  }
+  
+  /* Ensure all interactive elements have adequate touch targets */
+  button, a, input, select, textarea {
+    min-height: 44px; /* iOS recommended minimum */
+  }
+  
+  /* Prevent text size adjustment on iOS */
+  input, select, textarea, button {
+    font-size: 16px; /* Prevents zoom on iOS */
+  }
+}
+
+/* Hero Section - Dark Mode Overlay */
+[data-theme="newDark"] .hero-overlay,
+[data-theme="dark"] .hero-overlay,
+[data-theme="nightSky"] .hero-overlay {
+  opacity: 0.5 !important; /* Lower opacity in dark themes to show gold SVG */
+  background: linear-gradient(180deg, var(--color-primary) 0%, var(--color-primary-variant) 100%) !important;
+}
+
+/* Hero Section - Dark Mode Gold Tint for SVG Background */
+[data-theme="newDark"] .hero-section::before,
+[data-theme="dark"] .hero-section::before,
+[data-theme="nightSky"] .hero-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(ellipse at center, rgba(212, 175, 55, 0.3) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+[data-theme="newDark"] .hero-section::before {
+  /* Enhanced gold tint for newDark theme */
+  background: radial-gradient(ellipse at center, rgba(212, 175, 55, 0.4) 0%, rgba(184, 148, 31, 0.2) 50%, transparent 80%);
+}
+
+/* Home Page Content Background with Islamic Pattern */
+.home-content-background {
+  position: relative;
+  width: 100%;
+  margin-top: 0;
+}
+
+.home-content-background::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  background-image: url('/islamic-pattern.svg');
+  background-size: 400px 400px;
+  background-position: center;
+  background-repeat: repeat;
+  background-attachment: scroll;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.home-content-background::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  background-color: var(--color-background);
+  opacity: 0.15;
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* Dark Mode - Very low overlay to show pattern clearly */
+[data-theme="newDark"] .home-content-background::before,
+[data-theme="dark"] .home-content-background::before,
+[data-theme="nightSky"] .home-content-background::before {
+  opacity: 0.1;
+}
+
+/* Light Mode - Very low opacity to show pattern clearly */
+[data-theme="newLight"] .home-content-background::before,
+[data-theme="light"] .home-content-background::before,
+[data-theme="softBeige"] .home-content-background::before,
+[data-theme="elegantMarble"] .home-content-background::before,
+[data-theme="silverLight"] .home-content-background::before {
+  opacity: 0.05;
+}
+
+/* Apply color filter to pattern based on theme - using ::after */
+[data-theme="newDark"] .home-content-background::after {
+  filter: brightness(0.8) sepia(0.3) saturate(1.2) hue-rotate(10deg);
+  opacity: 0.6;
+}
+
+[data-theme="dark"] .home-content-background::after,
+[data-theme="nightSky"] .home-content-background::after {
+  filter: brightness(0.7);
+  opacity: 0.5;
+}
+
+[data-theme="newLight"] .home-content-background::after,
+[data-theme="light"] .home-content-background::after,
+[data-theme="softBeige"] .home-content-background::after,
+[data-theme="elegantMarble"] .home-content-background::after,
+[data-theme="silverLight"] .home-content-background::after {
+  opacity: 0.5;
+}
+
+/* Additional Mobile Optimizations */
+@media (max-width: 599px) {
+  /* Ensure images don't overflow */
+  img {
+    max-width: 100%;
+    height: auto;
+  }
+  
+  /* Prevent horizontal scrolling */
+  * {
+    max-width: 100%;
+  }
+  
+  /* Better spacing on mobile */
+  h1 {
+    font-size: clamp(24px, 6vw, 32px) !important;
+  }
+  
+  h2 {
+    font-size: clamp(20px, 5vw, 28px) !important;
+  }
+  
+  h3 {
+    font-size: clamp(18px, 4vw, 24px) !important;
+  }
+  
+  /* Improve readability */
+  p, div, span {
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+  }
+  
+  /* Hide Google Play badge on very small screens if needed */
+  @media (max-width: 360px) {
+    /* Keep badge but make it smaller */
+    header a[href*="play.google.com"] img {
+      height: 24px !important;
+    }
   }
 }

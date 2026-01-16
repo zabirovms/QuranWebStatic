@@ -21,7 +21,49 @@ function decodeHtmlEntities(text: string): string {
     .replace(/&nbsp;/g, ' ');
 }
 
+const CACHE_KEY = 'youtube_videos_cache';
+const CACHE_DURATION = 30 * 60 * 1000; // 30 minutes
+
+function getCachedVideos(): YouTubeVideo[] | null {
+  try {
+    const cached = localStorage.getItem(CACHE_KEY);
+    if (!cached) return null;
+    
+    const { videos, timestamp } = JSON.parse(cached);
+    const now = Date.now();
+    
+    if (now - timestamp < CACHE_DURATION) {
+      return videos.map((v: any) => ({
+        ...v,
+        publishedAt: new Date(v.publishedAt),
+      }));
+    }
+    
+    localStorage.removeItem(CACHE_KEY);
+    return null;
+  } catch {
+    return null;
+  }
+}
+
+function setCachedVideos(videos: YouTubeVideo[]): void {
+  try {
+    localStorage.setItem(CACHE_KEY, JSON.stringify({
+      videos,
+      timestamp: Date.now(),
+    }));
+  } catch {
+    // Ignore storage errors
+  }
+}
+
 async function fetchYouTubeVideos(): Promise<YouTubeVideo[]> {
+  // Check cache first
+  const cached = getCachedVideos();
+  if (cached && cached.length > 0) {
+    return cached;
+  }
+
   const channelId = 'UC1uNVG-KeUEVDAgw88_VPXA';
   const maxResults = 10;
 
@@ -32,7 +74,7 @@ async function fetchYouTubeVideos(): Promise<YouTubeVideo[]> {
     const proxyServices = [
       `https://api.allorigins.win/get?url=${encodeURIComponent(rssUrl)}`,
       `https://corsproxy.io/?${encodeURIComponent(rssUrl)}`,
-      rssUrl, // Try direct as last resort
+      `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(rssUrl)}`,
     ];
 
     let xmlContent = '';
@@ -41,11 +83,12 @@ async function fetchYouTubeVideos(): Promise<YouTubeVideo[]> {
     for (const proxyUrl of proxyServices) {
       try {
         const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 15000);
+        const timeoutId = setTimeout(() => controller.abort(), 8000); // Reduced timeout
         
         const response = await fetch(proxyUrl, {
           method: 'GET',
           signal: controller.signal,
+          cache: 'no-cache',
         });
 
         clearTimeout(timeoutId);
@@ -119,10 +162,17 @@ async function fetchYouTubeVideos(): Promise<YouTubeVideo[]> {
       });
     }
 
+    // Cache the videos
+    if (videos.length > 0) {
+      setCachedVideos(videos);
+    }
+
     return videos;
   } catch (e) {
     console.error('Error fetching YouTube videos:', e);
-    return [];
+    // Return cached videos even if expired, as fallback
+    const cached = getCachedVideos();
+    return cached || [];
   }
 }
 
@@ -132,18 +182,29 @@ export default function YouTubeVideosSection() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    // Load cached videos immediately
+    const cached = getCachedVideos();
+    if (cached && cached.length > 0) {
+      setVideos(cached);
+      setIsLoading(false);
+    }
+
+    // Fetch fresh videos in background
     fetchYouTubeVideos()
       .then((fetchedVideos) => {
         setVideos(fetchedVideos);
         setIsLoading(false);
         setError(null);
-        if (fetchedVideos.length === 0) {
+        if (fetchedVideos.length === 0 && (!cached || cached.length === 0)) {
           setError('Видеоҳо ёфт нашуд');
         }
       })
       .catch((err) => {
         console.error('Error loading YouTube videos:', err);
-        setError('Хатоги дар боргирии видеоҳо');
+        // Only show error if we don't have cached videos
+        if (!cached || cached.length === 0) {
+          setError('Хатоги дар боргирии видеоҳо');
+        }
         setIsLoading(false);
       });
   }, []);
@@ -168,18 +229,18 @@ export default function YouTubeVideosSection() {
   };
 
   return (
-    <div style={{ marginBottom: '16px', textAlign: 'center' }}>
+    <div style={{ textAlign: 'center' }}>
       <div style={{ 
         display: 'flex', 
         justifyContent: 'space-between', 
         alignItems: 'center',
-        padding: '0 4px',
-        marginBottom: '8px',
+        marginBottom: '16px',
       }}>
         <h2 style={{ 
-          fontSize: '1.25rem', 
+          fontSize: '1.5rem', 
           fontWeight: 'bold',
           margin: 0,
+          color: 'var(--color-text-primary)',
         }}>
           Видеоҳо
         </h2>

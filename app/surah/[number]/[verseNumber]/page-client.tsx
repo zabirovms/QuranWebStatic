@@ -177,7 +177,8 @@ export default function DedicatedVersePage({
       {/* Verse content */}
       <main style={{
         padding: 'var(--spacing-lg) 4px',
-        paddingTop: isTopBarVisible ? 'calc(112px + var(--spacing-lg))' : 'calc(56px + var(--spacing-lg))',
+        paddingTop: isTopBarVisible ? 'calc(112px + var(--spacing-lg) - 12px)' : 'calc(56px + var(--spacing-lg) - 12px)',
+        transition: 'padding-top 0.4s ease-out',
         maxWidth: '900px',
         margin: '0 auto',
         width: '100%',

@@ -1,5 +1,6 @@
 import { loadCompressedJson } from '@/lib/utils/data-loader-client';
 import { Verse } from '@/lib/types';
+import { getArabicTextsForSurah } from '@/lib/data/word-by-word-data-client';
 
 interface AlQuranCloudAyah {
   number: number;
@@ -52,6 +53,8 @@ export async function getAllVerses(): Promise<Verse[]> {
   }
 
   try {
+    // Load Arabic text from word-by-word data instead of alquran_cloud_complete_quran.json.gz
+    // Still need alquran_cloud for page/juz info and verse numbering
     const [arabicData, translationsData, tj2Data, tj3Data, farsiData, russianData] = await Promise.all([
       loadCompressedJson<{ data: { surahs: AlQuranCloudSurah[] } }>('alquran_cloud_complete_quran.json.gz'),
       loadCompressedJson<TranslationData>('quran_mirror_with_translations.json.gz'),
@@ -63,9 +66,25 @@ export async function getAllVerses(): Promise<Verse[]> {
 
     const allVerses: Verse[] = [];
 
+    // Load Arabic texts from word-by-word data for all surahs
+    const arabicTextsBySurah = new Map<number, Map<number, string>>();
+    
+    for (const surahData of arabicData.data.surahs) {
+      const surahNumber = surahData.number;
+      try {
+        const surahArabicTexts = await getArabicTextsForSurah(surahNumber);
+        arabicTextsBySurah.set(surahNumber, surahArabicTexts);
+      } catch (error) {
+        console.warn(`Failed to load Arabic text from word-by-word data for surah ${surahNumber}:`, error);
+        // Fallback: create empty map, will use empty string
+        arabicTextsBySurah.set(surahNumber, new Map());
+      }
+    }
+
     for (const surahData of arabicData.data.surahs) {
       const surahNumber = surahData.number;
       const arabicAyahs = surahData.ayahs || [];
+      const surahArabicTexts = arabicTextsBySurah.get(surahNumber) || new Map();
 
       const translationSurah = translationsData.data?.surahs?.find((s) => s.number === surahNumber);
       const surahKey = surahNumber.toString();
@@ -105,12 +124,15 @@ export async function getAllVerses(): Promise<Verse[]> {
       for (const arabicAyah of arabicAyahs) {
         const verseNum = arabicAyah.numberInSurah;
         const translation = translationMap.get(verseNum);
+        
+        // Get Arabic text from word-by-word data, fallback to empty string
+        const arabicText = surahArabicTexts.get(verseNum) || '';
 
         allVerses.push({
           id: arabicAyah.number,
           surahId: surahNumber,
           verseNumber: verseNum,
-          arabicText: arabicAyah.text || '',
+          arabicText: arabicText,
           tajikText: translation?.tajik_text || translation?.text || '',
           transliteration: translation?.transliteration,
           tafsir: translation?.tafsir,

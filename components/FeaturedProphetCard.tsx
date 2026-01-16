@@ -70,12 +70,25 @@ export default function FeaturedProphetCard({ prophet }: FeaturedProphetCardProp
         minWidth: '160px',
         height: '120px',
         border: `1.5px solid ${borderColor}`,
-        borderRadius: 'var(--radius-md)',
+        borderRadius: 'var(--radius-lg)',
         backgroundColor: 'var(--color-surface)',
         textDecoration: 'none',
         color: 'inherit',
         padding: 0,
         overflow: 'hidden',
+        boxShadow: 'var(--elevation-1)',
+        transition: 'all 0.2s ease',
+        position: 'relative',
+      }}
+      onMouseEnter={(e) => {
+        e.currentTarget.style.transform = 'translateY(-4px)';
+        e.currentTarget.style.boxShadow = 'var(--elevation-4)';
+        e.currentTarget.style.borderColor = prophetColor;
+      }}
+      onMouseLeave={(e) => {
+        e.currentTarget.style.transform = 'translateY(0)';
+        e.currentTarget.style.boxShadow = 'var(--elevation-1)';
+        e.currentTarget.style.borderColor = borderColor;
       }}
     >
       <div style={{

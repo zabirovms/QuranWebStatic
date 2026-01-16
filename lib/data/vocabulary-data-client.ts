@@ -9,6 +9,7 @@ interface RawVocabularyWord {
   example_arabic: string;
   example_tajik: string;
   reference: string;
+  audio_path?: string;
 }
 
 interface RawVocabularyLesson {
@@ -32,6 +33,7 @@ function transformWord(raw: RawVocabularyWord): VocabularyWord {
     exampleArabic: raw.example_arabic || '',
     exampleTajik: raw.example_tajik || '',
     reference: raw.reference || '',
+    audioPath: raw.audio_path && raw.audio_path.trim() !== '' ? raw.audio_path : undefined,
   };
 }
 

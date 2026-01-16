@@ -1,0 +1,839 @@
+{
+  "metadata": {
+    "title": "Мухтасари Саҳеҳи Бухорӣ",
+    "author": "Имом Бухорӣ",
+    "language": "тоҷикӣ",
+    "total_books": 88,
+    "total_sub_books": 2,
+    "total_chapters": 1592,
+    "total_hadith_occurrences": 2232,
+    "unique_hadith_numbers": 2230,
+    "total_hadith_occurrences_in_files": 2232
+  },
+  "books": [
+    {
+      "id": 1,
+      "number": 1,
+      "sub_number": null,
+      "is_sub_book": false,
+      "title": "ИБТИДОИ НУЗУЛИ ВАҲЙ БАР ПАЁМБАРИ ХУДО С",
+      "total_chapters": 1,
+      "total_hadiths": 7
+    },
+    {
+      "id": 2,
+      "number": 2,
+      "sub_number": null,
+      "is_sub_book": false,
+      "title": "КИТОБИ ИМОН",
+      "total_chapters": 38,
+      "total_hadiths": 46
+    },
+    {
+      "id": 3,
+      "number": 3,
+      "sub_number": null,
+      "is_sub_book": false,
+      "title": "КИТОБИ ИЛМ",
+      "total_chapters": 41,
+      "total_hadiths": 56
+    },
+    {
+      "id": 4,
+      "number": 4,
+      "sub_number": null,
+      "is_sub_book": false,
+      "title": "КИТОБИ ВУЗӮ",
+      "total_chapters": 59,
+      "total_hadiths": 75
+    },
+    {
+      "id": 5,
+      "number": 5,
+      "sub_number": null,
+      "is_sub_book": false,
+      "title": "КИТОБИ ҒУСЛ",
+      "total_chapters": 13,
+      "total_hadiths": 18
+    },
+    {
+      "id": 6,
+      "number": 6,
+      "sub_number": null,
+      "is_sub_book": false,
+      "title": "КИТОБИ ҲАЙЗ",
+      "total_chapters": 18,
+      "total_hadiths": 20
+    },
+    {
+      "id": 7,
+      "number": 7,
+      "sub_number": null,
+      "is_sub_book": false,
+      "title": "КИТОБИ ТАЯММУМ",
+      "total_chapters": 4,
+      "total_hadiths": 5
+    },
+    {
+      "id": 8,
+      "number": 8,
+      "sub_number": null,
+      "is_sub_book": false,
+      "title": "КИТОБИ НАМОЗ",
+      "total_chapters": 61,
+      "total_hadiths": 84
+    },
+    {
+      "id": 8,
+      "number": 8,
+      "sub_number": 1,
+      "is_sub_book": true,
+      "title": "КИТОБИ АБВОБИ (СУТРА)",
+      "total_chapters": 13,
+      "total_hadiths": 14
+    },
+    {
+      "id": 9,
+      "number": 9,
+      "sub_number": null,
+      "is_sub_book": false,
+      "title": "КИТОБИ ВАҚТҲОИ НАМОЗ",
+      "total_chapters": 28,
+      "total_hadiths": 45
+    },
+    {
+      "id": 10,
+      "number": 10,
+      "sub_number": null,
+      "is_sub_book": false,
+      "title": "КИТОБИ АЗОН",
+      "total_chapters": 47,
+      "total_hadiths": 55
+    },
+    {
+      "id": 10,
+      "number": 10,
+      "sub_number": 1,
+      "is_sub_book": true,
+      "title": "КИТОБИ АБВОБИ СИФАТИ НАМОЗ",
+      "total_chapters": 48,
+      "total_hadiths": 68
+    },
+    {
+      "id": 11,
+      "number": 11,
+      "sub_number": null,
+      "is_sub_book": false,
+      "title": "КИТОБИ НАМОЗИ ҶУМЪА",
+      "total_chapters": 25,
+      "total_hadiths": 32
+    },
+    {
+      "id": 12,
+      "number": 12,
+      "sub_number": null,
+      "is_sub_book": false,
+      "title": "КИТОБИ АҲКОМИ НАМОЗИ ХАВФ",
+      "total_chapters": 3,
+      "total_hadiths": 3
+    },
+    {
+      "id": 13,
+      "number": 13,
+      "sub_number": null,
+      "is_sub_book": false,
+      "title": "КИТОБИ АҲКОМИ НАМОЗИ ИДАЙН",
+      "total_chapters": 10,
+      "total_hadiths": 12
+    },
+    {
+      "id": 14,
+      "number": 14,
+      "sub_number": null,
+      "is_sub_book": false,
+      "title": "КИТОБИ НАМОЗИ ВИТР",
+      "total_chapters": 5,
+      "total_hadiths": 8
+    },
+    {
+      "id": 15,
+      "number": 15,
+      "sub_number": null,
+      "is_sub_book": false,
+      "title": "КИТОБИ НАМОЗИ ИСТИСҚО",
+      "total_chapters": 11,
+      "total_hadiths": 14
+    },
+    {
+      "id": 16,
+      "number": 16,
+      "sub_number": null,
+      "is_sub_book": false,
+      "title": "КИТОБИ ГИРИФТАНИ ХУРШЕД",
+      "total_chapters": 8,
+      "total_hadiths": 8
+    },
+    {
+      "id": 17,
+      "number": 17,
+      "sub_number": null,
+      "is_sub_book": false,
+      "title": "КИТОБИ САҶДАҲОИ ҚУРЪОН",
+      "total_chapters": 6,
+      "total_hadiths": 6
+    },
+    {
+      "id": 18,
+      "number": 18,
+      "sub_number": null,
+      "is_sub_book": false,
+      "title": "КИТОБИ КУТОҲ ХОНДАНИ НАМОЗ",
+      "total_chapters": 10,
+      "total_hadiths": 15
+    },
+    {
+      "id": 19,
+      "number": 19,
+      "sub_number": null,
+      "is_sub_book": false,
+      "title": "КИТОБИ НАМОЗИ ТАҲАҶҶУД",
+      "total_chapters": 23,
+      "total_hadiths": 30
+    },
+    {
+      "id": 20,
+      "number": 20,
+      "sub_number": null,
+      "is_sub_book": false,
+      "title": "КИТОБИ НАМОЗ ХОНДАН ДАР МАСЧИДИ МАККА ВА МАДИНА",
+      "total_chapters": 3,
+      "total_hadiths": 4
+    },
+    {
+      "id": 21,
+      "number": 21,
+      "sub_number": null,
+      "is_sub_book": false,
+      "title": "КИТОБИ АНҶОМ ДОДАНИ КОРЕ ДАР НАМОЗ",
+      "total_chapters": 5,
+      "total_hadiths": 7
+    },
+    {
+      "id": 22,
+      "number": 22,
+      "sub_number": null,
+      "is_sub_book": false,
+      "title": "КИТОБИ САҶДАИ САҲВ",
+      "total_chapters": 2,
+      "total_hadiths": 2
+    },
+    {
+      "id": 23,
+      "number": 23,
+      "sub_number": null,
+      "is_sub_book": false,
+      "title": "КИТОБИ АҲКОМИ ҶАНОЗА",
+      "total_chapters": 50,
+      "total_hadiths": 69
+    },
+    {
+      "id": 24,
+      "number": 24,
+      "sub_number": null,
+      "is_sub_book": false,
+      "title": "КИТОБИ ЗАКОТ",
+      "total_chapters": 49,
+      "total_hadiths": 64
+    },
+    {
+      "id": 25,
+      "number": 25,
+      "sub_number": null,
+      "is_sub_book": false,
+      "title": "КИТОБИ САДАҚАИ ФИТР",
+      "total_chapters": 3,
+      "total_hadiths": 3
+    },
+    {
+      "id": 26,
+      "number": 26,
+      "sub_number": null,
+      "is_sub_book": false,
+      "title": "КИТОБИ ҲАҶ",
+      "total_chapters": 76,
+      "total_hadiths": 94
+    },
+    {
+      "id": 27,
+      "number": 27,
+      "sub_number": null,
+      "is_sub_book": false,
+      "title": "КИТОБИ УМРА",
+      "total_chapters": 11,
+      "total_hadiths": 16
+    },
+    {
+      "id": 28,
+      "number": 28,
+      "sub_number": null,
+      "is_sub_book": false,
+      "title": "КИТОБИ ЭҲЗОР ВА ҶАЗОИ ШИКОР",
+      "total_chapters": 5,
+      "total_hadiths": 5
+    },
+    {
+      "id": 29,
+      "number": 29,
+      "sub_number": null,
+      "is_sub_book": false,
+      "title": "КИТОБИ ҶАЗОИ ШИКОР КАРДАН ВА АМСОЛИ ОН",
+      "total_chapters": 14,
+      "total_hadiths": 18
+    },
+    {
+      "id": 30,
+      "number": 30,
+      "sub_number": null,
+      "is_sub_book": false,
+      "title": "КИТОБИ ФАЗОИЛИ МАДИНАИ МУНАВВАРА",
+      "total_chapters": 11,
+      "total_hadiths": 17
+    },
+    {
+      "id": 31,
+      "number": 31,
+      "sub_number": null,
+      "is_sub_book": false,
+      "title": "КИТОБИ АҲКОМИ РУЗА",
+      "total_chapters": 42,
+      "total_hadiths": 52
+    },
+    {
+      "id": 32,
+      "number": 32,
+      "sub_number": null,
+      "is_sub_book": false,
+      "title": "КИТОБИ НАМОЗИ ТАРОВИҲ",
+      "total_chapters": 4,
+      "total_hadiths": 6
+    },
+    {
+      "id": 33,
+      "number": 33,
+      "sub_number": null,
+      "is_sub_book": false,
+      "title": "КИТОБИ ЭЪТИКОФ",
+      "total_chapters": 6,
+      "total_hadiths": 6
+    },
+    {
+      "id": 34,
+      "number": 34,
+      "sub_number": null,
+      "is_sub_book": false,
+      "title": "КИТОБИ БУЮЪ ХАРИДУ ФУРУШ",
+      "total_chapters": 57,
+      "total_hadiths": 66
+    },
+    {
+      "id": 35,
+      "number": 35,
+      "sub_number": null,
+      "is_sub_book": false,
+      "title": "КИТОБИ САЛАМ пардохти пешакӣ",
+      "total_chapters": 2,
+      "total_hadiths": 3
+    },
+    {
+      "id": 36,
+      "number": 36,
+      "sub_number": null,
+      "is_sub_book": false,
+      "title": "КИТОБИ ШУФЪА",
+      "total_chapters": 2,
+      "total_hadiths": 2
+    },
+    {
+      "id": 37,
+      "number": 37,
+      "sub_number": null,
+      "is_sub_book": false,
+      "title": "КИТОБИ ИҶОРА",
+      "total_chapters": 6,
+      "total_hadiths": 6
+    },
+    {
+      "id": 38,
+      "number": 38,
+      "sub_number": null,
+      "is_sub_book": false,
+      "title": "КИТОБИ АҲКОМИ ҲАВОЛАҲО",
+      "total_chapters": 4,
+      "total_hadiths": 4
+    },
+    {
+      "id": 39,
+      "number": 39,
+      "sub_number": null,
+      "is_sub_book": false,
+      "title": "КИТОБИ АҲКОМИ ВАКОЛАТ",
+      "total_chapters": 7,
+      "total_hadiths": 7
+    },
+    {
+      "id": 40,
+      "number": 40,
+      "sub_number": null,
+      "is_sub_book": false,
+      "title": "КИТОБИ ОН ЧИ КИ ДАР МАВРИДИ КИШТ ВА ЗИРОАТ ОМАДААСТ",
+      "total_chapters": 10,
+      "total_hadiths": 17
+    },
+    {
+      "id": 41,
+      "number": 41,
+      "sub_number": null,
+      "is_sub_book": false,
+      "title": "КИТОБИ ЗИРОАТ ВА ОБЁРИ",
+      "total_chapters": 11,
+      "total_hadiths": 14
+    },
+    {
+      "id": 42,
+      "number": 42,
+      "sub_number": null,
+      "is_sub_book": false,
+      "title": "КИТОБИ ҚАРЗ ГИРИФТАН АДОИ ҚАРЗ ВА МУФЛИС ШУДАН",
+      "total_chapters": 5,
+      "total_hadiths": 5
+    },
+    {
+      "id": 43,
+      "number": 43,
+      "sub_number": null,
+      "is_sub_book": false,
+      "title": "КИТОБИ ХУСУМОТ",
+      "total_chapters": 2,
+      "total_hadiths": 4
+    },
+    {
+      "id": 44,
+      "number": 44,
+      "sub_number": null,
+      "is_sub_book": false,
+      "title": "КИТОБИ ЁФТАҲО",
+      "total_chapters": 2,
+      "total_hadiths": 2
+    },
+    {
+      "id": 45,
+      "number": 45,
+      "sub_number": null,
+      "is_sub_book": false,
+      "title": "КИТОБИ ДОДХОҲӢ АЗ ЗУЛМИ МАРДУМ БАР ЯКДИГАР",
+      "total_chapters": 17,
+      "total_hadiths": 18
+    },
+    {
+      "id": 46,
+      "number": 46,
+      "sub_number": null,
+      "is_sub_book": false,
+      "title": "КИТОБИ ШАРОКАТ",
+      "total_chapters": 5,
+      "total_hadiths": 6
+    },
+    {
+      "id": 47,
+      "number": 47,
+      "sub_number": null,
+      "is_sub_book": false,
+      "title": "КИТОБИ ГАРАВ ДАР ҒАЙРИ САФАР",
+      "total_chapters": 2,
+      "total_hadiths": 2
+    },
+    {
+      "id": 48,
+      "number": 48,
+      "sub_number": null,
+      "is_sub_book": false,
+      "title": "КИТОБИ ОЗОД КАРДАНИ ҒУЛОМОН ВА ФАЗИЛАТИ ОН",
+      "total_chapters": 9,
+      "total_hadiths": 12
+    },
+    {
+      "id": 49,
+      "number": 49,
+      "sub_number": null,
+      "is_sub_book": false,
+      "title": "КИТОБИ БАХШИШ ВА ФАЗИЛАТИ ОН ВА ТАШВИҚ БА БАХШИШДОДАН",
+      "total_chapters": 17,
+      "total_hadiths": 24
+    },
+    {
+      "id": 50,
+      "number": 50,
+      "sub_number": null,
+      "is_sub_book": false,
+      "title": "КИТОБИ ШАҲОДАТ",
+      "total_chapters": 13,
+      "total_hadiths": 14
+    },
+    {
+      "id": 51,
+      "number": 51,
+      "sub_number": null,
+      "is_sub_book": false,
+      "title": "КИТОБИ ШУРУТ",
+      "total_chapters": 5,
+      "total_hadiths": 5
+    },
+    {
+      "id": 52,
+      "number": 52,
+      "sub_number": null,
+      "is_sub_book": false,
+      "title": "КИТОБИ ВАСИЯТҲО",
+      "total_chapters": 8,
+      "total_hadiths": 10
+    },
+    {
+      "id": 53,
+      "number": 53,
+      "sub_number": null,
+      "is_sub_book": false,
+      "title": "КИТОБИ ҶИҲОД",
+      "total_chapters": 105,
+      "total_hadiths": 144
+    },
+    {
+      "id": 54,
+      "number": 54,
+      "sub_number": null,
+      "is_sub_book": false,
+      "title": "КИТОБИ ИБТИДОИ ХИЛҚАТ",
+      "total_chapters": 11,
+      "total_hadiths": 51
+    },
+    {
+      "id": 55,
+      "number": 55,
+      "sub_number": null,
+      "is_sub_book": false,
+      "title": "КИТОБИ АХБОРИ АНБИЁ Ъ",
+      "total_chapters": 36,
+      "total_hadiths": 121
+    },
+    {
+      "id": 56,
+      "number": 56,
+      "sub_number": null,
+      "is_sub_book": false,
+      "title": "КИТОБИ ФАЗОИЛИ САҲОБА Р",
+      "total_chapters": 47,
+      "total_hadiths": 79
+    },
+    {
+      "id": 57,
+      "number": 57,
+      "sub_number": null,
+      "is_sub_book": false,
+      "title": "КИТОБИ ҒАЗАВОТИ ПАЁМБАРИ ХУДО C",
+      "total_chapters": 49,
+      "total_hadiths": 113
+    },
+    {
+      "id": 58,
+      "number": 58,
+      "sub_number": null,
+      "is_sub_book": false,
+      "title": "КИТОБИ ТАФСИР",
+      "total_chapters": 81,
+      "total_hadiths": 94
+    },
+    {
+      "id": 59,
+      "number": 59,
+      "sub_number": null,
+      "is_sub_book": false,
+      "title": "КИТОБИ ФАЗОИЛИ ҚУРЪОН",
+      "total_chapters": 13,
+      "total_hadiths": 22
+    },
+    {
+      "id": 60,
+      "number": 60,
+      "sub_number": null,
+      "is_sub_book": false,
+      "title": "КИТОБИ НИКОҲ",
+      "total_chapters": 34,
+      "total_hadiths": 44
+    },
+    {
+      "id": 61,
+      "number": 61,
+      "sub_number": null,
+      "is_sub_book": false,
+      "title": "КИТОБИ ТАЛОҚ",
+      "total_chapters": 11,
+      "total_hadiths": 12
+    },
+    {
+      "id": 62,
+      "number": 62,
+      "sub_number": null,
+      "is_sub_book": false,
+      "title": "КИТОБИ НАФАҚА ВА ФАЗИЛАТИ НАФАҚА БАР АҲЛУ АВЛОД",
+      "total_chapters": 2,
+      "total_hadiths": 3
+    },
+    {
+      "id": 63,
+      "number": 63,
+      "sub_number": null,
+      "is_sub_book": false,
+      "title": "КИТОБИ АНВОЪИ ТАЪОМҲО ВА Ё ОДОБИ ТАЪОМ ХУРДАН",
+      "total_chapters": 19,
+      "total_hadiths": 24
+    },
+    {
+      "id": 64,
+      "number": 64,
+      "sub_number": null,
+      "is_sub_book": false,
+      "title": "КИТОБИ АҚИҚА НОМГУЗОРӢ",
+      "total_chapters": 3,
+      "total_hadiths": 4
+    },
+    {
+      "id": 65,
+      "number": 65,
+      "sub_number": null,
+      "is_sub_book": false,
+      "title": "КИТОБИ ЗАБҲ ВА ШИКОР",
+      "total_chapters": 12,
+      "total_hadiths": 13
+    },
+    {
+      "id": 66,
+      "number": 66,
+      "sub_number": null,
+      "is_sub_book": false,
+      "title": "КИТОБИ ҚУРБОНӢ",
+      "total_chapters": 1,
+      "total_hadiths": 5
+    },
+    {
+      "id": 67,
+      "number": 67,
+      "sub_number": null,
+      "is_sub_book": false,
+      "title": "КИТОБИ МАШРУБОТ НУШИДАНИҲО",
+      "total_chapters": 11,
+      "total_hadiths": 16
+    },
+    {
+      "id": 68,
+      "number": 68,
+      "sub_number": null,
+      "is_sub_book": false,
+      "title": "КИТОБИ БЕМОРИҲО",
+      "total_chapters": 8,
+      "total_hadiths": 13
+    },
+    {
+      "id": 69,
+      "number": 69,
+      "sub_number": null,
+      "is_sub_book": false,
+      "title": "КИТОБИ ТИБ",
+      "total_chapters": 21,
+      "total_hadiths": 22
+    },
+    {
+      "id": 70,
+      "number": 70,
+      "sub_number": null,
+      "is_sub_book": false,
+      "title": "КИТОБИ ЛИБОС",
+      "total_chapters": 19,
+      "total_hadiths": 23
+    },
+    {
+      "id": 71,
+      "number": 71,
+      "sub_number": null,
+      "is_sub_book": false,
+      "title": "КИТОБИ АДАБ",
+      "total_chapters": 42,
+      "total_hadiths": 50
+    },
+    {
+      "id": 72,
+      "number": 72,
+      "sub_number": null,
+      "is_sub_book": false,
+      "title": "КИТОБИ ИҶОЗА ХОСТАН",
+      "total_chapters": 12,
+      "total_hadiths": 12
+    },
+    {
+      "id": 73,
+      "number": 73,
+      "sub_number": null,
+      "is_sub_book": false,
+      "title": "КИТОБИ ДУОҲО",
+      "total_chapters": 20,
+      "total_hadiths": 22
+    },
+    {
+      "id": 74,
+      "number": 74,
+      "sub_number": null,
+      "is_sub_book": false,
+      "title": "КИТОБИ ОРОМИШИ ХОТИР ВА НАРМИИ ДИЛ",
+      "total_chapters": 28,
+      "total_hadiths": 46
+    },
+    {
+      "id": 75,
+      "number": 75,
+      "sub_number": null,
+      "is_sub_book": false,
+      "title": "КИТОБИ ҚАЗО ВА ҚАДАР",
+      "total_chapters": 5,
+      "total_hadiths": 5
+    },
+    {
+      "id": 76,
+      "number": 76,
+      "sub_number": null,
+      "is_sub_book": false,
+      "title": "КИТОБИ САВГАНДҲО ВА НАРЗҲО",
+      "total_chapters": 7,
+      "total_hadiths": 9
+    },
+    {
+      "id": 77,
+      "number": 77,
+      "sub_number": null,
+      "is_sub_book": false,
+      "title": "КИТОБИ КАФФОРАИ САВГАНД",
+      "total_chapters": 1,
+      "total_hadiths": 2
+    },
+    {
+      "id": 78,
+      "number": 78,
+      "sub_number": null,
+      "is_sub_book": false,
+      "title": "КИТОБИ МЕРОС",
+      "total_chapters": 4,
+      "total_hadiths": 6
+    },
+    {
+      "id": 79,
+      "number": 79,
+      "sub_number": null,
+      "is_sub_book": false,
+      "title": "КИТОБИ ҲУДУД",
+      "total_chapters": 3,
+      "total_hadiths": 7
+    },
+    {
+      "id": 80,
+      "number": 80,
+      "sub_number": null,
+      "is_sub_book": false,
+      "title": "КИТОБИ МУҲОРИБИНЕ КИ АЗ АҲЛИ КУФР ВА РИДДАТ БОШАНД",
+      "total_chapters": 2,
+      "total_hadiths": 4
+    },
+    {
+      "id": 81,
+      "number": 81,
+      "sub_number": null,
+      "is_sub_book": false,
+      "title": "КИТОБИ ДИЁТ ХУНБАҲО",
+      "total_chapters": 5,
+      "total_hadiths": 5
+    },
+    {
+      "id": 82,
+      "number": 82,
+      "sub_number": null,
+      "is_sub_book": false,
+      "title": "КИТОБИ ТАВБА ДОДАНИ МУРТАДҲО ВА БОҒИҲО ВА ҶАНГ БО ЭШОН",
+      "total_chapters": 1,
+      "total_hadiths": 1
+    },
+    {
+      "id": 83,
+      "number": 83,
+      "sub_number": null,
+      "is_sub_book": false,
+      "title": "КИТОБИ ТАЪБИРИ ХОБ",
+      "total_chapters": 9,
+      "total_hadiths": 11
+    },
+    {
+      "id": 84,
+      "number": 84,
+      "sub_number": null,
+      "is_sub_book": false,
+      "title": "КИТОБИ ФИТНАҲО",
+      "total_chapters": 9,
+      "total_hadiths": 12
+    },
+    {
+      "id": 85,
+      "number": 85,
+      "sub_number": null,
+      "is_sub_book": false,
+      "title": "КИТОБИ АҲКОМ",
+      "total_chapters": 9,
+      "total_hadiths": 11
+    },
+    {
+      "id": 86,
+      "number": 86,
+      "sub_number": null,
+      "is_sub_book": false,
+      "title": "КИТОБИ ТАМАННО ВА ОРЗУҲО",
+      "total_chapters": 1,
+      "total_hadiths": 2
+    },
+    {
+      "id": 87,
+      "number": 87,
+      "sub_number": null,
+      "is_sub_book": false,
+      "title": "КИТОБИ АМАЛ КАРДАН БА КИТОБ ҚУРЪОН ВА СУННАТ",
+      "total_chapters": 7,
+      "total_hadiths": 8
+    },
+    {
+      "id": 88,
+      "number": 88,
+      "sub_number": null,
+      "is_sub_book": false,
+      "title": "КИТОБИ ТАВҲИД ВА РАД БАР ҶАҲМИЯ ВА ҒАЙРИ ОНҲО",
+      "total_chapters": 7,
+      "total_hadiths": 11
+    }
+  ],
+  "introductions": [
+    {
+      "id": "имом_бухорӣ",
+      "title": "ИМОМ БУХОРӢ"
+    },
+    {
+      "id": "муқаддима",
+      "title": "МУҚАДДИМА"
+    },
+    {
+      "id": "пешгуфтор",
+      "title": "ПЕШГУФТОР"
+    }
+  ]
+}

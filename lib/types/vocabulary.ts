@@ -5,6 +5,7 @@ export interface VocabularyWord {
   exampleArabic: string;
   exampleTajik: string;
   reference: string;
+  audioPath?: string;
 }
 
 export interface VocabularyLesson {

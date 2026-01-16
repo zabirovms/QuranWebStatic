@@ -21,6 +21,8 @@ export default function TopBar() {
   const navItems = [
     { href: '/', label: 'Асосӣ', icon: '🏠', id: 'home' },
     { href: '/quran', label: 'Қуръон', icon: '📖', id: 'quran' },
+    { href: '/bukhari', label: 'Саҳеҳи Бухорӣ', icon: '📖', id: 'bukhari' },
+    { href: '/vaqti-namoz', label: 'Вақтҳои намоз', icon: '🕌', id: 'prayer-times' },
     { href: '/learn-words', label: 'Омӯзиш', icon: '📚', id: 'learn' },
     { href: '/audio-home', label: 'Қироат', icon: '🎵', id: 'audio' },
   ];
@@ -84,9 +86,10 @@ export default function TopBar() {
           borderBottom: '1px solid var(--color-outline)',
           display: 'flex',
           alignItems: 'center',
-          padding: '0 16px',
+          padding: '0 clamp(12px, 3vw, 16px)',
+          gap: 'clamp(8px, 2vw, 12px)',
           zIndex: 1000,
-          transition: 'top 0.3s ease-in-out',
+          transition: 'top 0.4s ease-out',
         }}
       >
         {/* Hamburger Menu Button */}
@@ -104,6 +107,7 @@ export default function TopBar() {
             alignItems: 'center',
             justifyContent: 'center',
             borderRadius: '4px',
+            flexShrink: 0,
           }}
           title="Меню"
         >
@@ -114,21 +118,56 @@ export default function TopBar() {
           )}
         </button>
 
-        {/* App Title */}
+        {/* App Title - Only this is clickable */}
         <Link
           href="/"
           style={{
             flex: 1,
-            marginLeft: '16px',
             fontSize: 'var(--font-size-lg)',
             fontWeight: 600,
             color: 'var(--color-text-primary)',
             textDecoration: 'none',
             cursor: 'pointer',
+            display: 'flex',
+            alignItems: 'center',
+            height: '100%',
+            minWidth: 0,
           }}
         >
           Quran.tj
         </Link>
+
+        {/* Google Play Badge */}
+        <a
+          href="https://play.google.com/store/apps/details?id=com.quran.tj.quranapp"
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            height: 'clamp(24px, 5vw, 32px)',
+            textDecoration: 'none',
+            cursor: 'pointer',
+            flexShrink: 0,
+          }}
+          title="Боргирӣ аз Google Play"
+        >
+          <img
+            src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png"
+            alt="Get it on Google Play"
+            style={{
+              height: '100%',
+              width: 'auto',
+              objectFit: 'contain',
+              maxWidth: '120px',
+            }}
+            onError={(e) => {
+              // Fallback if image fails to load
+              e.currentTarget.style.display = 'none';
+            }}
+          />
+        </a>
 
         {/* Search Button */}
         <button
@@ -144,7 +183,7 @@ export default function TopBar() {
             alignItems: 'center',
             justifyContent: 'center',
             borderRadius: '4px',
-            marginLeft: '8px',
+            flexShrink: 0,
           }}
           title="Ҷустуҷӯ"
         >
@@ -165,7 +204,7 @@ export default function TopBar() {
             alignItems: 'center',
             justifyContent: 'center',
             borderRadius: '4px',
-            marginLeft: '8px',
+            flexShrink: 0,
           }}
           title="Навигатсия"
         >
@@ -186,7 +225,7 @@ export default function TopBar() {
             alignItems: 'center',
             justifyContent: 'center',
             borderRadius: '4px',
-            marginLeft: '8px',
+            flexShrink: 0,
           }}
           title="Танзимот"
         >

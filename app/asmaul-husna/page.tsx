@@ -44,7 +44,7 @@ export default function AsmaulHusnaPage() {
       backgroundColor: 'var(--color-background)',
     }}>
       <main style={{
-        padding: 'var(--spacing-lg)',
+        padding: 'clamp(16px, 4vw, var(--spacing-lg))',
         paddingTop: isTopBarVisible ? 'calc(56px + var(--spacing-md))' : 'var(--spacing-md)',
         maxWidth: '900px',
         margin: '0 auto',

@@ -13,6 +13,7 @@ export interface PlaybackState {
   duration: number; // in seconds
   isLoading: boolean;
   error: string | null;
+  currentWordNumber: number | null; // Current word number (1-based) for highlighting
 }
 
 type PlaybackStateListener = (state: PlaybackState) => void;
@@ -29,6 +30,7 @@ class AudioService {
     duration: 0,
     isLoading: false,
     error: null,
+    currentWordNumber: null,
   };
   private listeners: Set<PlaybackStateListener> = new Set();
   private positionInterval: NodeJS.Timeout | null = null;
@@ -36,6 +38,9 @@ class AudioService {
   private playbackSpeed: number = 1.0;
   private isRepeating: boolean = false;
   private currentUrl: string | null = null;
+  private currentAlignment: any = null; // Current verse alignment data
+  private alignmentData: any = null; // Cached alignment data for current reciter
+  private isLoadingAlignment: boolean = false; // Flag to prevent concurrent alignment loads
 
   constructor() {
     // Don't initialize audio element during SSR
@@ -69,9 +74,12 @@ class AudioService {
 
     this.audio.addEventListener('timeupdate', () => {
       if (this.audio) {
+        const position = this.audio.currentTime;
         this.updateState({
-          position: this.audio.currentTime,
+          position,
         });
+        // Update current word if we have alignment data
+        this.updateCurrentWord(position);
       }
     });
 
@@ -176,6 +184,66 @@ class AudioService {
     }
   }
 
+  /**
+   * Update current word based on playback position and alignment data
+   */
+  private async updateCurrentWord(positionSeconds: number) {
+    // Only update if we're in verse-by-verse mode and have alignment data
+    if (
+      !this.currentState.currentSurahNumber ||
+      !this.currentState.currentVerseNumber ||
+      !this.currentState.currentEdition
+    ) {
+      return;
+    }
+
+    // Check if alignment data is available for this reciter
+    try {
+      const { hasAlignmentData, getAlignmentForVerse, getCurrentWordIndex, wordIndexToWordNumber } = 
+        await import('@/lib/data/alignment-data-client');
+      
+      const reciterId = this.currentState.currentEdition;
+      if (!hasAlignmentData(reciterId)) {
+        // No alignment data for this reciter, clear word tracking
+        if (this.currentState.currentWordNumber !== null) {
+          this.updateState({ currentWordNumber: null });
+        }
+        return;
+      }
+
+      // Load alignment data if not already loaded (and not currently loading)
+      if (!this.currentAlignment && !this.isLoadingAlignment) {
+        this.isLoadingAlignment = true;
+        try {
+          const alignment = await getAlignmentForVerse(
+            reciterId,
+            this.currentState.currentSurahNumber,
+            this.currentState.currentVerseNumber
+          );
+          this.currentAlignment = alignment;
+        } finally {
+          this.isLoadingAlignment = false;
+        }
+      }
+
+      // Get current word index from alignment (only if we have alignment data)
+      if (this.currentAlignment) {
+        const currentTimeMs = positionSeconds * 1000;
+        const wordIndex = getCurrentWordIndex(this.currentAlignment, currentTimeMs);
+        const wordNumber = wordIndexToWordNumber(wordIndex);
+        
+        // Only update if word number changed
+        if (this.currentState.currentWordNumber !== wordNumber) {
+          this.updateState({ currentWordNumber: wordNumber });
+        }
+      }
+    } catch (error) {
+      // Silently fail - alignment data is optional
+      console.debug('[AudioService] Failed to update current word:', error);
+      this.isLoadingAlignment = false; // Reset loading flag on error
+    }
+  }
+
   private async handleAudioEnded() {
     if (this.autoPlayNextVerse && this.currentState.currentSurahNumber && this.currentState.currentVerseNumber) {
       // Auto-play next verse
@@ -268,6 +336,9 @@ class AudioService {
       }
 
       this.currentUrl = audioUrl;
+      // Clear previous alignment data
+      this.currentAlignment = null;
+      this.isLoadingAlignment = false;
       this.updateState({
         isLoading: true,
         error: null,
@@ -275,6 +346,7 @@ class AudioService {
         currentVerseNumber: verseNumber,
         currentEdition: normalizedEdition,
         currentUrl: audioUrl,
+        currentWordNumber: null, // Reset word tracking
       });
 
       // Clear previous source and reset
@@ -418,6 +490,9 @@ class AudioService {
       }
 
       this.currentUrl = audioUrl;
+      // Clear alignment data for full surah mode
+      this.currentAlignment = null;
+      this.isLoadingAlignment = false;
       this.updateState({
         isLoading: true,
         error: null,
@@ -425,6 +500,7 @@ class AudioService {
         currentVerseNumber: null, // Full surah mode
         currentEdition: normalizedEdition,
         currentUrl: audioUrl,
+        currentWordNumber: null, // No word tracking in full surah mode
       });
 
       // Clear previous source and reset
@@ -564,6 +640,8 @@ class AudioService {
     }
     this.autoPlayNextVerse = false;
     this.currentUrl = null;
+    this.currentAlignment = null;
+    this.isLoadingAlignment = false;
     this.updateState({
       isPlaying: false,
       currentSurahNumber: null,
@@ -571,6 +649,7 @@ class AudioService {
       currentEdition: null,
       currentUrl: null,
       position: 0,
+      currentWordNumber: null,
     });
   }
 

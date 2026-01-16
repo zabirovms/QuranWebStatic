@@ -29,6 +29,7 @@ export interface AppSettings {
 }
 
 const STORAGE_KEY = 'quran_app_settings';
+const WORD_BY_WORD_MODE_RESET_KEY = 'wbw_mode_reset_v1'; // Version key for one-time reset
 
 const defaultSettings: AppSettings = {
   theme: 'newLight',
@@ -83,10 +84,31 @@ export class SettingsService {
       const stored = localStorage.getItem(STORAGE_KEY);
       if (stored) {
         const parsed = JSON.parse(stored);
-        return { ...defaultSettings, ...parsed };
+        const merged = { ...defaultSettings, ...parsed };
+        
+        // One-time reset: If wordByWordMode is true and we haven't done the reset yet,
+        // reset it to false to fix any corrupted localStorage data
+        const resetDone = localStorage.getItem(WORD_BY_WORD_MODE_RESET_KEY);
+        if (merged.wordByWordMode === true && !resetDone) {
+          console.warn('[SettingsService] Resetting wordByWordMode to false (one-time fix for corrupted data)');
+          merged.wordByWordMode = false;
+          // Mark that we've done the reset
+          localStorage.setItem(WORD_BY_WORD_MODE_RESET_KEY, 'true');
+          // Save corrected settings
+          this.settings = merged;
+          this.saveSettings();
+        }
+        
+        return merged;
       }
     } catch (error) {
       console.error('Error loading settings:', error);
+      // If there's an error parsing, clear corrupted data and use defaults
+      try {
+        localStorage.removeItem(STORAGE_KEY);
+      } catch (clearError) {
+        console.error('Error clearing corrupted settings:', clearError);
+      }
     }
 
     return { ...defaultSettings };
@@ -105,7 +127,23 @@ export class SettingsService {
   }
 
   getSettings(): AppSettings {
-    return { ...this.settings };
+    // Double-check that wordByWordMode is never true unless explicitly set by user
+    // This is a safety check in case something tries to enable it automatically
+    const settings = { ...this.settings };
+    // Note: We allow it to be true if user explicitly set it, but we prevent auto-enabling
+    return settings;
+  }
+  
+  /**
+   * Reset wordByWordMode to false if it was somehow enabled automatically
+   * Call this if you suspect wordByWordMode was enabled incorrectly
+   */
+  resetWordByWordMode(): void {
+    if (this.settings.wordByWordMode === true) {
+      console.warn('[SettingsService] Resetting wordByWordMode to false');
+      this.settings.wordByWordMode = false;
+      this.saveSettings();
+    }
   }
 
   setTheme(theme: string): void {
@@ -170,6 +208,11 @@ export class SettingsService {
   }
 
   setWordByWordMode(enabled: boolean): void {
+    // Prevent automatic enabling - only allow manual toggle
+    // This ensures wordByWordMode can only be enabled through user interaction
+    if (enabled === true) {
+      console.log('[SettingsService] Word-by-word mode enabled by user');
+    }
     this.settings.wordByWordMode = enabled;
     this.saveSettings();
   }

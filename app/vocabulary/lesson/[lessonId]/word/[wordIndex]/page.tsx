@@ -6,7 +6,7 @@ import { getVocabularyLessonClient } from '@/lib/data/vocabulary-data-client';
 import { VocabularyLesson, VocabularyWord } from '@/lib/types/vocabulary';
 import { vocabularyBookmarkService } from '@/lib/services/vocabulary-bookmark-service';
 import { vocabularyProgressService } from '@/lib/services/vocabulary-progress-service';
-import { ArrowBackIcon, ArrowForwardIcon, PlayArrowIcon, QuizIcon, BookmarkIcon, SearchIcon, InfoIcon } from '@/components/Icons';
+import { ArrowBackIcon, ArrowForwardIcon, PlayArrowIcon, PauseIcon, QuizIcon, BookmarkIcon, SearchIcon, InfoIcon } from '@/components/Icons';
 import LoadingSpinner from '@/components/LoadingSpinner';
 import ErrorDisplay from '@/components/ErrorDisplay';
 import { useTopBar } from '@/lib/contexts/TopBarContext';
@@ -26,6 +26,8 @@ export default function VocabularyWordDetailPage() {
   const [isBookmarked, setIsBookmarked] = useState(false);
   const [refreshKey, setRefreshKey] = useState(0);
   const [surahs, setSurahs] = useState<any[]>([]);
+  const [audioElement, setAudioElement] = useState<HTMLAudioElement | null>(null);
+  const [isPlaying, setIsPlaying] = useState(false);
 
   useEffect(() => {
     const loadWord = async () => {
@@ -95,10 +97,56 @@ export default function VocabularyWordDetailPage() {
     }
   };
 
-  const handlePlayAudio = () => {
-    // Placeholder for audio playback
-    console.log('Play audio for:', word?.arabic);
+  const handlePlayAudio = async () => {
+    if (!word?.audioPath) {
+      console.warn('No audio available for this word');
+      return;
+    }
+
+    try {
+      // If audio is already playing, pause it
+      if (audioElement && isPlaying) {
+        audioElement.pause();
+        setIsPlaying(false);
+        return;
+      }
+
+      // Create new audio element if needed
+      let audio = audioElement;
+      if (!audio) {
+        audio = new Audio();
+        setAudioElement(audio);
+        
+        // Set up event listeners
+        audio.addEventListener('ended', () => {
+          setIsPlaying(false);
+        });
+        
+        audio.addEventListener('error', (e) => {
+          console.error('Error playing audio:', e);
+          setIsPlaying(false);
+        });
+      }
+
+      // Set source and play
+      audio.src = word.audioPath;
+      await audio.play();
+      setIsPlaying(true);
+    } catch (error) {
+      console.error('Failed to play audio:', error);
+      setIsPlaying(false);
+    }
   };
+
+  // Cleanup audio on unmount
+  useEffect(() => {
+    return () => {
+      if (audioElement) {
+        audioElement.pause();
+        audioElement.src = '';
+      }
+    };
+  }, [audioElement]);
 
   const buildHighlightedArabicText = (exampleText: string, wordToHighlight: string) => {
     const wordPattern = new RegExp(wordToHighlight.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
@@ -473,21 +521,27 @@ export default function VocabularyWordDetailPage() {
           {/* Play button (center, larger) */}
           <button
             onClick={handlePlayAudio}
+            disabled={!word?.audioPath}
             style={{
               width: '52px',
               height: '52px',
               borderRadius: '50%',
-              backgroundColor: 'var(--color-primary)',
+              backgroundColor: word?.audioPath ? 'var(--color-primary)' : 'var(--color-surface-variant)',
               border: 'none',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              cursor: 'pointer',
+              cursor: word?.audioPath ? 'pointer' : 'not-allowed',
               flexShrink: 0,
+              opacity: word?.audioPath ? 1 : 0.5,
             }}
-            title="Пахш кардан"
+            title={word?.audioPath ? (isPlaying ? 'Ист кардан' : 'Пахш кардан') : 'Аудио дастрас нест'}
           >
-            <PlayArrowIcon size={26} color="var(--color-on-primary)" />
+            {isPlaying ? (
+              <PauseIcon size={26} color="var(--color-on-primary)" />
+            ) : (
+              <PlayArrowIcon size={26} color="var(--color-on-primary)" />
+            )}
           </button>
 
           {/* Next/Quiz button */}

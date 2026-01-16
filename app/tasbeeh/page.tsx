@@ -164,7 +164,7 @@ function TasbeehPageContent() {
       paddingBottom: '80px',
     }}>
       <div style={{
-        padding: '16px',
+        padding: 'clamp(16px, 4vw, 24px)',
         maxWidth: '600px',
         margin: '0 auto',
       }}>

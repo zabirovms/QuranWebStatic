@@ -7,6 +7,7 @@ import { getAllVerses } from '@/lib/data/verse-data-client';
 import { Surah, Verse } from '@/lib/types';
 import { BookmarkService, Bookmark } from '@/lib/services/bookmark-service';
 import { useTopBar } from '@/lib/contexts/TopBarContext';
+import LoadingSpinner from '@/components/LoadingSpinner';
 
 type Tab = 'surah' | 'juz' | 'page' | 'bookmarks';
 
@@ -40,58 +41,61 @@ export default function QuranPage() {
       setIsLoading(true);
       setLoadError(null);
       try {
-        console.log('QuranPage: Starting to load data...');
-        const [surahsData, versesData] = await Promise.all([
-          getAllSurahs(),
-          getAllVerses(),
-        ]);
-
-        console.log('QuranPage: Surahs loaded:', surahsData?.length);
-        console.log('QuranPage: Verses loaded:', versesData?.length);
-
+        // Load surahs first (smaller, needed for display)
+        const surahsData = await getAllSurahs();
+        
         if (!surahsData || surahsData.length === 0) {
           throw new Error('No surahs data loaded.');
         }
 
-        if (!versesData || versesData.length === 0) {
-          throw new Error('No verses data loaded.');
-        }
-
         setSurahs(surahsData);
-
-        // Build juz list (1-30)
-        const juzMap = new Map<number, JuzInfo>();
-        for (const verse of versesData) {
-          if (verse.juz && !juzMap.has(verse.juz)) {
-            const surah = surahsData.find(s => s.number === verse.surahId);
-            juzMap.set(verse.juz, {
-              juz: verse.juz,
-              surahNumber: verse.surahId,
-              surahName: surah?.nameTajik || `Сураи ${verse.surahId}`,
-              ayahNumber: verse.verseNumber,
-            });
+        
+        // Load verses in background (larger dataset, only needed for juz/page tabs)
+        // This allows surah list to show faster
+        getAllVerses().then((versesData) => {
+          if (!versesData || versesData.length === 0) {
+            console.warn('No verses data loaded, juz/page tabs will be empty');
+            return;
           }
-        }
-        setJuzList(Array.from(juzMap.values()).sort((a, b) => a.juz - b.juz));
 
-        // Build page list (1-604)
-        const pageMap = new Map<number, PageInfo>();
-        for (const verse of versesData) {
-          if (verse.page && !pageMap.has(verse.page)) {
-            const surah = surahsData.find(s => s.number === verse.surahId);
-            pageMap.set(verse.page, {
-              page: verse.page,
-              surahNumber: verse.surahId,
-              surahName: surah?.nameTajik || `Сураи ${verse.surahId}`,
-              ayahNumber: verse.verseNumber,
-            });
+          // Build juz list (1-30)
+          const juzMap = new Map<number, JuzInfo>();
+          for (const verse of versesData) {
+            if (verse.juz && !juzMap.has(verse.juz)) {
+              const surah = surahsData.find(s => s.number === verse.surahId);
+              juzMap.set(verse.juz, {
+                juz: verse.juz,
+                surahNumber: verse.surahId,
+                surahName: surah?.nameTajik || `Сураи ${verse.surahId}`,
+                ayahNumber: verse.verseNumber,
+              });
+            }
           }
-        }
-        setPageList(Array.from(pageMap.values()).sort((a, b) => a.page - b.page));
-        } catch (error) {
+          setJuzList(Array.from(juzMap.values()).sort((a, b) => a.juz - b.juz));
+
+          // Build page list (1-604)
+          const pageMap = new Map<number, PageInfo>();
+          for (const verse of versesData) {
+            if (verse.page && !pageMap.has(verse.page)) {
+              const surah = surahsData.find(s => s.number === verse.surahId);
+              pageMap.set(verse.page, {
+                page: verse.page,
+                surahNumber: verse.surahId,
+                surahName: surah?.nameTajik || `Сураи ${verse.surahId}`,
+                ayahNumber: verse.verseNumber,
+              });
+            }
+          }
+          setPageList(Array.from(pageMap.values()).sort((a, b) => a.page - b.page));
+        }).catch((error) => {
+          console.error('Error loading verses data:', error);
+          // Don't set error state, just log - surah list can still work
+        });
+        
+        setIsLoading(false);
+      } catch (error) {
         console.error('Error loading data:', error);
         setLoadError(error instanceof Error ? error.message : 'Хатоги дар боргирии маълумот');
-      } finally {
         setIsLoading(false);
       }
     };
@@ -105,6 +109,7 @@ export default function QuranPage() {
       setBookmarks(bookmarkService.getAllBookmarks());
     }
   }, [activeTab]);
+
 
   const removeBookmark = (uniqueKey: string) => {
     const bookmarkService = BookmarkService.getInstance();
@@ -140,7 +145,7 @@ export default function QuranPage() {
         backgroundColor: 'var(--color-background)',
         zIndex: 1019,
         height: '48px',
-        transition: 'top 0.3s ease-in-out',
+        transition: 'top 0.4s ease-out',
       }}>
         {(['surah', 'juz', 'page', 'bookmarks'] as Tab[]).map((tab) => (
           <button
@@ -175,8 +180,14 @@ export default function QuranPage() {
 
       {/* Content */}
       {isLoading ? (
-        <div style={{ padding: '32px', textAlign: 'center', color: 'var(--color-text-primary)', fontSize: '1rem', fontWeight: '500' }}>
-          Боргирӣ карда истодааст...
+        <div style={{ 
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          minHeight: 'calc(100vh - 200px)',
+          paddingTop: isTopBarVisible ? 'calc(56px + 48px)' : '48px',
+        }}>
+          <LoadingSpinner size="large" />
         </div>
       ) : loadError ? (
         <div style={{ 
@@ -208,13 +219,14 @@ export default function QuranPage() {
         </div>
       ) : (
         <div style={{ 
-          padding: '0 80px', 
-          paddingTop: isTopBarVisible ? 'calc(56px + 48px)' : 'calc(48px)',
+          padding: '0 clamp(16px, 4vw, 80px)', 
+          paddingTop: isTopBarVisible ? 'calc(56px + 48px - 12px)' : 'calc(48px - 12px)',
           paddingBottom: 'calc(80px)',
           marginTop: '0',
           width: '100%',
           boxSizing: 'border-box',
           overflowX: 'hidden',
+          transition: 'padding-top 0.4s ease-out',
         }}>
           {activeTab === 'surah' && (
             <div className="surahs-grid">
@@ -226,10 +238,24 @@ export default function QuranPage() {
                     display: 'block',
                     padding: '16px',
                     border: '1px solid var(--color-outline)',
-                    borderRadius: '12px',
+                    borderRadius: 'var(--radius-lg)',
                     textDecoration: 'none',
                     color: 'inherit',
-                    backgroundColor: 'var(--color-surface-variant)',
+                    backgroundColor: 'var(--color-surface)',
+                    boxShadow: 'var(--elevation-1)',
+                    transition: 'all 0.2s ease',
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.transform = 'translateY(-4px)';
+                    e.currentTarget.style.boxShadow = 'var(--elevation-4)';
+                    e.currentTarget.style.borderColor = 'var(--color-primary)';
+                    e.currentTarget.style.backgroundColor = 'var(--color-surface-variant)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.transform = 'translateY(0)';
+                    e.currentTarget.style.boxShadow = 'var(--elevation-1)';
+                    e.currentTarget.style.borderColor = 'var(--color-outline)';
+                    e.currentTarget.style.backgroundColor = 'var(--color-surface)';
                   }}
                 >
                   <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
@@ -338,10 +364,24 @@ export default function QuranPage() {
                       display: 'block',
                       padding: '16px',
                       border: '1px solid var(--color-outline)',
-                      borderRadius: '12px',
+                      borderRadius: 'var(--radius-lg)',
                       textDecoration: 'none',
                       color: 'inherit',
-                      backgroundColor: 'var(--color-surface-variant)',
+                      backgroundColor: 'var(--color-surface)',
+                      boxShadow: 'var(--elevation-1)',
+                      transition: 'all 0.2s ease',
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.transform = 'translateY(-4px)';
+                      e.currentTarget.style.boxShadow = 'var(--elevation-4)';
+                      e.currentTarget.style.borderColor = 'var(--color-primary)';
+                      e.currentTarget.style.backgroundColor = 'var(--color-surface-variant)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.transform = 'translateY(0)';
+                      e.currentTarget.style.boxShadow = 'var(--elevation-1)';
+                      e.currentTarget.style.borderColor = 'var(--color-outline)';
+                      e.currentTarget.style.backgroundColor = 'var(--color-surface)';
                     }}
                   >
                     <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
@@ -443,10 +483,24 @@ export default function QuranPage() {
                       display: 'block',
                       padding: '16px',
                       border: '1px solid var(--color-outline)',
-                      borderRadius: '12px',
+                      borderRadius: 'var(--radius-lg)',
                       textDecoration: 'none',
                       color: 'inherit',
-                      backgroundColor: 'var(--color-surface-variant)',
+                      backgroundColor: 'var(--color-surface)',
+                      boxShadow: 'var(--elevation-1)',
+                      transition: 'all 0.2s ease',
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.transform = 'translateY(-4px)';
+                      e.currentTarget.style.boxShadow = 'var(--elevation-4)';
+                      e.currentTarget.style.borderColor = 'var(--color-primary)';
+                      e.currentTarget.style.backgroundColor = 'var(--color-surface-variant)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.transform = 'translateY(0)';
+                      e.currentTarget.style.boxShadow = 'var(--elevation-1)';
+                      e.currentTarget.style.borderColor = 'var(--color-outline)';
+                      e.currentTarget.style.backgroundColor = 'var(--color-surface)';
                     }}
                   >
                     <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>

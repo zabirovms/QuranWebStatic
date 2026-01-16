@@ -6,7 +6,7 @@ import { getVocabularyLessonClient } from '@/lib/data/vocabulary-data-client';
 import { VocabularyLesson, VocabularyWord } from '@/lib/types/vocabulary';
 import { vocabularyProgressService } from '@/lib/services/vocabulary-progress-service';
 import { vocabularyBookmarkService } from '@/lib/services/vocabulary-bookmark-service';
-import { QuizIcon, PlayArrowIcon, DeleteOutlineIcon, CheckCircleIcon } from '@/components/Icons';
+import { QuizIcon, PlayArrowIcon, PauseIcon, DeleteOutlineIcon, CheckCircleIcon } from '@/components/Icons';
 import LoadingSpinner from '@/components/LoadingSpinner';
 import ErrorDisplay from '@/components/ErrorDisplay';
 import { useTopBar } from '@/lib/contexts/TopBarContext';
@@ -23,6 +23,8 @@ export default function VocabularyLessonPage() {
   const [completedStatus, setCompletedStatus] = useState<Map<string, boolean>>(new Map());
   const [bookmarkStatus, setBookmarkStatus] = useState<Map<string, boolean>>(new Map());
   const [refreshKey, setRefreshKey] = useState(0);
+  const [playingWordIndex, setPlayingWordIndex] = useState<number | null>(null);
+  const [audioElements, setAudioElements] = useState<Map<number, HTMLAudioElement>>(new Map());
 
   useEffect(() => {
     const loadLesson = async () => {
@@ -72,6 +74,60 @@ export default function VocabularyLessonPage() {
     // Refresh status when returning
     setTimeout(() => setRefreshKey(prev => prev + 1), 500);
   };
+
+  const handlePlayWordAudio = async (wordIndex: number, audioPath: string) => {
+    try {
+      // If this word is already playing, pause it
+      if (playingWordIndex === wordIndex) {
+        const audio = audioElements.get(wordIndex);
+        if (audio) {
+          audio.pause();
+          setPlayingWordIndex(null);
+        }
+        return;
+      }
+
+      // Stop any currently playing audio
+      if (playingWordIndex !== null) {
+        const currentAudio = audioElements.get(playingWordIndex);
+        if (currentAudio) {
+          currentAudio.pause();
+        }
+      }
+
+      // Get or create audio element for this word
+      let audio = audioElements.get(wordIndex);
+      if (!audio) {
+        audio = new Audio();
+        audio.addEventListener('ended', () => {
+          setPlayingWordIndex(null);
+        });
+        audio.addEventListener('error', () => {
+          console.error('Error playing audio for word:', wordIndex);
+          setPlayingWordIndex(null);
+        });
+        setAudioElements(prev => new Map(prev).set(wordIndex, audio!));
+      }
+
+      // Play the audio
+      audio.src = audioPath;
+      await audio.play();
+      setPlayingWordIndex(wordIndex);
+    } catch (error) {
+      console.error('Failed to play word audio:', error);
+      setPlayingWordIndex(null);
+    }
+  };
+
+  // Cleanup audio on unmount
+  useEffect(() => {
+    return () => {
+      audioElements.forEach(audio => {
+        audio.pause();
+        audio.src = '';
+      });
+    };
+  }, [audioElements]);
 
   if (isLoading) {
     return (
@@ -311,26 +367,61 @@ export default function VocabularyLessonPage() {
                       textAlign: 'right',
                     }}>
                       <div
-                        onClick={() => handleWordClick(index)}
                         style={{
-                          cursor: 'pointer',
                           display: 'flex',
                           alignItems: 'center',
                           justifyContent: 'flex-end',
+                          gap: '8px',
                         }}
                       >
-                        <div style={{
-                          flex: 1,
-                          fontSize: '26px',
-                          fontFamily: 'Noto_Naskh_Arabic, serif',
-                          direction: 'rtl',
-                          fontWeight: 'bold',
-                          color: 'var(--color-primary)',
-                          lineHeight: 1.5,
-                          textAlign: 'right',
-                        }}>
-                          {word.arabic}
+                        <div
+                          onClick={() => handleWordClick(index)}
+                          style={{
+                            cursor: 'pointer',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'flex-end',
+                            flex: 1,
+                          }}
+                        >
+                          <div style={{
+                            fontSize: '26px',
+                            fontFamily: 'Noto_Naskh_Arabic, serif',
+                            direction: 'rtl',
+                            fontWeight: 'bold',
+                            color: 'var(--color-primary)',
+                            lineHeight: 1.5,
+                            textAlign: 'right',
+                          }}>
+                            {word.arabic}
+                          </div>
                         </div>
+                        {/* Play button for words with audio */}
+                        {word.audioPath && (
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handlePlayWordAudio(index, word.audioPath!);
+                            }}
+                            style={{
+                              background: 'none',
+                              border: 'none',
+                              cursor: 'pointer',
+                              padding: '4px',
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              color: playingWordIndex === index ? 'var(--color-primary)' : 'var(--color-text-secondary)',
+                            }}
+                            title={playingWordIndex === index ? 'Ист кардан' : 'Пахш кардан'}
+                          >
+                            {playingWordIndex === index ? (
+                              <PauseIcon size={18} color="var(--color-primary)" />
+                            ) : (
+                              <PlayArrowIcon size={18} color="var(--color-text-secondary)" />
+                            )}
+                          </button>
+                        )}
                         {/* Tick icon on the right */}
                         {isCompleted && (
                           <>

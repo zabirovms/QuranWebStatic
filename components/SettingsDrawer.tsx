@@ -19,7 +19,17 @@ export default function SettingsDrawer({ isOpen, onClose }: SettingsDrawerProps)
 
   useEffect(() => {
     if (isOpen) {
-      setSettings(settingsService.getSettings());
+      // Get the actual current theme from the document element
+      const currentTheme = typeof document !== 'undefined' 
+        ? document.documentElement.getAttribute('data-theme') || settingsService.getSettings().theme
+        : settingsService.getSettings().theme;
+      
+      const currentSettings = settingsService.getSettings();
+      // Update settings with the actual theme from DOM
+      if (currentSettings.theme !== currentTheme) {
+        currentSettings.theme = currentTheme;
+      }
+      setSettings(currentSettings);
     }
   }, [isOpen]);
 
@@ -164,10 +174,16 @@ export default function SettingsDrawer({ isOpen, onClose }: SettingsDrawerProps)
           </div>
           
           <ThemeSelector
-            currentTheme={settings.theme}
+            currentTheme={typeof document !== 'undefined' 
+              ? document.documentElement.getAttribute('data-theme') || settings.theme
+              : settings.theme}
             onSelect={(theme) => {
               try {
                 settingsService.setTheme(theme);
+                // Update DOM immediately
+                if (typeof document !== 'undefined') {
+                  document.documentElement.setAttribute('data-theme', theme);
+                }
                 setSettings(settingsService.getSettings());
               } catch (error) {
                 console.error('Error updating theme:', error);

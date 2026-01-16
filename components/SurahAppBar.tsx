@@ -46,6 +46,7 @@ export default function SurahAppBar({
       className="app-bar"
       style={{
         top: isTopBarVisible ? '56px' : '0px',
+        transition: 'top 0.4s ease-out',
       }}
     >
       <div className="app-bar-content">

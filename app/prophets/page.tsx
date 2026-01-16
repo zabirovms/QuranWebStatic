@@ -103,8 +103,8 @@ function ProphetsPageContent() {
     }}>
       {/* Content */}
       <main style={{
-        paddingLeft: '4px',
-        paddingRight: '4px',
+        paddingLeft: 'clamp(16px, 4vw, 4px)',
+        paddingRight: 'clamp(16px, 4vw, 4px)',
         paddingBottom: 'var(--spacing-lg)',
         paddingTop: isTopBarVisible ? 'calc(56px + var(--spacing-md))' : 'var(--spacing-md)',
         maxWidth: '900px',

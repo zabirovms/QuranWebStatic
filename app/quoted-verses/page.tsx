@@ -226,7 +226,7 @@ function QuotedVersesPageContent() {
           backgroundColor: 'var(--color-background)',
           zIndex: 1019,
           height: '48px',
-          transition: 'top 0.3s ease-in-out',
+          transition: 'top 0.4s ease-out',
         }}>
           {(['simple', 'styled'] as Tab[]).map((tab) => (
           <button
@@ -287,7 +287,8 @@ function QuotedVersesPageContent() {
       {/* Content */}
       <div style={{
         padding: 'var(--spacing-lg) 4px',
-        paddingTop: isTopBarVisible ? 'calc(56px + 48px)' : 'calc(48px)',
+        paddingTop: isTopBarVisible ? 'calc(56px + 48px - 12px)' : 'calc(48px - 12px)',
+        transition: 'padding-top 0.4s ease-out',
         paddingBottom: 'calc(80px)',
         marginTop: '0',
         maxWidth: '900px',

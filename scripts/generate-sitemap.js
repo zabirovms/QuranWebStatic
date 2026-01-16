@@ -37,6 +37,8 @@ const staticRoutes = [
   '/gallery',
   '/learn-words',
   '/scheduler',
+  '/bukhari',
+  '/vaqti-namoz',
 ];
 
 // Generate surah routes (1-114) - no trailing slashes
@@ -192,12 +194,85 @@ function generateReciterRoutes() {
   return routes;
 }
 
+// Load Bukhari books metadata
+function loadBukhariBooks() {
+  try {
+    const bukhariDir = path.join(DATA_DIR, 'bukhari');
+    const files = fs.readdirSync(bukhariDir);
+    const books = [];
+    
+    for (const file of files) {
+      if (file.startsWith('book_') && file.endsWith('.json')) {
+        try {
+          const filePath = path.join(bukhariDir, file);
+          const content = fs.readFileSync(filePath, 'utf-8');
+          const bookData = JSON.parse(content);
+          
+          if (bookData.number !== undefined) {
+            const bookNumber = bookData.number;
+            const subNumber = bookData.sub_number || null;
+            const bookNumberStr = subNumber ? `${bookNumber}-${subNumber}` : String(bookNumber);
+            books.push({
+              number: bookNumber,
+              subNumber: subNumber,
+              bookNumberStr: bookNumberStr,
+              chapters: bookData.chapters || [],
+            });
+          }
+        } catch (error) {
+          console.warn(`⚠️  Could not load Bukhari book file ${file}:`, error.message);
+        }
+      }
+    }
+    
+    return books.sort((a, b) => {
+      if (a.number !== b.number) return a.number - b.number;
+      return (a.subNumber || 0) - (b.subNumber || 0);
+    });
+  } catch (error) {
+    console.warn('⚠️  Could not load Bukhari books data for sitemap:', error.message);
+    return [];
+  }
+}
+
+// Generate Bukhari book routes
+function generateBukhariBookRoutes() {
+  const books = loadBukhariBooks();
+  const routes = [];
+  
+  for (const book of books) {
+    routes.push(`/bukhari/${book.bookNumberStr}`);
+  }
+  
+  return routes;
+}
+
+// Generate Bukhari chapter routes
+function generateBukhariChapterRoutes() {
+  const books = loadBukhariBooks();
+  const routes = [];
+  
+  for (const book of books) {
+    if (book.chapters && Array.isArray(book.chapters)) {
+      for (const chapter of book.chapters) {
+        if (chapter.number !== undefined) {
+          routes.push(`/bukhari/${book.bookNumberStr}/${chapter.number}`);
+        }
+      }
+    }
+  }
+  
+  return routes;
+}
+
 // Generate sitemap XML
 function generateSitemap() {
   const prophetRoutes = generateProphetRoutes();
   const prophetDuaRoutes = generateProphetDuaRoutes();
   const reciterRoutes = generateReciterRoutes();
-  const urls = [...staticRoutes, ...surahRoutes, ...verseRoutes, ...prophetRoutes, ...prophetDuaRoutes, ...reciterRoutes];
+  const bukhariBookRoutes = generateBukhariBookRoutes();
+  const bukhariChapterRoutes = generateBukhariChapterRoutes();
+  const urls = [...staticRoutes, ...surahRoutes, ...verseRoutes, ...prophetRoutes, ...prophetDuaRoutes, ...reciterRoutes, ...bukhariBookRoutes, ...bukhariChapterRoutes];
   
   const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
@@ -227,6 +302,18 @@ ${urls.map(url => {
       // Reciter pages
       priority = '0.7';
       changefreq = 'monthly';
+    } else if (url === '/bukhari') {
+      // Bukhari home page
+      priority = '0.9';
+      changefreq = 'weekly';
+    } else if (url.match(/^\/bukhari\/\d+(-\d+)?$/)) {
+      // Bukhari book pages
+      priority = '0.8';
+      changefreq = 'monthly';
+    } else if (url.match(/^\/bukhari\/\d+(-\d+)?\/\d+$/)) {
+      // Bukhari chapter pages
+      priority = '0.7';
+      changefreq = 'monthly';
     }
     
     return `  <url>
@@ -247,6 +334,8 @@ ${urls.map(url => {
   console.log(`   - Prophet detail pages: ${prophetRoutes.length}`);
   console.log(`   - Prophet dua detail pages: ${prophetDuaRoutes.length}`);
   console.log(`   - Reciter pages: ${reciterRoutes.length}`);
+  console.log(`   - Bukhari book pages: ${bukhariBookRoutes.length}`);
+  console.log(`   - Bukhari chapter pages: ${bukhariChapterRoutes.length}`);
 }
 
 // Run if called directly

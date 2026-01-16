@@ -6,6 +6,7 @@ import { SettingsService } from '@/lib/services/settings-service';
 import { BookmarkService } from '@/lib/services/bookmark-service';
 import { PlayArrowIcon, PauseIcon, BookmarkIcon, CopyIcon, ShareIcon, TranslateIcon } from './Icons';
 import TranslationDropdown from './TranslationDropdown';
+import ClickableArabicText from './ClickableArabicText';
 
 interface VerseItemProps {
   verse: Verse;
@@ -262,7 +263,11 @@ export default function VerseItem({
               color: 'var(--color-text-primary)',
             }}
           >
-            <span lang="ar">{getArabicTextWithEndSymbol()}</span>
+            <ClickableArabicText
+              arabicText={getArabicTextWithEndSymbol()}
+              surahNumber={surahNumber}
+              verseNumber={verse.verseNumber}
+            />
           </div>
 
           {/* Transliteration */}

@@ -106,8 +106,8 @@ export default function BukhariSearch() {
   const bookNumberStr = (book: BookMetadata) => 
     `${book.number}${book.sub_number ? `-${book.sub_number}` : ''}`;
 
-  const highlightText = (text: string, query: string) => {
-    if (!query || query.trim().length < 2) return text;
+  const highlightText = (text: string, query: string): Array<{ text: string; highlight: boolean }> => {
+    if (!query || query.trim().length < 2) return [{ text, highlight: false }];
     
     const queryLower = query.toLowerCase();
     const textLower = text.toLowerCase();

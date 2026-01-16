@@ -1,4 +1,4 @@
-import type { Metadata } from 'next'
+import type { Metadata, Viewport } from 'next'
 import './globals.css'
 import TopBar from '@/components/TopBar'
 import Footer from '@/components/Footer'
@@ -7,16 +7,17 @@ import MiniAudioPlayer from '@/components/MiniAudioPlayer'
 import MobileAppDownloadDialog from '@/components/MobileAppDownloadDialog'
 import { TopBarProvider } from '@/lib/contexts/TopBarContext'
 
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 5,
+  userScalable: true,
+}
+
 export const metadata: Metadata = {
   title: 'Қуръони Карим - Тафсири Осонбаён бо забони тоҷикӣ',
   description: 'Хондани Қуръони Карим бо тарҷумаи тоҷикӣ ва тафсири осонбаён. Рӯйхати ҳамаи 114 сураҳои Қуръони Карим. Тиловати оят ба оят ва кулли сура тавассути 150+ қориҳои машҳури ҷаҳон.',
   metadataBase: new URL('https://www.quran.tj'),
-  viewport: {
-    width: 'device-width',
-    initialScale: 1,
-    maximumScale: 5,
-    userScalable: true,
-  },
   icons: {
     icon: [
       { url: '/favicon.ico', sizes: 'any' },

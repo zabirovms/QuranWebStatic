@@ -14,6 +14,7 @@ import { useTopBar } from '@/lib/contexts/TopBarContext';
 export default function ChapterPage() {
   const params = useParams();
   const router = useRouter();
+  const { isVisible: isTopBarVisible } = useTopBar();
   const [book, setBook] = useState<BookJson | null>(null);
   const [chapter, setChapter] = useState<Chapter | null>(null);
   const [isLoading, setIsLoading] = useState(true);

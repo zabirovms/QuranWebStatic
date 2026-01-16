@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useState, useEffect, useCallback, useMemo, Suspense } from 'react';
 import { useTopBar } from '@/lib/contexts/TopBarContext';
 import { prayerTimesService } from '@/lib/services/prayer-times-service';
 import type { PrayerTime, PrayerTimesMonth, PrayerDay } from '@/lib/types/prayer-times';
@@ -268,11 +268,13 @@ export default function PrayerTimesPage() {
 
   return (
     <>
-      <DynamicMetadata
-        title="Вақтҳои намоз дар Душанбе - Тақвими намоз барои Тоҷикистон"
-        description="Вақтҳои намоз дар Душанбе ва дигар шаҳрҳои Тоҷикистон. Тақвими комили вақтҳои намоз барои ҳар рӯз. Вақтҳои намоз мувофиқ ба маркази исломии Ҷумҳурии Тоҷикистон. Вақтҳои намоз барои шаҳрҳои Тоҷикистон: Душанбе, Хуҷанд, Кӯлоб, Бохтар ва дигар шаҳрҳо."
-        canonical="https://www.quran.tj/vaqti-namoz"
-      />
+      <Suspense fallback={null}>
+        <DynamicMetadata
+          title="Вақтҳои намоз дар Душанбе - Тақвими намоз барои Тоҷикистон"
+          description="Вақтҳои намоз дар Душанбе ва дигар шаҳрҳои Тоҷикистон. Тақвими комили вақтҳои намоз барои ҳар рӯз. Вақтҳои намоз мувофиқ ба маркази исломии Ҷумҳурии Тоҷикистон. Вақтҳои намоз барои шаҳрҳои Тоҷикистон: Душанбе, Хуҷанд, Кӯлоб, Бохтар ва дигар шаҳрҳо."
+          canonical="https://www.quran.tj/vaqti-namoz"
+        />
+      </Suspense>
       <PrayerTimesStructuredData
         todayData={todayFullData}
         location="Душанбе"

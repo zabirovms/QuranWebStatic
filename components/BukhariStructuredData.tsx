@@ -81,12 +81,6 @@ export default function BukhariStructuredData({
         bookFormat: 'Digital',
         genre: 'Religious Text',
         numberOfPages: totalBooks || 88,
-        aggregateRating: {
-          '@type': 'AggregateRating',
-          ratingValue: '5',
-          bestRating: '5',
-          worstRating: '1',
-        },
         breadcrumb: {
           '@type': 'BreadcrumbList',
           itemListElement: [

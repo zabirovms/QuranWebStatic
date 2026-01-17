@@ -4,7 +4,6 @@ import TopBar from '@/components/TopBar'
 import Footer from '@/components/Footer'
 import ThemeInitializer from '@/components/ThemeInitializer'
 import MiniAudioPlayer from '@/components/MiniAudioPlayer'
-import MobileAppDownloadDialog from '@/components/MobileAppDownloadDialog'
 import { TopBarProvider } from '@/lib/contexts/TopBarContext'
 
 export const viewport: Viewport = {
@@ -51,7 +50,6 @@ export default function RootLayout({
         </main>
         <Footer />
         <MiniAudioPlayer />
-        <MobileAppDownloadDialog />
         </TopBarProvider>
       </body>
     </html>

@@ -110,6 +110,8 @@
   --color-primary-container: #2c3e50;
   --color-primary-container-low-opacity: rgba(44, 62, 80, 0.1);
   --color-primary-low-opacity: rgba(44, 62, 80, 0.3);
+  --color-word-highlight: #0066cc; /* Bright blue for word highlighting in light mode */
+  --color-word-hover: #0052a3; /* Slightly darker blue for hover in light mode */
   --surah-svg-filter: none; /* No filter for light theme - SVGs are dark */
 }
 
@@ -158,6 +160,8 @@
   --color-primary-container: #16697A;
   --color-primary-container-low-opacity: rgba(22, 105, 122, 0.1);
   --color-primary-low-opacity: rgba(22, 105, 122, 0.3);
+  --color-word-highlight: #0066cc; /* Bright blue for word highlighting in classic light mode */
+  --color-word-hover: #0052a3; /* Slightly darker blue for hover in classic light mode */
 }
 
 /* Classic Dark Theme */
@@ -205,6 +209,8 @@
   --color-primary-container: #8D6E63;
   --color-primary-container-low-opacity: rgba(141, 110, 99, 0.1);
   --color-primary-low-opacity: rgba(141, 110, 99, 0.3);
+  --color-word-highlight: #0066cc; /* Bright blue for word highlighting in soft beige theme */
+  --color-word-hover: #0052a3; /* Slightly darker blue for hover in soft beige theme */
   --surah-svg-filter: none;
 }
 
@@ -229,6 +235,8 @@
   --color-primary-container: #6D4C41;
   --color-primary-container-low-opacity: rgba(109, 76, 65, 0.1);
   --color-primary-low-opacity: rgba(109, 76, 65, 0.3);
+  --color-word-highlight: #0066cc; /* Bright blue for word highlighting in elegant marble theme */
+  --color-word-hover: #0052a3; /* Slightly darker blue for hover in elegant marble theme */
   --surah-svg-filter: none;
 }
 
@@ -277,6 +285,8 @@
   --color-primary-container: #455A64;
   --color-primary-container-low-opacity: rgba(69, 90, 100, 0.1);
   --color-primary-low-opacity: rgba(69, 90, 100, 0.3);
+  --color-word-highlight: #0066cc; /* Bright blue for word highlighting in silver light theme */
+  --color-word-hover: #0052a3; /* Slightly darker blue for hover in silver light theme */
   --surah-svg-filter: none;
 }
 

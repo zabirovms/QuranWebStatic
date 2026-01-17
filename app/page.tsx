@@ -13,7 +13,6 @@ import SearchPlaceholder from '@/components/SearchPlaceholder';
 import YouTubeVideosSection from '@/components/YouTubeVideosSection';
 import GallerySection from '@/components/GallerySection';
 import AllSurahsList from '@/components/AllSurahsList';
-import MobileAppBanner from '@/components/MobileAppBanner';
 import HeroCTAButton from '@/components/HeroCTAButton';
 import SectionLink from '@/components/SectionLink';
 import HoverableCard from '@/components/HoverableCard';
@@ -117,7 +116,7 @@ export default async function HomePage() {
           margin: '0 auto',
           textAlign: 'center',
           position: 'relative',
-          zIndex: 2,
+          zIndex: 100,
         }}>
           <h1 style={{
             fontSize: 'clamp(24px, 5vw, 36px)',
@@ -154,9 +153,6 @@ export default async function HomePage() {
           position: 'relative',
           zIndex: 2,
         }}>
-        {/* Mobile App Banner */}
-        <MobileAppBanner />
-
         {/* Featured Surahs Section */}
         <div style={{ marginBottom: '32px' }}>
           <div style={{

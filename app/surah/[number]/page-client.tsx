@@ -72,20 +72,29 @@ function SurahPageContent({ params, initialSurah, initialVerses }: SurahPageClie
   const unsubscribeRef = useRef<(() => void) | null>(null);
   const timeoutIdsRef = useRef<ReturnType<typeof setTimeout>[]>([]);
   
-  // Get initial verse from URL params (safely handle searchParams)
-  let initialVerse: number | null = null;
-  try {
-    const verseParam = searchParams?.get('verse');
-    if (verseParam) {
-      const parsed = parseInt(verseParam, 10);
-      if (!isNaN(parsed) && parsed > 0) {
-        initialVerse = parsed;
+  // Get initial verse from URL params (reactive to searchParams changes)
+  const [initialVerse, setInitialVerse] = useState<number | null>(null);
+  
+  // Update initialVerse when searchParams change
+  useEffect(() => {
+    try {
+      const verseParam = searchParams?.get('verse');
+      if (verseParam) {
+        const parsed = parseInt(verseParam, 10);
+        if (!isNaN(parsed) && parsed > 0) {
+          setInitialVerse(parsed);
+        } else {
+          setInitialVerse(null);
+        }
+      } else {
+        setInitialVerse(null);
       }
+    } catch (error) {
+      // searchParams might not be available during navigation
+      console.warn('Error reading verse parameter:', error);
+      setInitialVerse(null);
     }
-  } catch (error) {
-    // searchParams might not be available during navigation
-    console.warn('Error reading verse parameter:', error);
-  }
+  }, [searchParams]);
   
   // Track previous initialVerse to detect changes
   const prevInitialVerseRef = useRef<number | null>(null);

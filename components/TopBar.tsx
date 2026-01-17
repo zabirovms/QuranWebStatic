@@ -314,6 +314,7 @@ export default function TopBar() {
                 <Link
                   key={item.id}
                   href={item.href}
+                  prefetch={true}
                   onClick={handleLinkClick}
                   style={{
                     display: 'flex',
@@ -437,6 +438,7 @@ export default function TopBar() {
                 <Link
                   key={section.id}
                   href={section.href}
+                  prefetch={true}
                   onClick={handleLinkClick}
                   style={linkStyle}
                   onMouseEnter={(e) => {

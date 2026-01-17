@@ -346,11 +346,21 @@ export default function SearchPlaceholder() {
       width: '100%',
       maxWidth: '600px',
       margin: '0 auto',
-      zIndex: 1,
+      zIndex: 1000,
     }}>
       {/* Search Input */}
       <div
-        onClick={() => searchInputRef.current?.focus()}
+        onClick={() => {
+          searchInputRef.current?.focus();
+          setIsFocused(true);
+        }}
+        onTouchStart={() => {
+          // Ensure focus on mobile tap
+          if (searchInputRef.current && document.activeElement !== searchInputRef.current) {
+            searchInputRef.current.focus();
+            setIsFocused(true);
+          }
+        }}
         style={{
           display: 'flex',
           alignItems: 'center',
@@ -365,7 +375,7 @@ export default function SearchPlaceholder() {
           fontSize: 'var(--font-size-lg)',
           transition: 'background-color 0.2s ease, border-color 0.2s ease, border-radius 0.2s ease',
           position: 'relative',
-          zIndex: showResults ? 1001 : 1,
+          zIndex: showResults || showSuggestions ? 1001 : 1000,
           cursor: 'text',
         }}
       >
@@ -375,10 +385,15 @@ export default function SearchPlaceholder() {
           type="text"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          onFocus={() => setIsFocused(true)}
+          onFocus={() => {
+            setIsFocused(true);
+          }}
           onBlur={() => {
             // Delay to allow clicking on results
-            setTimeout(() => setIsFocused(false), 200);
+            // Longer delay on mobile to allow tapping on results
+            const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+            const delay = isMobile ? 300 : 200;
+            setTimeout(() => setIsFocused(false), delay);
           }}
           placeholder="Ҷустуҷӯ дар Қуръон..."
           style={{
@@ -412,6 +427,7 @@ export default function SearchPlaceholder() {
       {/* Suggestions Container */}
       {showSuggestions && (
         <div
+          data-search-results
           style={{
             position: 'absolute',
             top: '100%',
@@ -427,7 +443,7 @@ export default function SearchPlaceholder() {
             zIndex: 1000,
             marginTop: '-2px', // Overlap with search input border
           }}
-          onMouseDown={(e) => e.preventDefault()} // Prevent blur when clicking results
+          onMouseDown={(e) => e.preventDefault()} // Prevent blur when clicking/tapping results
         >
            {/* Search Guide - Compact */}
            <div style={{ padding: '12px 16px', marginBottom: '12px' }}>
@@ -563,6 +579,7 @@ export default function SearchPlaceholder() {
       {/* Results Container */}
       {showResults && !showSuggestions && (
         <div
+          data-search-results
           style={{
             position: 'absolute',
             top: '100%',
@@ -578,7 +595,7 @@ export default function SearchPlaceholder() {
             zIndex: 1000,
             marginTop: '-2px', // Overlap with search input border
           }}
-          onMouseDown={(e) => e.preventDefault()} // Prevent blur when clicking results
+          onMouseDown={(e) => e.preventDefault()} // Prevent blur when clicking/tapping results
         >
           {isLoading && (
             <div style={{

@@ -208,7 +208,7 @@ export default function ClickableArabicText({
             display: 'inline',
             cursor: 'pointer',
             color: shouldHighlight
-              ? 'var(--color-primary)'
+              ? 'var(--color-word-highlight, var(--color-primary))'
               : 'var(--color-text-primary)',
             fontWeight: 'var(--font-weight-normal)',
             textDecoration: 'none',
@@ -220,7 +220,7 @@ export default function ClickableArabicText({
           }}
           onMouseEnter={(e) => {
             if (!shouldHighlight) {
-              e.currentTarget.style.color = 'var(--color-primary)';
+              e.currentTarget.style.color = 'var(--color-word-hover, var(--color-word-highlight, var(--color-primary)))';
             }
           }}
           onMouseLeave={(e) => {

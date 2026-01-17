@@ -1,11 +1,12 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
+import Link from 'next/link';
 import { getAllSurahs } from '@/lib/data/surah-data-client';
 import { getAllVerses, getVersesBySurah } from '@/lib/data/verse-data-client';
 import { Surah, Verse } from '@/lib/types';
-import { CloseIcon } from './Icons';
+import { CloseIcon, SearchIcon, ClearIcon } from './Icons';
 
 interface NavigationDrawerProps {
   isOpen: boolean;
@@ -39,72 +40,107 @@ export default function NavigationDrawer({ isOpen, onClose }: NavigationDrawerPr
   const [surahVerses, setSurahVerses] = useState<Verse[]>([]);
   const [isLoadingVerses, setIsLoadingVerses] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  
+  // Search queries for each tab
+  const [surahSearchQuery, setSurahSearchQuery] = useState('');
+  const [verseSearchQuery, setVerseSearchQuery] = useState('');
+  const [juzSearchQuery, setJuzSearchQuery] = useState('');
+  const [pageSearchQuery, setPageSearchQuery] = useState('');
+  
+  // Cache data loading state - only load once
+  const dataLoadedRef = useRef(false);
+  const loadingPromiseRef = useRef<Promise<void> | null>(null);
+  
+  // Filtered lists based on search queries
+  const filteredSurahs = useMemo(() => {
+    if (!surahSearchQuery.trim()) return surahs;
+    const query = surahSearchQuery.toLowerCase();
+    return surahs.filter(surah => 
+      surah.nameTajik.toLowerCase().includes(query) ||
+      surah.nameArabic.includes(query) ||
+      surah.number.toString().includes(query)
+    );
+  }, [surahs, surahSearchQuery]);
+  
+  const filteredSurahVerses = useMemo(() => {
+    if (!verseSearchQuery.trim()) return surahVerses;
+    const query = verseSearchQuery.toLowerCase();
+    return surahVerses.filter(verse => 
+      verse.verseNumber.toString().includes(query) ||
+      (verse.arabicText && verse.arabicText.includes(query)) ||
+      (verse.tajikText && verse.tajikText.toLowerCase().includes(query))
+    );
+  }, [surahVerses, verseSearchQuery]);
+  
+  const filteredJuzList = useMemo(() => {
+    if (!juzSearchQuery.trim()) return juzList;
+    const query = juzSearchQuery.toLowerCase();
+    return juzList.filter(juz => 
+      juz.juz.toString().includes(query) ||
+      juz.surahName.toLowerCase().includes(query) ||
+      juz.ayahNumber.toString().includes(query)
+    );
+  }, [juzList, juzSearchQuery]);
+  
+  const filteredPageList = useMemo(() => {
+    if (!pageSearchQuery.trim()) return pageList;
+    const query = pageSearchQuery.toLowerCase();
+    return pageList.filter(page => 
+      page.page.toString().includes(query) ||
+      page.surahName.toLowerCase().includes(query) ||
+      page.ayahNumber.toString().includes(query)
+    );
+  }, [pageList, pageSearchQuery]);
 
-  // Extract current surah number from pathname if on surah page
-  useEffect(() => {
-    if (pathname && pathname.startsWith('/surah/')) {
-      const match = pathname.match(/\/surah\/(\d+)/);
-      if (match) {
-        const surahNum = parseInt(match[1], 10);
-        if (surahNum >= 1 && surahNum <= 114) {
-          setSelectedSurah(surahNum);
-        }
-      }
-    }
-  }, [pathname]);
-
-  useEffect(() => {
-    if (isOpen) {
-      loadData();
-    }
-  }, [isOpen]);
-
-  // Load verses when surah is selected (for verse tab)
-  useEffect(() => {
-    if (selectedSurah && isOpen && activeTab === 'verse') {
-      loadSurahVerses(selectedSurah);
-    }
-  }, [selectedSurah, isOpen, activeTab]);
-
+  // Define loadData function before useEffect hooks that use it
   const loadData = async () => {
+    // If already loaded, don't reload
+    if (dataLoadedRef.current) {
+      return;
+    }
+    
     setIsLoading(true);
     try {
-      const [surahsData, versesData] = await Promise.all([
-        getAllSurahs(),
-        getAllVerses(),
-      ]);
-
+      // Load surahs first (lightweight)
+      const surahsData = await getAllSurahs();
       setSurahs(surahsData);
-
-      // Build juz list (1-30)
-      const juzMap = new Map<number, JuzInfo>();
-      for (const verse of versesData) {
-        if (verse.juz && !juzMap.has(verse.juz)) {
-          const surah = surahsData.find(s => s.number === verse.surahId);
-          juzMap.set(verse.juz, {
-            juz: verse.juz,
-            surahNumber: verse.surahId,
-            surahName: surah?.nameTajik || `Сураи ${verse.surahId}`,
-            ayahNumber: verse.verseNumber,
-          });
+      
+      // Then load verses in background (heavy operation)
+      // Only load if user might need juz/page tabs
+      try {
+        const versesData = await getAllVerses();
+        // Build juz list (1-30)
+        const juzMap = new Map<number, JuzInfo>();
+        for (const verse of versesData) {
+          if (verse.juz && !juzMap.has(verse.juz)) {
+            const surah = surahsData.find(s => s.number === verse.surahId);
+            juzMap.set(verse.juz, {
+              juz: verse.juz,
+              surahNumber: verse.surahId,
+              surahName: surah?.nameTajik || `Сураи ${verse.surahId}`,
+              ayahNumber: verse.verseNumber,
+            });
+          }
         }
-      }
-      setJuzList(Array.from(juzMap.values()).sort((a, b) => a.juz - b.juz));
+        setJuzList(Array.from(juzMap.values()).sort((a, b) => a.juz - b.juz));
 
-      // Build page list (1-604)
-      const pageMap = new Map<number, PageInfo>();
-      for (const verse of versesData) {
-        if (verse.page && !pageMap.has(verse.page)) {
-          const surah = surahsData.find(s => s.number === verse.surahId);
-          pageMap.set(verse.page, {
-            page: verse.page,
-            surahNumber: verse.surahId,
-            surahName: surah?.nameTajik || `Сураи ${verse.surahId}`,
-            ayahNumber: verse.verseNumber,
-          });
+        // Build page list (1-604)
+        const pageMap = new Map<number, PageInfo>();
+        for (const verse of versesData) {
+          if (verse.page && !pageMap.has(verse.page)) {
+            const surah = surahsData.find(s => s.number === verse.surahId);
+            pageMap.set(verse.page, {
+              page: verse.page,
+              surahNumber: verse.surahId,
+              surahName: surah?.nameTajik || `Сураи ${verse.surahId}`,
+              ayahNumber: verse.verseNumber,
+            });
+          }
         }
+        setPageList(Array.from(pageMap.values()).sort((a, b) => a.page - b.page));
+      } catch (versesError) {
+        console.error('Error loading verses for juz/page lists:', versesError);
       }
-      setPageList(Array.from(pageMap.values()).sort((a, b) => a.page - b.page));
     } catch (error) {
       console.error('Error loading data:', error);
     } finally {
@@ -125,30 +161,43 @@ export default function NavigationDrawer({ isOpen, onClose }: NavigationDrawerPr
     }
   };
 
+  // Extract current surah number from pathname if on surah page
+  useEffect(() => {
+    if (pathname && pathname.startsWith('/surah/')) {
+      const match = pathname.match(/\/surah\/(\d+)/);
+      if (match) {
+        const surahNum = parseInt(match[1], 10);
+        if (surahNum >= 1 && surahNum <= 114) {
+          setSelectedSurah(surahNum);
+        }
+      }
+    }
+  }, [pathname]);
+
+  // Load data only once on component mount, not every time drawer opens
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => {
+    if (!dataLoadedRef.current && !loadingPromiseRef.current) {
+      loadingPromiseRef.current = loadData().finally(() => {
+        dataLoadedRef.current = true;
+        loadingPromiseRef.current = null;
+      });
+    }
+  }, []); // Empty dependency array - only run once
+
+  // Load verses when surah is selected (for verse tab)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => {
+    if (selectedSurah && isOpen && activeTab === 'verse') {
+      loadSurahVerses(selectedSurah);
+    }
+  }, [selectedSurah, isOpen, activeTab]);
 
   const handleSurahClick = (surahNumber: number) => {
     setSelectedSurah(surahNumber);
   };
 
-  const handleSurahNavigate = (surahNumber: number) => {
-    router.push(`/surah/${surahNumber}`);
-    onClose();
-  };
 
-  const handleVerseClick = (surahNumber: number, verseNumber: number) => {
-    router.push(`/surah/${surahNumber}?verse=${verseNumber}`);
-    onClose();
-  };
-
-  const handleJuzClick = (juz: JuzInfo) => {
-    router.push(`/surah/${juz.surahNumber}?verse=${juz.ayahNumber}`);
-    onClose();
-  };
-
-  const handlePageClick = (page: PageInfo) => {
-    router.push(`/surah/${page.surahNumber}?verse=${page.ayahNumber}`);
-    onClose();
-  };
 
   return (
     <>
@@ -284,7 +333,7 @@ export default function NavigationDrawer({ isOpen, onClose }: NavigationDrawerPr
             padding: '16px',
           }}
         >
-          {isLoading ? (
+          {isLoading && surahs.length === 0 ? (
             <div style={{ textAlign: 'center', padding: 'var(--spacing-xl)' }}>
               Боргирӣ карда истодааст...
             </div>
@@ -297,14 +346,77 @@ export default function NavigationDrawer({ isOpen, onClose }: NavigationDrawerPr
                   height: '100%',
                   minHeight: 0,
                 }}>
+                  {/* Search Input */}
                   <div style={{
-                    fontSize: 'var(--font-size-base)',
-                    fontWeight: 'var(--font-weight-semibold)',
-                    color: 'var(--color-text-primary)',
-                    marginBottom: 'var(--spacing-sm)',
-                    padding: '0 var(--spacing-xs)',
+                    position: 'relative',
+                    marginBottom: 'var(--spacing-md)',
                   }}>
-                    Сураҳо
+                    <div style={{
+                      position: 'absolute',
+                      left: '12px',
+                      top: '50%',
+                      transform: 'translateY(-50%)',
+                      pointerEvents: 'none',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                    }}>
+                      <SearchIcon 
+                        size={20} 
+                        color="var(--color-text-secondary)" 
+                      />
+                    </div>
+                    <input
+                      type="text"
+                      value={surahSearchQuery}
+                      onChange={(e) => setSurahSearchQuery(e.target.value)}
+                      placeholder="Ҷустуҷӯи сура..."
+                      style={{
+                        width: '100%',
+                        padding: '10px 12px 10px 40px',
+                        fontSize: 'var(--font-size-base)',
+                        border: '1px solid var(--color-outline)',
+                        borderRadius: 'var(--radius-md)',
+                        backgroundColor: 'var(--color-surface)',
+                        color: 'var(--color-text-primary)',
+                        outline: 'none',
+                        transition: 'border-color 0.2s ease',
+                      }}
+                      onFocus={(e) => {
+                        e.currentTarget.style.borderColor = 'var(--color-primary)';
+                      }}
+                      onBlur={(e) => {
+                        e.currentTarget.style.borderColor = 'var(--color-outline)';
+                      }}
+                    />
+                    {surahSearchQuery && (
+                      <button
+                        onClick={() => setSurahSearchQuery('')}
+                        style={{
+                          position: 'absolute',
+                          right: '8px',
+                          top: '50%',
+                          transform: 'translateY(-50%)',
+                          background: 'none',
+                          border: 'none',
+                          cursor: 'pointer',
+                          padding: '4px',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          borderRadius: '50%',
+                          transition: 'background-color 0.2s ease',
+                        }}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.backgroundColor = 'var(--color-surface-variant)';
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.backgroundColor = 'transparent';
+                        }}
+                      >
+                        <ClearIcon size={18} color="var(--color-text-secondary)" />
+                      </button>
+                    )}
                   </div>
                   <div style={{
                     flex: 1,
@@ -315,47 +427,64 @@ export default function NavigationDrawer({ isOpen, onClose }: NavigationDrawerPr
                     scrollbarWidth: 'none',
                     msOverflowStyle: 'none',
                   }}>
-                    {surahs.map((surah) => (
-                      <div
-                        key={surah.number}
-                        onClick={() => handleSurahNavigate(surah.number)}
-                        style={{
-                          padding: 'var(--spacing-md)',
-                          cursor: 'pointer',
-                          borderBottom: '1px solid var(--color-outline)',
-                          transition: 'background-color 0.2s ease',
-                          display: 'flex',
-                          justifyContent: 'space-between',
-                          alignItems: 'center',
-                          gap: 'var(--spacing-md)',
-                        }}
-                        onMouseEnter={(e) => {
-                          e.currentTarget.style.backgroundColor = 'var(--color-surface-variant)';
-                        }}
-                        onMouseLeave={(e) => {
-                          e.currentTarget.style.backgroundColor = 'transparent';
-                        }}
-                      >
-                        <div style={{
-                          fontSize: 'var(--font-size-base)',
-                          fontWeight: 'var(--font-weight-semibold)',
-                          color: 'var(--color-text-primary)',
-                          flex: 1,
-                        }}>
-                          {surah.number}. {surah.nameTajik}
-                        </div>
-                        <div style={{
-                          fontSize: 'var(--font-size-base)',
-                          fontWeight: 'var(--font-weight-normal)',
-                          color: 'var(--color-text-secondary)',
-                          fontFamily: "'Amiri', 'Noto Naskh Arabic', 'Arabic Typesetting', serif",
-                          direction: 'rtl',
-                          textAlign: 'right',
-                        }}>
-                          {surah.nameArabic}
-                        </div>
+                    {filteredSurahs.length === 0 ? (
+                      <div style={{
+                        padding: 'var(--spacing-xl)',
+                        textAlign: 'center',
+                        color: 'var(--color-text-secondary)',
+                        fontSize: 'var(--font-size-sm)',
+                      }}>
+                        {surahSearchQuery ? 'Сура ёфт нашуд' : 'Боргирӣ карда истодааст...'}
                       </div>
-                    ))}
+                    ) : (
+                      filteredSurahs.map((surah) => (
+                        <Link
+                          key={surah.number}
+                          href={`/surah/${surah.number}`}
+                          prefetch={true}
+                          onClick={() => {
+                            onClose();
+                          }}
+                          style={{
+                            padding: 'var(--spacing-md)',
+                            cursor: 'pointer',
+                            borderBottom: '1px solid var(--color-outline)',
+                            transition: 'background-color 0.2s ease',
+                            display: 'flex',
+                            justifyContent: 'space-between',
+                            alignItems: 'center',
+                            gap: 'var(--spacing-md)',
+                            textDecoration: 'none',
+                            color: 'inherit',
+                          }}
+                          onMouseEnter={(e) => {
+                            e.currentTarget.style.backgroundColor = 'var(--color-surface-variant)';
+                          }}
+                          onMouseLeave={(e) => {
+                            e.currentTarget.style.backgroundColor = 'transparent';
+                          }}
+                        >
+                          <div style={{
+                            fontSize: 'var(--font-size-base)',
+                            fontWeight: 'var(--font-weight-semibold)',
+                            color: 'var(--color-text-primary)',
+                            flex: 1,
+                          }}>
+                            {surah.number}. {surah.nameTajik}
+                          </div>
+                          <div style={{
+                            fontSize: 'var(--font-size-base)',
+                            fontWeight: 'var(--font-weight-normal)',
+                            color: 'var(--color-text-secondary)',
+                            fontFamily: "'Amiri', 'Noto Naskh Arabic', 'Arabic Typesetting', serif",
+                            direction: 'rtl',
+                            textAlign: 'right',
+                          }}>
+                            {surah.nameArabic}
+                          </div>
+                        </Link>
+                      ))
+                    )}
                   </div>
                 </div>
               )}
@@ -374,14 +503,70 @@ export default function NavigationDrawer({ isOpen, onClose }: NavigationDrawerPr
                     flexDirection: 'column',
                     minHeight: 0,
                   }}>
+                    {/* Search Input for Surahs */}
                     <div style={{
-                      fontSize: 'var(--font-size-base)',
-                      fontWeight: 'var(--font-weight-semibold)',
-                      color: 'var(--color-text-primary)',
+                      position: 'relative',
                       marginBottom: 'var(--spacing-sm)',
-                      padding: '0 var(--spacing-xs)',
                     }}>
-                      Сураҳо
+                      <div style={{
+                        position: 'absolute',
+                        left: '10px',
+                        top: '50%',
+                        transform: 'translateY(-50%)',
+                        pointerEvents: 'none',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                      }}>
+                        <SearchIcon 
+                          size={18} 
+                          color="var(--color-text-secondary)" 
+                        />
+                      </div>
+                      <input
+                        type="text"
+                        value={surahSearchQuery}
+                        onChange={(e) => setSurahSearchQuery(e.target.value)}
+                        placeholder="Ҷустуҷӯи сура..."
+                        style={{
+                          width: '100%',
+                          padding: '8px 10px 8px 36px',
+                          fontSize: 'var(--font-size-sm)',
+                          border: '1px solid var(--color-outline)',
+                          borderRadius: 'var(--radius-md)',
+                          backgroundColor: 'var(--color-surface)',
+                          color: 'var(--color-text-primary)',
+                          outline: 'none',
+                          transition: 'border-color 0.2s ease',
+                        }}
+                        onFocus={(e) => {
+                          e.currentTarget.style.borderColor = 'var(--color-primary)';
+                        }}
+                        onBlur={(e) => {
+                          e.currentTarget.style.borderColor = 'var(--color-outline)';
+                        }}
+                      />
+                      {surahSearchQuery && (
+                        <button
+                          onClick={() => setSurahSearchQuery('')}
+                          style={{
+                            position: 'absolute',
+                            right: '6px',
+                            top: '50%',
+                            transform: 'translateY(-50%)',
+                            background: 'none',
+                            border: 'none',
+                            cursor: 'pointer',
+                            padding: '2px',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            borderRadius: '50%',
+                          }}
+                        >
+                          <ClearIcon size={16} color="var(--color-text-secondary)" />
+                        </button>
+                      )}
                     </div>
                     <div style={{
                       flex: 1,
@@ -392,45 +577,56 @@ export default function NavigationDrawer({ isOpen, onClose }: NavigationDrawerPr
                       scrollbarWidth: 'none',
                       msOverflowStyle: 'none',
                     }}>
-                      {surahs.map((surah) => (
-                        <div
-                          key={surah.number}
-                          onClick={() => handleSurahClick(surah.number)}
-                          style={{
-                            padding: 'var(--spacing-sm) var(--spacing-md)',
-                            cursor: 'pointer',
-                            backgroundColor: selectedSurah === surah.number
-                              ? 'var(--color-primary-container-low-opacity)'
-                              : 'transparent',
-                            borderLeft: selectedSurah === surah.number
-                              ? '3px solid var(--color-primary)'
-                              : '3px solid transparent',
-                            transition: 'all 0.2s ease',
-                          }}
-                          onMouseEnter={(e) => {
-                            if (selectedSurah !== surah.number) {
-                              e.currentTarget.style.backgroundColor = 'var(--color-surface-variant)';
-                            }
-                          }}
-                          onMouseLeave={(e) => {
-                            if (selectedSurah !== surah.number) {
-                              e.currentTarget.style.backgroundColor = 'transparent';
-                            }
-                          }}
-                        >
-                          <div style={{
-                            fontSize: 'var(--font-size-sm)',
-                            fontWeight: selectedSurah === surah.number
-                              ? 'var(--font-weight-semibold)'
-                              : 'var(--font-weight-normal)',
-                            color: selectedSurah === surah.number
-                              ? 'var(--color-primary)'
-                              : 'var(--color-text-primary)',
-                          }}>
-                            {surah.number}. {surah.nameTajik}
-                          </div>
+                      {filteredSurahs.length === 0 ? (
+                        <div style={{
+                          padding: 'var(--spacing-lg)',
+                          textAlign: 'center',
+                          color: 'var(--color-text-secondary)',
+                          fontSize: 'var(--font-size-sm)',
+                        }}>
+                          {surahSearchQuery ? 'Сура ёфт нашуд' : 'Боргирӣ карда истодааст...'}
                         </div>
-                      ))}
+                      ) : (
+                        filteredSurahs.map((surah) => (
+                          <div
+                            key={surah.number}
+                            onClick={() => handleSurahClick(surah.number)}
+                            style={{
+                              padding: 'var(--spacing-sm) var(--spacing-md)',
+                              cursor: 'pointer',
+                              backgroundColor: selectedSurah === surah.number
+                                ? 'var(--color-primary-container-low-opacity)'
+                                : 'transparent',
+                              borderLeft: selectedSurah === surah.number
+                                ? '3px solid var(--color-primary)'
+                                : '3px solid transparent',
+                              transition: 'all 0.2s ease',
+                            }}
+                            onMouseEnter={(e) => {
+                              if (selectedSurah !== surah.number) {
+                                e.currentTarget.style.backgroundColor = 'var(--color-surface-variant)';
+                              }
+                            }}
+                            onMouseLeave={(e) => {
+                              if (selectedSurah !== surah.number) {
+                                e.currentTarget.style.backgroundColor = 'transparent';
+                              }
+                            }}
+                          >
+                            <div style={{
+                              fontSize: 'var(--font-size-sm)',
+                              fontWeight: selectedSurah === surah.number
+                                ? 'var(--font-weight-semibold)'
+                                : 'var(--font-weight-normal)',
+                              color: selectedSurah === surah.number
+                                ? 'var(--color-primary)'
+                                : 'var(--color-text-primary)',
+                            }}>
+                              {surah.number}. {surah.nameTajik}
+                            </div>
+                          </div>
+                        ))
+                      )}
                     </div>
                   </div>
 
@@ -440,14 +636,70 @@ export default function NavigationDrawer({ isOpen, onClose }: NavigationDrawerPr
                     flexDirection: 'column',
                     minHeight: 0,
                   }}>
+                    {/* Search Input for Verses */}
                     <div style={{
-                      fontSize: 'var(--font-size-base)',
-                      fontWeight: 'var(--font-weight-semibold)',
-                      color: 'var(--color-text-primary)',
+                      position: 'relative',
                       marginBottom: 'var(--spacing-sm)',
-                      padding: '0 var(--spacing-xs)',
                     }}>
-                      Оятҳо
+                      <div style={{
+                        position: 'absolute',
+                        left: '10px',
+                        top: '50%',
+                        transform: 'translateY(-50%)',
+                        pointerEvents: 'none',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                      }}>
+                        <SearchIcon 
+                          size={18} 
+                          color="var(--color-text-secondary)" 
+                        />
+                      </div>
+                      <input
+                        type="text"
+                        value={verseSearchQuery}
+                        onChange={(e) => setVerseSearchQuery(e.target.value)}
+                        placeholder="Ҷустуҷӯи оят..."
+                        style={{
+                          width: '100%',
+                          padding: '8px 10px 8px 36px',
+                          fontSize: 'var(--font-size-sm)',
+                          border: '1px solid var(--color-outline)',
+                          borderRadius: 'var(--radius-md)',
+                          backgroundColor: 'var(--color-surface)',
+                          color: 'var(--color-text-primary)',
+                          outline: 'none',
+                          transition: 'border-color 0.2s ease',
+                        }}
+                        onFocus={(e) => {
+                          e.currentTarget.style.borderColor = 'var(--color-primary)';
+                        }}
+                        onBlur={(e) => {
+                          e.currentTarget.style.borderColor = 'var(--color-outline)';
+                        }}
+                      />
+                      {verseSearchQuery && (
+                        <button
+                          onClick={() => setVerseSearchQuery('')}
+                          style={{
+                            position: 'absolute',
+                            right: '6px',
+                            top: '50%',
+                            transform: 'translateY(-50%)',
+                            background: 'none',
+                            border: 'none',
+                            cursor: 'pointer',
+                            padding: '2px',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            borderRadius: '50%',
+                          }}
+                        >
+                          <ClearIcon size={16} color="var(--color-text-secondary)" />
+                        </button>
+                      )}
                     </div>
                     <div style={{
                       flex: 1,
@@ -476,16 +728,32 @@ export default function NavigationDrawer({ isOpen, onClose }: NavigationDrawerPr
                         }}>
                           Сура интихоб нашудааст
                         </div>
+                      ) : filteredSurahVerses.length === 0 ? (
+                        <div style={{
+                          padding: 'var(--spacing-lg)',
+                          textAlign: 'center',
+                          color: 'var(--color-text-secondary)',
+                          fontSize: 'var(--font-size-sm)',
+                        }}>
+                          {verseSearchQuery ? 'Оят ёфт нашуд' : 'Сура интихоб нашудааст'}
+                        </div>
                       ) : (
-                        surahVerses.map((verse) => (
-                          <div
+                        filteredSurahVerses.map((verse) => (
+                          <Link
                             key={verse.verseNumber}
-                            onClick={() => handleVerseClick(verse.surahId, verse.verseNumber)}
+                            href={`/surah/${verse.surahId}?verse=${verse.verseNumber}`}
+                            prefetch={true}
+                            onClick={() => {
+                              onClose();
+                            }}
                             style={{
                               padding: 'var(--spacing-sm) var(--spacing-md)',
                               cursor: 'pointer',
                               borderBottom: '1px solid var(--color-outline)',
                               transition: 'background-color 0.2s ease',
+                              textDecoration: 'none',
+                              color: 'inherit',
+                              display: 'block',
                             }}
                             onMouseEnter={(e) => {
                               e.currentTarget.style.backgroundColor = 'var(--color-surface-variant)';
@@ -535,7 +803,7 @@ export default function NavigationDrawer({ isOpen, onClose }: NavigationDrawerPr
                                 {verse.tajikText}
                               </div>
                             )}
-                          </div>
+                          </Link>
                         ))
                       )}
                     </div>
@@ -550,14 +818,77 @@ export default function NavigationDrawer({ isOpen, onClose }: NavigationDrawerPr
                   height: '100%',
                   minHeight: 0,
                 }}>
+                  {/* Search Input */}
                   <div style={{
-                    fontSize: 'var(--font-size-base)',
-                    fontWeight: 'var(--font-weight-semibold)',
-                    color: 'var(--color-text-primary)',
-                    marginBottom: 'var(--spacing-sm)',
-                    padding: '0 var(--spacing-xs)',
+                    position: 'relative',
+                    marginBottom: 'var(--spacing-md)',
                   }}>
-                    Ҷузҳо
+                    <div style={{
+                      position: 'absolute',
+                      left: '12px',
+                      top: '50%',
+                      transform: 'translateY(-50%)',
+                      pointerEvents: 'none',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                    }}>
+                      <SearchIcon 
+                        size={20} 
+                        color="var(--color-text-secondary)" 
+                      />
+                    </div>
+                    <input
+                      type="text"
+                      value={juzSearchQuery}
+                      onChange={(e) => setJuzSearchQuery(e.target.value)}
+                      placeholder="Ҷустуҷӯи ҷуз..."
+                      style={{
+                        width: '100%',
+                        padding: '10px 12px 10px 40px',
+                        fontSize: 'var(--font-size-base)',
+                        border: '1px solid var(--color-outline)',
+                        borderRadius: 'var(--radius-md)',
+                        backgroundColor: 'var(--color-surface)',
+                        color: 'var(--color-text-primary)',
+                        outline: 'none',
+                        transition: 'border-color 0.2s ease',
+                      }}
+                      onFocus={(e) => {
+                        e.currentTarget.style.borderColor = 'var(--color-primary)';
+                      }}
+                      onBlur={(e) => {
+                        e.currentTarget.style.borderColor = 'var(--color-outline)';
+                      }}
+                    />
+                    {juzSearchQuery && (
+                      <button
+                        onClick={() => setJuzSearchQuery('')}
+                        style={{
+                          position: 'absolute',
+                          right: '8px',
+                          top: '50%',
+                          transform: 'translateY(-50%)',
+                          background: 'none',
+                          border: 'none',
+                          cursor: 'pointer',
+                          padding: '4px',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          borderRadius: '50%',
+                          transition: 'background-color 0.2s ease',
+                        }}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.backgroundColor = 'var(--color-surface-variant)';
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.backgroundColor = 'transparent';
+                        }}
+                      >
+                        <ClearIcon size={18} color="var(--color-text-secondary)" />
+                      </button>
+                    )}
                   </div>
                   <div style={{
                     flex: 1,
@@ -568,10 +899,24 @@ export default function NavigationDrawer({ isOpen, onClose }: NavigationDrawerPr
                     scrollbarWidth: 'none',
                     msOverflowStyle: 'none',
                   }}>
-                    {juzList.map((juz) => (
-                      <div
+                    {filteredJuzList.length === 0 ? (
+                      <div style={{
+                        padding: 'var(--spacing-xl)',
+                        textAlign: 'center',
+                        color: 'var(--color-text-secondary)',
+                        fontSize: 'var(--font-size-sm)',
+                      }}>
+                        {juzSearchQuery ? 'Ҷуз ёфт нашуд' : 'Боргирӣ карда истодааст...'}
+                      </div>
+                    ) : (
+                      filteredJuzList.map((juz) => (
+                      <Link
                         key={juz.juz}
-                        onClick={() => handleJuzClick(juz)}
+                        href={`/surah/${juz.surahNumber}?verse=${juz.ayahNumber}`}
+                        prefetch={true}
+                        onClick={() => {
+                          onClose();
+                        }}
                         style={{
                           padding: 'var(--spacing-md)',
                           cursor: 'pointer',
@@ -581,6 +926,8 @@ export default function NavigationDrawer({ isOpen, onClose }: NavigationDrawerPr
                           justifyContent: 'space-between',
                           alignItems: 'center',
                           gap: 'var(--spacing-md)',
+                          textDecoration: 'none',
+                          color: 'inherit',
                         }}
                         onMouseEnter={(e) => {
                           e.currentTarget.style.backgroundColor = 'var(--color-surface-variant)';
@@ -603,8 +950,9 @@ export default function NavigationDrawer({ isOpen, onClose }: NavigationDrawerPr
                         }}>
                           {juz.surahName} - Оят {juz.ayahNumber}
                         </div>
-                      </div>
-                    ))}
+                      </Link>
+                      ))
+                    )}
                   </div>
                 </div>
               )}
@@ -616,14 +964,77 @@ export default function NavigationDrawer({ isOpen, onClose }: NavigationDrawerPr
                   height: '100%',
                   minHeight: 0,
                 }}>
+                  {/* Search Input */}
                   <div style={{
-                    fontSize: 'var(--font-size-base)',
-                    fontWeight: 'var(--font-weight-semibold)',
-                    color: 'var(--color-text-primary)',
-                    marginBottom: 'var(--spacing-sm)',
-                    padding: '0 var(--spacing-xs)',
+                    position: 'relative',
+                    marginBottom: 'var(--spacing-md)',
                   }}>
-                    Саҳифаҳо
+                    <div style={{
+                      position: 'absolute',
+                      left: '12px',
+                      top: '50%',
+                      transform: 'translateY(-50%)',
+                      pointerEvents: 'none',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                    }}>
+                      <SearchIcon 
+                        size={20} 
+                        color="var(--color-text-secondary)" 
+                      />
+                    </div>
+                    <input
+                      type="text"
+                      value={pageSearchQuery}
+                      onChange={(e) => setPageSearchQuery(e.target.value)}
+                      placeholder="Ҷустуҷӯи саҳифа..."
+                      style={{
+                        width: '100%',
+                        padding: '10px 12px 10px 40px',
+                        fontSize: 'var(--font-size-base)',
+                        border: '1px solid var(--color-outline)',
+                        borderRadius: 'var(--radius-md)',
+                        backgroundColor: 'var(--color-surface)',
+                        color: 'var(--color-text-primary)',
+                        outline: 'none',
+                        transition: 'border-color 0.2s ease',
+                      }}
+                      onFocus={(e) => {
+                        e.currentTarget.style.borderColor = 'var(--color-primary)';
+                      }}
+                      onBlur={(e) => {
+                        e.currentTarget.style.borderColor = 'var(--color-outline)';
+                      }}
+                    />
+                    {pageSearchQuery && (
+                      <button
+                        onClick={() => setPageSearchQuery('')}
+                        style={{
+                          position: 'absolute',
+                          right: '8px',
+                          top: '50%',
+                          transform: 'translateY(-50%)',
+                          background: 'none',
+                          border: 'none',
+                          cursor: 'pointer',
+                          padding: '4px',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          borderRadius: '50%',
+                          transition: 'background-color 0.2s ease',
+                        }}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.backgroundColor = 'var(--color-surface-variant)';
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.backgroundColor = 'transparent';
+                        }}
+                      >
+                        <ClearIcon size={18} color="var(--color-text-secondary)" />
+                      </button>
+                    )}
                   </div>
                   <div style={{
                     flex: 1,
@@ -634,10 +1045,24 @@ export default function NavigationDrawer({ isOpen, onClose }: NavigationDrawerPr
                     scrollbarWidth: 'none',
                     msOverflowStyle: 'none',
                   }}>
-                    {pageList.map((page) => (
-                      <div
+                    {filteredPageList.length === 0 ? (
+                      <div style={{
+                        padding: 'var(--spacing-xl)',
+                        textAlign: 'center',
+                        color: 'var(--color-text-secondary)',
+                        fontSize: 'var(--font-size-sm)',
+                      }}>
+                        {pageSearchQuery ? 'Саҳифа ёфт нашуд' : 'Боргирӣ карда истодааст...'}
+                      </div>
+                    ) : (
+                      filteredPageList.map((page) => (
+                      <Link
                         key={page.page}
-                        onClick={() => handlePageClick(page)}
+                        href={`/surah/${page.surahNumber}?verse=${page.ayahNumber}`}
+                        prefetch={true}
+                        onClick={() => {
+                          onClose();
+                        }}
                         style={{
                           padding: 'var(--spacing-md)',
                           cursor: 'pointer',
@@ -647,6 +1072,8 @@ export default function NavigationDrawer({ isOpen, onClose }: NavigationDrawerPr
                           justifyContent: 'space-between',
                           alignItems: 'center',
                           gap: 'var(--spacing-md)',
+                          textDecoration: 'none',
+                          color: 'inherit',
                         }}
                         onMouseEnter={(e) => {
                           e.currentTarget.style.backgroundColor = 'var(--color-surface-variant)';
@@ -669,8 +1096,9 @@ export default function NavigationDrawer({ isOpen, onClose }: NavigationDrawerPr
                         }}>
                           {page.surahName} - Оят {page.ayahNumber}
                         </div>
-                      </div>
-                    ))}
+                      </Link>
+                      ))
+                    )}
                   </div>
                 </div>
               )}

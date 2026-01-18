@@ -418,6 +418,7 @@ function ShareRateDialog({ onClose }: { onClose: () => void }) {
 
   return (
     <div
+      data-nosnippet
       style={{
         position: 'fixed',
         top: 0,

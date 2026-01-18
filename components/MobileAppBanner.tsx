@@ -43,6 +43,7 @@ export default function MobileAppBanner() {
 
   return (
     <div
+      data-nosnippet
       style={{
         position: 'relative',
         marginBottom: '16px',
@@ -119,7 +120,9 @@ export default function MobileAppBanner() {
         }}>
           Барномаи мобилӣ
         </div>
-        <div style={{
+        <div 
+          data-nosnippet
+          style={{
           fontSize: 'var(--font-size-sm)',
           color: 'var(--color-text-secondary)',
           lineHeight: '1.4',

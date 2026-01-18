@@ -149,6 +149,7 @@ export default function ReciterSelectionDialog({
 
   return (
     <div
+      data-nosnippet
       style={{
         position: 'fixed',
         top: 0,

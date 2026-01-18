@@ -47,6 +47,7 @@ export default function TranslationSelectionDialog({
 
   return (
     <div
+      data-nosnippet
       style={{
         position: 'fixed',
         top: 0,

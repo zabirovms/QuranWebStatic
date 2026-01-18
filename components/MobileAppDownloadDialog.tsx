@@ -63,6 +63,7 @@ export default function MobileAppDownloadDialog() {
 
   return (
     <div
+      data-nosnippet
       style={{
         position: 'fixed',
         top: 0,
@@ -164,13 +165,16 @@ export default function MobileAppDownloadDialog() {
         </h2>
 
         {/* Description */}
-        <p style={{
-          fontSize: isMobile ? 'var(--font-size-sm)' : 'var(--font-size-md)',
-          color: 'var(--color-text-secondary)',
-          textAlign: 'center',
-          lineHeight: '1.6',
-          marginBottom: isMobile ? '16px' : '24px',
-        }}>
+        <p 
+          data-nosnippet
+          style={{
+            fontSize: isMobile ? 'var(--font-size-sm)' : 'var(--font-size-md)',
+            color: 'var(--color-text-secondary)',
+            textAlign: 'center',
+            lineHeight: '1.6',
+            marginBottom: isMobile ? '16px' : '24px',
+          }}
+        >
           {isAndroid 
             ? 'Барномаи мобилии моро барои Android боргирӣ кунед ва Қуръони Каримро дар ҳар ҷо бо худ дошта бошед. Имкониятҳои бештар, интерфейси беҳтар ва истифодаи осонтар!'
             : isMobile

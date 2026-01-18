@@ -1,13 +1,16 @@
 const fs = require('fs');
 const path = require('path');
+const zlib = require('zlib');
 
 // Load alignment data
 const alignmentPath = path.join(process.cwd(), 'Alafasy_128kbps.json');
 const alignmentData = JSON.parse(fs.readFileSync(alignmentPath, 'utf-8'));
 
-// Load word-by-word data
-const wordDataPath = path.join(process.cwd(), 'public', 'data', 'qpc-hafs-word-by-word.json');
-const wordData = JSON.parse(fs.readFileSync(wordDataPath, 'utf-8'));
+// Load word-by-word data (compressed)
+const wordDataPath = path.join(process.cwd(), 'public', 'data', 'qpc-hafs-word-by-word.json.gz');
+const compressedData = fs.readFileSync(wordDataPath);
+const decompressedData = zlib.gunzipSync(compressedData);
+const wordData = JSON.parse(decompressedData.toString('utf-8'));
 
 console.log('=== COMPARING WORD COUNTS ===\n');
 

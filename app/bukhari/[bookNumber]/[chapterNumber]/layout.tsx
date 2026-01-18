@@ -54,19 +54,40 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     const baseUrl = 'https://www.quran.tj';
     const canonicalUrl = `${baseUrl}/bukhari/${bookNumberStr}/${chapterNumber}`;
 
-    // Get first hadith text preview (first 150 characters)
-    const hadithPreview = chapter.hadiths.length > 0
-      ? chapter.hadiths[0].full_text.substring(0, 150).replace(/\s+/g, ' ').trim() + (chapter.hadiths[0].full_text.length > 150 ? '...' : '')
-      : '';
+    // Enhanced description with multiple hadith previews for uniqueness
+    const descriptionParts: string[] = [];
+    
+    // Chapter context
+    descriptionParts.push(`Боби ${chapterNumber} аз китоби ${bookNumber} (${book.title}): "${chapter.title}"`);
+    
+    // Hadith count
+    descriptionParts.push(`${chapter.hadiths.length} ҳадис`);
+    
+    // Add hadith previews (up to 2 hadiths for more uniqueness)
+    if (chapter.hadiths.length > 0) {
+      const firstHadith = chapter.hadiths[0].full_text.substring(0, 120).replace(/\s+/g, ' ').trim();
+      descriptionParts.push(`Ҳадис: ${firstHadith}${chapter.hadiths[0].full_text.length > 120 ? '...' : ''}`);
+      
+      // Add second hadith if available for more uniqueness
+      if (chapter.hadiths.length > 1) {
+        const secondHadith = chapter.hadiths[1].full_text.substring(0, 80).replace(/\s+/g, ' ').trim();
+        descriptionParts.push(`Ҳадиси дигар: ${secondHadith}${chapter.hadiths[1].full_text.length > 80 ? '...' : ''}`);
+      }
+    } else {
+      descriptionParts.push('Ҳадисҳои саҳеҳи Имом Бухорӣ');
+    }
+
+    const description = descriptionParts.join('. ');
 
     const title = `Боби ${chapterNumber}: ${chapter.title} | Китоб ${bookNumber} | Мухтасари Саҳеҳи Бухорӣ`;
-    const description = hadithPreview
-      ? `Боби ${chapterNumber} аз китоби ${bookNumber} (${book.title}): "${chapter.title}". ${chapter.hadiths.length} ҳадис. ${hadithPreview}`
-      : `Боби ${chapterNumber} аз китоби ${bookNumber} (${book.title}): "${chapter.title}". ${chapter.hadiths.length} ҳадис. Ҳадисҳои саҳеҳи Имом Бухорӣ.`;
 
     return {
       title,
       description,
+      robots: {
+        index: true,
+        follow: true,
+      },
       alternates: {
         canonical: canonicalUrl,
       },
@@ -90,6 +111,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     return {
       title: `Боби ${chapterNumber} | Китоби ${bookNumber} | Мухтасари Саҳеҳи Бухорӣ`,
       description: `Боби ${chapterNumber} аз китоби ${bookNumber} - Ҳадисҳои саҳеҳи Имом Бухорӣ`,
+      robots: {
+        index: true,
+        follow: true,
+      },
       alternates: {
         canonical: canonicalUrl,
       },

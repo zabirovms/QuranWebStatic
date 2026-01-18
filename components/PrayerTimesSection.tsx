@@ -96,9 +96,73 @@ export default function PrayerTimesSection() {
           boxShadow: 'var(--elevation-2)',
           border: '1px solid var(--color-outline)',
         }}>
-          <div style={{ textAlign: 'center', color: 'var(--color-text-secondary)' }}>
-            Боргирӣ...
+          <div style={{ 
+            display: 'flex', 
+            justifyContent: 'space-between', 
+            alignItems: 'center',
+            marginBottom: '16px',
+          }}>
+            <h2 style={{ 
+              fontSize: '1.5rem', 
+              fontWeight: 'bold',
+              margin: 0,
+              color: 'var(--color-text-primary)',
+            }}>
+              Вақтҳои намоз
+            </h2>
+            <SectionLink href="/vaqti-namoz">
+              <span>ҳама</span>
+              <span>→</span>
+            </SectionLink>
           </div>
+          
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(120px, 1fr))',
+            gap: '12px',
+          }}>
+            {[1, 2, 3, 4, 5].map((index) => (
+              <div
+                key={index}
+                style={{
+                  textAlign: 'center',
+                  padding: '16px',
+                  backgroundColor: 'var(--color-primary-container-low-opacity)',
+                  borderRadius: 'var(--radius-md)',
+                  border: '1px solid var(--color-outline)',
+                  animation: 'pulse 1.5s ease-in-out infinite',
+                }}
+              >
+                <div style={{
+                  width: '60px',
+                  height: '16px',
+                  backgroundColor: 'var(--color-surface-variant)',
+                  borderRadius: 'var(--radius-sm)',
+                  margin: '0 auto 8px',
+                  animation: 'pulse 1.5s ease-in-out infinite',
+                }} />
+                <div style={{
+                  width: '50px',
+                  height: '24px',
+                  backgroundColor: 'var(--color-surface-variant)',
+                  borderRadius: 'var(--radius-sm)',
+                  margin: '0 auto',
+                  animation: 'pulse 1.5s ease-in-out infinite',
+                }} />
+              </div>
+            ))}
+          </div>
+          
+          <style dangerouslySetInnerHTML={{ __html: `
+            @keyframes pulse {
+              0%, 100% {
+                opacity: 1;
+              }
+              50% {
+                opacity: 0.5;
+              }
+            }
+          `}} />
         </div>
       </div>
     );
@@ -149,6 +213,7 @@ export default function PrayerTimesSection() {
             { key: 'fajr', name: 'Бомдод', time: todayFullData.fajr },
             { key: 'dhuhr', name: 'Пешин', time: todayFullData.dhuhr },
             { key: 'asr', name: 'Аср', time: todayFullData.asr },
+            { key: 'makruh', name: 'Макруҳ', time: todayFullData.sunset_makruh },
             { key: 'maghrib', name: 'Шом', time: todayFullData.maghrib },
             { key: 'isha', name: 'Хуфтан', time: todayFullData.isha },
           ].map((prayer) => {
@@ -187,31 +252,32 @@ export default function PrayerTimesSection() {
                 }}
               >
                 <div style={{
-                  fontSize: 'var(--font-size-sm)',
+                  fontSize: 'var(--font-size-base)',
                   color: isUpcoming
                     ? 'var(--color-on-primary)'
                     : 'var(--color-text-secondary)',
-                  marginBottom: '8px',
-                  fontWeight: '500',
+                  marginBottom: '10px',
+                  fontWeight: '600',
                 }}>
                   {prayer.name}
-                  {isUpcoming && (
-                    <span style={{
-                      display: 'block',
-                      fontSize: 'var(--font-size-xs)',
-                      marginTop: '4px',
-                    }}>
-                      (Ҷорӣ)
-                    </span>
-                  )}
                 </div>
                 <div style={{
-                  fontSize: 'var(--font-size-lg)',
+                  fontSize: 'var(--font-size-xl)',
                   fontWeight: 'bold',
                   color: isUpcoming ? 'var(--color-on-primary)' : 'var(--color-primary)',
+                  marginBottom: timeParts.length > 1 ? '4px' : '0',
                 }}>
                   {startTime}
                 </div>
+                {timeParts.length > 1 && (
+                  <div style={{
+                    fontSize: 'var(--font-size-sm)',
+                    color: isUpcoming ? 'var(--color-on-primary)' : 'var(--color-text-secondary)',
+                    marginTop: '4px',
+                  }}>
+                    то {timeParts[1]}
+                  </div>
+                )}
               </Link>
             );
           })}

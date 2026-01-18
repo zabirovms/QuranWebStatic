@@ -1074,3 +1074,37 @@ body:focus-within::-webkit-scrollbar-thumb:hover {
     }
   }
 }
+
+/* ============================================
+   404 Not Found Page Styles
+   ============================================ */
+
+.not-found-overlay-link {
+  position: absolute;
+  left: 25.84%;
+  bottom: 16.54%;
+  width: 20.85%;
+  height: 7.86%;
+  cursor: pointer;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.not-found-svg {
+  filter: var(--not-found-svg-filter, none);
+}
+
+/* Light themes - invert SVG to make white text visible on light background */
+:root,
+[data-theme="newLight"],
+[data-theme="light"] {
+  --not-found-svg-filter: invert(1);
+}
+
+/* Dark themes - no filter needed, SVG is already visible */
+[data-theme="newDark"],
+[data-theme="dark"] {
+  --not-found-svg-filter: none;
+}

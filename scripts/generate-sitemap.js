@@ -36,7 +36,6 @@ const staticRoutes = [
   '/audio-home/all-reciters',
   '/gallery',
   '/learn-words',
-  '/scheduler',
   '/bukhari',
   '/vaqti-namoz',
 ];

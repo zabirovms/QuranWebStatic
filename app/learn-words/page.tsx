@@ -16,9 +16,10 @@ export default function LearnWordsPage() {
     }}>
       <main style={{
         padding: 'var(--spacing-lg) 4px',
-        paddingTop: isTopBarVisible ? 'calc(56px + var(--spacing-md))' : 'var(--spacing-md)',
+        paddingTop: 'var(--spacing-md)',
         maxWidth: '900px',
-        margin: '0 auto',
+        marginLeft: 'auto',
+        marginRight: 'auto',
         width: '100%',
         boxSizing: 'border-box',
       }}>

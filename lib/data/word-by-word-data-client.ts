@@ -1,9 +1,9 @@
 /**
  * Client-side word-by-word data loader
- * Loads and caches qpc-hafs-word-by-word.json for word-by-word functionality
+ * Loads and caches qpc-hafs-word-by-word.json.gz for word-by-word functionality
  */
 
-import { loadJson } from '@/lib/utils/data-loader-client';
+import { loadCompressedJson } from '@/lib/utils/data-loader-client';
 
 interface WordData {
   id: number;
@@ -33,7 +33,7 @@ export async function loadWordByWordData(): Promise<WordByWordData> {
   }
 
   isLoading = true;
-  loadPromise = loadJson<WordByWordData>('qpc-hafs-word-by-word.json')
+  loadPromise = loadCompressedJson<WordByWordData>('qpc-hafs-word-by-word.json.gz')
     .then((data) => {
       wordDataCache = data;
       isLoading = false;

@@ -32,11 +32,23 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     const canonicalUrl = `${baseUrl}/bukhari/${bookNumberStr}`;
 
     const title = `Китоби ${bookNumber}: ${book.title} | Мухтасари Саҳеҳи Бухорӣ`;
-    const description = `Хондани китоби ${bookNumber} аз Мухтасари Саҳеҳи Бухорӣ: "${book.title}". Ин китоб аз ${book.total_chapters} боб ва ${book.total_hadiths} ҳадис иборат аст. Ҳадисҳои саҳеҳи Имом Бухорӣ бо забони тоҷикӣ.`;
+    
+    // Enhanced description with more context
+    const descriptionParts: string[] = [];
+    descriptionParts.push(`Китоби ${bookNumber} аз Мухтасари Саҳеҳи Бухорӣ: "${book.title}"`);
+    descriptionParts.push(`${book.total_chapters} боб`);
+    descriptionParts.push(`${book.total_hadiths} ҳадис`);
+    descriptionParts.push('Ҳадисҳои саҳеҳи Имом Бухорӣ бо забони тоҷикӣ');
+    
+    const description = descriptionParts.join('. ');
 
     return {
       title,
       description,
+      robots: {
+        index: true,
+        follow: true,
+      },
       alternates: {
         canonical: canonicalUrl,
       },
@@ -60,6 +72,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     return {
       title: `Китоби ${bookNumber} | Мухтасари Саҳеҳи Бухорӣ`,
       description: `Китоби ${bookNumber} аз Мухтасари Саҳеҳи Бухорӣ - Ҳадисҳои саҳеҳи Имом Бухорӣ`,
+      robots: {
+        index: true,
+        follow: true,
+      },
       alternates: {
         canonical: canonicalUrl,
       },

@@ -61,7 +61,7 @@ async function loadWordByWordData(): Promise<WordByWordData> {
     return wordDataCache;
   }
   try {
-    wordDataCache = await loadJson<WordByWordData>('qpc-hafs-word-by-word.json');
+    wordDataCache = await loadCompressedJson<WordByWordData>('qpc-hafs-word-by-word.json.gz');
     return wordDataCache;
   } catch (error) {
     console.error('Failed to load word-by-word data:', error);

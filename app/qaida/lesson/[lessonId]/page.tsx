@@ -77,11 +77,6 @@ export default function QaidaLessonPage({
         minHeight: '100vh',
         backgroundColor: 'var(--color-background)',
       }}>
-        <div className={`app-bar ${!isTopBarVisible ? 'top-bar-hidden' : ''}`}>
-          <div className="app-bar-content">
-            <h1 className="app-bar-title">Қоидаи Бағдодӣ</h1>
-          </div>
-        </div>
         <div style={{ 
           display: 'flex',
           alignItems: 'center',
@@ -100,14 +95,9 @@ export default function QaidaLessonPage({
         minHeight: '100vh',
         backgroundColor: 'var(--color-background)',
       }}>
-        <div className={`app-bar ${!isTopBarVisible ? 'top-bar-hidden' : ''}`}>
-          <div className="app-bar-content">
-            <h1 className="app-bar-title">Қоидаи Бағдодӣ</h1>
-          </div>
-        </div>
         <main style={{
           padding: 'var(--spacing-lg) 4px',
-          paddingTop: isTopBarVisible ? 'calc(56px + var(--spacing-md))' : 'var(--spacing-md)',
+          paddingTop: 'var(--spacing-md)',
           maxWidth: '900px',
           margin: '0 auto',
           width: '100%',
@@ -127,24 +117,10 @@ export default function QaidaLessonPage({
       minHeight: '100vh',
       backgroundColor: 'var(--color-background)',
     }}>
-      {/* AppBar */}
-      <div 
-        className="app-bar"
-        style={{
-          top: isTopBarVisible ? '56px' : '0px',
-        }}
-      >
-        <div className="app-bar-content">
-          <h1 className="app-bar-title" style={{ fontSize: 'var(--font-size-md)' }}>
-            {lesson.title}
-          </h1>
-        </div>
-      </div>
-
       {/* Content */}
       <main style={{
         padding: 'var(--spacing-lg) 4px',
-        paddingTop: isTopBarVisible ? 'calc(56px + var(--spacing-md))' : 'var(--spacing-md)',
+        paddingTop: 'var(--spacing-md)',
         maxWidth: '900px',
         margin: '0 auto',
         width: '100%',
@@ -278,7 +254,15 @@ function LessonBody({
               <>
                 <div style={{ marginTop: 'var(--spacing-md)' }}>
                   <button
-                    onClick={() => router.push('/qaida/lesson/2/letter/ا')}
+                    onClick={() => {
+                      const syllablesBlock = lesson.content.find(
+                        (b) => b.subtype === 'syllables_examples'
+                      );
+                      const firstSyllable = syllablesBlock?.examples?.find((s) => s.vowel === 'َ');
+                      if (firstSyllable?.id) {
+                        router.push(`/qaida/lesson/2/letter/${firstSyllable.id}`);
+                      }
+                    }}
                     className="btn btn-primary"
                     style={{ width: '100%' }}
                   >
@@ -801,8 +785,10 @@ function SyllablesExamples({ examples, lessonId }: { examples: QaidaSyllableExam
         <>
           <button
             onClick={() => {
-              const firstLetter = examples[0].letter;
-              router.push(`/qaida/lesson/${lessonId}/letter/${firstLetter}`);
+              const firstSyllable = examples[0];
+              if (firstSyllable?.id) {
+                router.push(`/qaida/lesson/${lessonId}/letter/${firstSyllable.id}`);
+              }
             }}
             className="btn btn-primary"
             style={{ width: '100%', marginBottom: 'var(--spacing-lg)' }}
@@ -854,7 +840,7 @@ function SyllablesExamples({ examples, lessonId }: { examples: QaidaSyllableExam
             return (
               <button
                 key={e.id}
-                onClick={() => router.push(`/qaida/lesson/${lessonId}/letter/${e.letter}`)}
+                onClick={() => router.push(`/qaida/lesson/${lessonId}/letter/${e.id}`)}
                 style={{
                   border: 'none',
                   background: 'none',

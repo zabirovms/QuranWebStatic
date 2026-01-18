@@ -2,9 +2,10 @@ import { loadCompressedJson } from '@/lib/utils/data-loader';
 import { Dua } from '@/lib/types';
 
 let cachedDuas: Dua[] | null = null;
+let cachedProphetsDuas: Dua[] | null = null;
 
 /**
- * Get all duas
+ * Get all duas (Rabbano duas)
  */
 export async function getAllDuas(): Promise<Dua[]> {
   if (cachedDuas) {
@@ -16,6 +17,23 @@ export async function getAllDuas(): Promise<Dua[]> {
     return data;
   } catch (error) {
     console.error('Error loading duas:', error);
+    return [];
+  }
+}
+
+/**
+ * Get all prophets duas
+ */
+export async function getAllProphetsDuas(): Promise<Dua[]> {
+  if (cachedProphetsDuas) {
+    return cachedProphetsDuas;
+  }
+  try {
+    const data = await loadCompressedJson<Dua[]>('prophets_duas.json.gz');
+    cachedProphetsDuas = data;
+    return data;
+  } catch (error) {
+    console.error('Error loading prophets duas:', error);
     return [];
   }
 }

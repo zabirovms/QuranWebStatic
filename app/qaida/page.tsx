@@ -63,14 +63,9 @@ export default function QaidaPage() {
         minHeight: '100vh',
         backgroundColor: 'var(--color-background)',
       }}>
-        <div className={`app-bar ${!isTopBarVisible ? 'top-bar-hidden' : ''}`}>
-          <div className="app-bar-content">
-            <h1 className="app-bar-title">Қоидаи Бағдодӣ</h1>
-          </div>
-        </div>
         <main style={{
           padding: 'var(--spacing-lg) 4px',
-          paddingTop: isTopBarVisible ? 'calc(56px + var(--spacing-md))' : 'var(--spacing-md)',
+          paddingTop: 'var(--spacing-md)',
           maxWidth: '900px',
           margin: '0 auto',
           width: '100%',
@@ -90,19 +85,10 @@ export default function QaidaPage() {
       minHeight: '100vh',
       backgroundColor: 'var(--color-background)',
     }}>
-      {/* AppBar */}
-      <div className={`app-bar ${!isTopBarVisible ? 'top-bar-hidden' : ''}`}>
-        <div className="app-bar-content">
-          <h1 className="app-bar-title" style={{ fontSize: 'var(--font-size-md)' }}>
-            Қоидаи Бағдодӣ
-          </h1>
-        </div>
-      </div>
-
       {/* Content */}
       <main style={{
         padding: 'var(--spacing-lg) 4px',
-        paddingTop: isTopBarVisible ? 'calc(56px + var(--spacing-md))' : 'var(--spacing-md)',
+        paddingTop: 'var(--spacing-md)',
         maxWidth: '900px',
         margin: '0 auto',
         width: '100%',

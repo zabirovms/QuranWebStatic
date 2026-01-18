@@ -195,7 +195,7 @@ export default function DedicatedVersePage({
             showTransliteration={surahSettings.showTransliteration}
             showTranslation={surahSettings.showTranslation}
             showOnlyArabic={surahSettings.showOnlyArabic}
-            translationLanguage="tj_3"
+            translationLanguage={surahSettings.translationLanguage}
           />
         </div>
 

@@ -288,11 +288,13 @@ export default function PrayerTimesPage() {
       >
         <main
           style={{
-            padding: 'clamp(16px, 4vw, var(--spacing-lg))',
-            paddingTop: isTopBarVisible ? 'calc(56px + var(--spacing-md) - 12px)' : 'calc(var(--spacing-md) - 12px)',
-            transition: 'padding-top 0.4s ease-out',
+            paddingLeft: 'clamp(16px, 4vw, var(--spacing-lg))',
+            paddingRight: 'clamp(16px, 4vw, var(--spacing-lg))',
+            paddingBottom: 'clamp(16px, 4vw, var(--spacing-lg))',
+            paddingTop: 'var(--spacing-md)',
             maxWidth: '1400px',
-            margin: '0 auto',
+            marginLeft: 'auto',
+            marginRight: 'auto',
             width: '100%',
             boxSizing: 'border-box',
           }}
@@ -300,6 +302,7 @@ export default function PrayerTimesPage() {
           {/* Page Header */}
           <header
             style={{
+              marginTop: '0',
               marginBottom: 'var(--spacing-xl)',
               textAlign: 'center',
             }}
@@ -371,14 +374,15 @@ export default function PrayerTimesPage() {
               <div
                 style={{
                   display: 'grid',
-                  gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))',
-                  gap: 'var(--spacing-md)',
+                  gridTemplateColumns: 'repeat(auto-fit, minmax(120px, 1fr))',
+                  gap: '12px',
                 }}
               >
                 {[
                   { key: 'fajr', name: 'Бомдод', time: todayFullData.fajr },
                   { key: 'dhuhr', name: 'Пешин', time: todayFullData.dhuhr },
                   { key: 'asr', name: 'Аср', time: todayFullData.asr },
+                  { key: 'makruh', name: 'Макруҳ', time: todayFullData.sunset_makruh },
                   { key: 'maghrib', name: 'Шом', time: todayFullData.maghrib },
                   { key: 'isha', name: 'Хуфтан', time: todayFullData.isha },
                 ].map((prayer) => {
@@ -391,42 +395,34 @@ export default function PrayerTimesPage() {
                       key={prayer.key}
                       style={{
                         textAlign: 'center',
-                        padding: 'var(--spacing-md)',
+                        padding: '16px',
                         backgroundColor: isUpcoming
                           ? 'var(--color-primary)'
                           : 'var(--color-primary-container-low-opacity)',
                         borderRadius: 'var(--radius-md)',
-                        border: isUpcoming ? '2px solid var(--color-primary)' : 'none',
+                        border: isUpcoming ? '2px solid var(--color-primary)' : '1px solid var(--color-outline)',
                         boxShadow: isUpcoming ? 'var(--elevation-2)' : 'none',
+                        transition: 'all 0.2s ease',
                       }}
                     >
                       <div
                         style={{
-                          fontSize: 'var(--font-size-sm)',
+                          fontSize: 'var(--font-size-base)',
                           color: isUpcoming
                             ? 'var(--color-on-primary)'
                             : 'var(--color-text-secondary)',
-                          marginBottom: 'var(--spacing-xs)',
+                          marginBottom: '10px',
+                          fontWeight: '600',
                         }}
                       >
                         {prayer.name}
-                        {isUpcoming && (
-                          <span
-                            style={{
-                              display: 'block',
-                              fontSize: 'var(--font-size-xs)',
-                              marginTop: 'var(--spacing-xs)',
-                            }}
-                          >
-                            (Ҷорӣ)
-                          </span>
-                        )}
                       </div>
                       <div
                         style={{
                           fontSize: 'var(--font-size-xl)',
-                          fontWeight: 'var(--font-weight-bold)',
+                          fontWeight: 'bold',
                           color: isUpcoming ? 'var(--color-on-primary)' : 'var(--color-primary)',
+                          marginBottom: timeParts.length > 1 ? '4px' : '0',
                         }}
                       >
                         {startTime}
@@ -434,11 +430,11 @@ export default function PrayerTimesPage() {
                       {timeParts.length > 1 && (
                         <div
                           style={{
-                            fontSize: 'var(--font-size-xs)',
+                            fontSize: 'var(--font-size-sm)',
                             color: isUpcoming
                               ? 'var(--color-on-primary)'
                               : 'var(--color-text-secondary)',
-                            marginTop: 'var(--spacing-xs)',
+                            marginTop: '4px',
                           }}
                         >
                           то {timeParts[1]}
@@ -450,139 +446,6 @@ export default function PrayerTimesPage() {
               </div>
             </article>
           )}
-
-          {/* Search/Filter */}
-          <div
-            style={{
-              backgroundColor: 'var(--color-surface)',
-              borderRadius: 'var(--radius-xl)',
-              padding: 'var(--spacing-lg)',
-              marginBottom: 'var(--spacing-lg)',
-              boxShadow: 'var(--elevation-2)',
-            }}
-          >
-            <div
-              style={{
-                display: 'flex',
-                gap: 'var(--spacing-md)',
-                flexWrap: 'wrap',
-                alignItems: 'flex-end',
-              }}
-            >
-              <div style={{ flex: '1', minWidth: '120px' }}>
-                <label
-                  style={{
-                    display: 'block',
-                    fontSize: 'var(--font-size-sm)',
-                    color: 'var(--color-text-secondary)',
-                    marginBottom: 'var(--spacing-xs)',
-                  }}
-                >
-                  Рӯз
-                </label>
-                <select
-                  value={selectedDay || ''}
-                  onChange={(e) => setSelectedDay(e.target.value ? parseInt(e.target.value) : null)}
-                  style={{
-                    width: '100%',
-                    padding: 'var(--spacing-sm) var(--spacing-md)',
-                    border: '1px solid var(--color-outline)',
-                    borderRadius: 'var(--radius-md)',
-                    fontSize: 'var(--font-size-base)',
-                    backgroundColor: 'var(--color-surface)',
-                    color: 'var(--color-text-primary)',
-                  }}
-                >
-                  <option value="">- Интихоб -</option>
-                  {Array.from({ length: getDaysInMonth(currentDate) }, (_, i) => i + 1).map(
-                    (day) => (
-                      <option key={day} value={day}>
-                        {day}
-                      </option>
-                    )
-                  )}
-                </select>
-              </div>
-              <div style={{ flex: '1', minWidth: '140px' }}>
-                <label
-                  style={{
-                    display: 'block',
-                    fontSize: 'var(--font-size-sm)',
-                    color: 'var(--color-text-secondary)',
-                    marginBottom: 'var(--spacing-xs)',
-                  }}
-                >
-                  Моҳ
-                </label>
-                <select
-                  value={selectedMonth || month}
-                  onChange={(e) => setSelectedMonth(parseInt(e.target.value))}
-                  style={{
-                    width: '100%',
-                    padding: 'var(--spacing-sm) var(--spacing-md)',
-                    border: '1px solid var(--color-outline)',
-                    borderRadius: 'var(--radius-md)',
-                    fontSize: 'var(--font-size-base)',
-                    backgroundColor: 'var(--color-surface)',
-                    color: 'var(--color-text-primary)',
-                  }}
-                >
-                  {monthNames.map((name, index) => (
-                    <option key={index} value={index + 1}>
-                      {name}
-                    </option>
-                  ))}
-                </select>
-              </div>
-              <div style={{ flex: '1', minWidth: '120px' }}>
-                <label
-                  style={{
-                    display: 'block',
-                    fontSize: 'var(--font-size-sm)',
-                    color: 'var(--color-text-secondary)',
-                    marginBottom: 'var(--spacing-xs)',
-                  }}
-                >
-                  Сол
-                </label>
-                <select
-                  value={selectedYear || year}
-                  onChange={(e) => setSelectedYear(parseInt(e.target.value))}
-                  style={{
-                    width: '100%',
-                    padding: 'var(--spacing-sm) var(--spacing-md)',
-                    border: '1px solid var(--color-outline)',
-                    borderRadius: 'var(--radius-md)',
-                    fontSize: 'var(--font-size-base)',
-                    backgroundColor: 'var(--color-surface)',
-                    color: 'var(--color-text-primary)',
-                  }}
-                >
-                  {Array.from({ length: 5 }, (_, i) => year - 2 + i).map((y) => (
-                    <option key={y} value={y}>
-                      {y}
-                    </option>
-                  ))}
-                </select>
-              </div>
-              <button
-                onClick={handleSearch}
-                style={{
-                  padding: 'var(--spacing-sm) var(--spacing-xl)',
-                  backgroundColor: 'var(--color-primary)',
-                  color: 'var(--color-on-primary)',
-                  border: 'none',
-                  borderRadius: 'var(--radius-md)',
-                  cursor: 'pointer',
-                  fontSize: 'var(--font-size-base)',
-                  fontWeight: 'var(--font-weight-medium)',
-                  whiteSpace: 'nowrap',
-                }}
-              >
-                Ҷустуҷӯ
-              </button>
-            </div>
-          </div>
 
           {/* Loading State */}
           {isLoading && (

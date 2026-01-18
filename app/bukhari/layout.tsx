@@ -3,6 +3,10 @@ import type { Metadata } from 'next';
 export const metadata: Metadata = {
   title: 'Мухтасари Саҳеҳи Бухорӣ',
   description: 'Хондани Мухтасари Саҳеҳи Бухорӣ - Ҳадисҳои саҳеҳи Имом Бухорӣ бо забони тоҷикӣ',
+  robots: {
+    index: true,
+    follow: true,
+  },
   alternates: {
     canonical: 'https://www.quran.tj/bukhari',
   },

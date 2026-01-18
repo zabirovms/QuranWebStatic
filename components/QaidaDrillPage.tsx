@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { getQaidaModuleClient } from '@/lib/data/qaida-data-client';
 import { QaidaModule, QaidaLetter, QaidaSyllableExample } from '@/lib/types/qaida';
@@ -11,8 +11,9 @@ import { useTopBar } from '@/lib/contexts/TopBarContext';
 
 interface QaidaDrillPageProps {
   lessonNumber: number;
-  letter?: string;
+  letter?: string; // Deprecated - use syllableId instead
   letterId?: string;
+  syllableId?: string; // New: syllable ID for lessons 2,3,4,6,7,8
   drillType: 'alphabet' | 'pronunciation' | 'vowels' | 'tanween' | 'letterForms' | 'shadda' | 'sukun' | 'madd';
 }
 
@@ -31,6 +32,7 @@ export default function QaidaDrillPage({
   lessonNumber,
   letter,
   letterId,
+  syllableId,
   drillType,
 }: QaidaDrillPageProps) {
   const router = useRouter();
@@ -60,16 +62,22 @@ export default function QaidaDrillPage({
           if (startIndex !== -1) {
             setCurrentIndex(startIndex);
           }
-        } else if (drillType === 'vowels' || drillType === 'tanween' || drillType === 'shadda' || drillType === 'sukun' || drillType === 'madd') {
+        } else if (drillType === 'vowels' || drillType === 'tanween' || drillType === 'shadda' || drillType === 'sukun' || drillType === 'madd' || drillType === 'pronunciation') {
           const targetLesson = data.lessons.find((l) => l.id === lessonNumber) || data.lessons[0];
           const syllablesBlock = targetLesson.content.find(
             (b) => b.subtype === 'syllables_examples'
           );
           const allSyllables = syllablesBlock?.examples || [];
           
+          // Filter by vowel if pronunciation (lesson 2)
+          let filteredSyllables = allSyllables;
+          if (drillType === 'pronunciation') {
+            filteredSyllables = allSyllables.filter((s) => s.vowel === 'َ');
+          }
+          
           // Group by letter
           const letterGroups: { [key: string]: QaidaSyllableExample[] } = {};
-          for (const syllable of allSyllables) {
+          for (const syllable of filteredSyllables) {
             const groupKey = syllable.letter;
             if (!letterGroups[groupKey]) {
               letterGroups[groupKey] = [];
@@ -78,9 +86,22 @@ export default function QaidaDrillPage({
           }
           
           const uniqueLetters = Object.keys(letterGroups);
-          const startIndex = uniqueLetters.indexOf(letter || '');
-          if (startIndex !== -1) {
-            setCurrentIndex(startIndex);
+          
+          // If syllableId is provided, find the letter from that syllable
+          if (syllableId) {
+            const syllable = allSyllables.find((s) => s.id === syllableId);
+            if (syllable) {
+              const startIndex = uniqueLetters.indexOf(syllable.letter);
+              if (startIndex !== -1) {
+                setCurrentIndex(startIndex);
+              }
+            }
+          } else if (letter) {
+            // Fallback for backward compatibility
+            const startIndex = uniqueLetters.indexOf(letter);
+            if (startIndex !== -1) {
+              setCurrentIndex(startIndex);
+            }
           }
         }
       } catch (err) {
@@ -92,7 +113,7 @@ export default function QaidaDrillPage({
     };
 
     loadData();
-  }, [lessonNumber, letter, letterId, drillType]);
+  }, [lessonNumber, letter, letterId, syllableId, drillType]);
 
   const handleBack = () => {
     router.back();
@@ -110,18 +131,6 @@ export default function QaidaDrillPage({
         minHeight: '100vh',
         backgroundColor: 'var(--color-background)',
       }}>
-        <div 
-          className="app-bar"
-          style={{
-            top: isTopBarVisible ? '56px' : '0px',
-          }}
-        >
-          <div className="app-bar-content">
-            <h1 className="app-bar-title" style={{ fontSize: 'var(--font-size-md)' }}>
-              {lessonTitles[lessonNumber]}
-            </h1>
-          </div>
-        </div>
         <div style={{
           display: 'flex',
           alignItems: 'center',
@@ -140,18 +149,6 @@ export default function QaidaDrillPage({
         minHeight: '100vh',
         backgroundColor: 'var(--color-background)',
       }}>
-        <div 
-          className="app-bar"
-          style={{
-            top: isTopBarVisible ? '56px' : '0px',
-          }}
-        >
-          <div className="app-bar-content">
-            <h1 className="app-bar-title" style={{ fontSize: 'var(--font-size-md)' }}>
-              {lessonTitles[lessonNumber]}
-            </h1>
-          </div>
-        </div>
         <ErrorDisplay
           message={error || 'Дарс бор нашуд'}
           onRetry={() => window.location.reload()}
@@ -225,11 +222,40 @@ function AlphabetDrill({
   isPlaying: boolean;
 }) {
   const { isVisible: isTopBarVisible } = useTopBar();
+  const contentRef = useRef<HTMLDivElement>(null);
+  const touchStartX = useRef<number>(0);
+  const touchEndX = useRef<number>(0);
+  
   const targetLesson = module.lessons.find((l) => l.id === lessonNumber) || module.lessons[0];
   const lettersBlock = targetLesson.content.find(
     (b) => b.subtype === 'letters_chart'
   );
   const letters = lettersBlock?.letters || [];
+
+  // Swipe gesture handlers
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartX.current = e.touches[0].clientX;
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    touchEndX.current = e.changedTouches[0].clientX;
+    handleSwipe();
+  };
+
+  const handleSwipe = () => {
+    const swipeThreshold = 50;
+    const diff = touchStartX.current - touchEndX.current;
+    
+    if (Math.abs(diff) > swipeThreshold) {
+      if (diff > 0 && currentIndex < letters.length - 1) {
+        // Swipe left - next
+        onIndexChange(currentIndex + 1);
+      } else if (diff < 0 && currentIndex > 0) {
+        // Swipe right - previous
+        onIndexChange(currentIndex - 1);
+      }
+    }
+  };
 
   if (letters.length === 0) {
     return (
@@ -237,21 +263,9 @@ function AlphabetDrill({
         minHeight: '100vh',
         backgroundColor: 'var(--color-background)',
       }}>
-        <div 
-          className="app-bar"
-          style={{
-            top: isTopBarVisible ? '56px' : '0px',
-          }}
-        >
-          <div className="app-bar-content">
-            <h1 className="app-bar-title" style={{ fontSize: 'var(--font-size-md)' }}>
-              {lessonTitles[lessonNumber]}
-            </h1>
-          </div>
-        </div>
         <main style={{
           padding: 'var(--spacing-lg) 4px',
-          paddingTop: isTopBarVisible ? 'calc(56px + var(--spacing-md))' : 'var(--spacing-md)',
+          paddingTop: 'var(--spacing-md)',
           maxWidth: '900px',
           margin: '0 auto',
           width: '100%',
@@ -268,73 +282,144 @@ function AlphabetDrill({
   const current = letters[currentIndex];
   const canGoPrev = currentIndex > 0;
   const canGoNext = currentIndex < letters.length - 1;
+  const progress = ((currentIndex + 1) / letters.length) * 100;
 
-  const appBarHeight = isTopBarVisible ? 112 : 56; // 56px app-bar + 56px top-bar if visible
-  const progressHeight = 32;
-  const controlsHeight = 60;
-  const availableHeight = `calc(100vh - ${appBarHeight + progressHeight + controlsHeight}px)`;
+  const topBarHeight = isTopBarVisible ? 56 : 0;
+  const headerHeight = 52; // Increased to accommodate text
+  const progressHeight = 32; // Slightly increased for better visibility
+  const controlsHeight = 64;
+  const availableHeight = `calc(100vh - ${topBarHeight + headerHeight + progressHeight + controlsHeight}px)`;
 
   return (
     <div style={{
-      height: '100vh',
+      minHeight: '100vh',
       backgroundColor: 'var(--color-background)',
       display: 'flex',
       flexDirection: 'column',
-      overflow: 'hidden',
     }}>
-      {/* AppBar */}
-      <div 
-        className="app-bar"
-        style={{
-          top: isTopBarVisible ? '56px' : '0px',
-        }}
-      >
-        <div className="app-bar-content">
-          <h1 className="app-bar-title" style={{ fontSize: 'var(--font-size-md)' }}>
+      {/* Header with Back Button */}
+      <div style={{
+        padding: 'var(--spacing-sm) var(--spacing-md)',
+        paddingTop: isTopBarVisible ? `calc(56px + var(--spacing-sm))` : 'var(--spacing-sm)',
+        display: 'flex',
+        alignItems: 'center',
+        gap: 'var(--spacing-sm)',
+        backgroundColor: 'var(--color-surface)',
+        borderBottom: '1px solid var(--color-outline)',
+        boxShadow: 'var(--elevation-1)',
+        minHeight: `${headerHeight}px`,
+        flexShrink: 0,
+      }}>
+        <button
+          onClick={onBack}
+          style={{
+            width: '40px',
+            height: '40px',
+            borderRadius: 'var(--radius-md)',
+            border: '1px solid var(--color-outline)',
+            backgroundColor: 'var(--color-surface)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            cursor: 'pointer',
+            transition: 'all var(--transition-base)',
+            flexShrink: 0,
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.backgroundColor = 'var(--color-primary-container-low-opacity)';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.backgroundColor = 'var(--color-surface)';
+          }}
+          title="Бозгашт"
+        >
+          <ArrowBackIcon size={20} color="var(--color-primary)" />
+        </button>
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <div style={{
+            fontSize: 'var(--font-size-sm)',
+            fontWeight: 'var(--font-weight-semibold)',
+            color: 'var(--color-text-primary)',
+            lineHeight: 1.3,
+            marginBottom: '2px',
+          }}>
             {lessonTitles[lessonNumber]}
-          </h1>
+          </div>
+          <div style={{
+            fontSize: 'var(--font-size-xs)',
+            color: 'var(--color-text-secondary)',
+            lineHeight: 1.2,
+          }}>
+            Ҳарфи {currentIndex + 1} аз {letters.length}
+          </div>
         </div>
       </div>
 
-      {/* Progress Text */}
+      {/* Progress Bar */}
       <div style={{
-        padding: 'var(--spacing-xs) var(--spacing-md)',
-        paddingTop: isTopBarVisible ? 'calc(56px + var(--spacing-xs))' : 'var(--spacing-xs)',
-        textAlign: 'center',
-        color: 'var(--color-text-secondary)',
-        fontSize: 'var(--font-size-xs)',
-        height: `${progressHeight}px`,
+        minHeight: `${progressHeight}px`,
+        padding: 'var(--spacing-sm) var(--spacing-md)',
         display: 'flex',
-        alignItems: 'center',
+        flexDirection: 'column',
         justifyContent: 'center',
-        flexShrink: 0,
-      }}>
-        Ҳарфи {currentIndex + 1} аз {letters.length}
-      </div>
-
-      {/* Main Content */}
-      <div style={{
-        height: availableHeight,
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        padding: 'var(--spacing-xs)',
-        overflow: 'hidden',
+        backgroundColor: 'var(--color-surface)',
+        borderBottom: '1px solid var(--color-outline)',
         flexShrink: 0,
       }}>
         <div style={{
+          width: '100%',
+          height: '4px',
+          backgroundColor: 'var(--color-outline-variant)',
+          borderRadius: 'var(--radius-full)',
+          overflow: 'hidden',
+        }}>
+          <div style={{
+            width: `${progress}%`,
+            height: '100%',
+            backgroundColor: 'var(--color-primary)',
+            borderRadius: 'var(--radius-full)',
+            transition: 'width var(--transition-base)',
+          }} />
+        </div>
+      </div>
+
+      {/* Main Content - Card Style */}
+      <div 
+        ref={contentRef}
+        onTouchStart={handleTouchStart}
+        onTouchEnd={handleTouchEnd}
+        style={{
+          display: 'flex',
+          alignItems: 'flex-start',
+          justifyContent: 'center',
+          padding: 'var(--spacing-md)',
+          paddingTop: 'var(--spacing-lg)',
+          overflow: 'hidden',
+          flexGrow: 0,
+          flexShrink: 1,
+        }}
+      >
+        <div style={{
+          backgroundColor: 'var(--color-surface)',
+          borderRadius: 'var(--radius-lg)',
+          padding: 'clamp(16px, 4vw, 32px)',
+          boxShadow: 'var(--elevation-2)',
+          border: '1px solid var(--color-outline)',
           textAlign: 'center',
           width: '100%',
+          maxWidth: '600px',
+          transition: 'transform var(--transition-base), box-shadow var(--transition-base)',
         }}>
           {/* Letter */}
           <div style={{
-            fontSize: 'clamp(48px, 12vw, 72px)',
+            fontSize: 'clamp(56px, 14vw, 96px)',
             fontFamily: 'Noto_Naskh_Arabic, serif',
             direction: 'rtl',
             fontWeight: 'var(--font-weight-bold)',
             color: 'var(--color-text-primary)',
-            marginBottom: '2px',
+            marginBottom: 'var(--spacing-xs)',
             lineHeight: 1.1,
+            minHeight: 'clamp(56px, 14vw, 96px)',
           }}>
             {current.letter}
           </div>
@@ -342,7 +427,7 @@ function AlphabetDrill({
           {/* Name */}
           {current.name && (
             <div style={{
-              fontSize: 'clamp(14px, 3vw, 18px)',
+              fontSize: 'clamp(16px, 3.5vw, 24px)',
               fontWeight: 'var(--font-weight-semibold)',
               color: 'var(--color-text-primary)',
               marginBottom: '2px',
@@ -354,10 +439,10 @@ function AlphabetDrill({
           {/* Pronunciation */}
           {current.pronunciation && (
             <div style={{
-              fontSize: 'clamp(12px, 2.5vw, 16px)',
+              fontSize: 'clamp(14px, 3vw, 20px)',
               fontWeight: 'var(--font-weight-medium)',
-              color: 'var(--color-text-primary)',
-              opacity: 0.9,
+              color: 'var(--color-text-secondary)',
+              marginTop: '2px',
             }}>
               {current.pronunciation}
             </div>
@@ -365,43 +450,58 @@ function AlphabetDrill({
         </div>
       </div>
 
-      {/* Bottom Controls */}
+      {/* Bottom Controls - Larger Touch Targets */}
       <div style={{
-        padding: 'var(--spacing-xs) var(--spacing-md)',
+        padding: 'var(--spacing-sm) var(--spacing-md)',
+        paddingBottom: 'max(var(--spacing-sm), env(safe-area-inset-bottom))',
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
-        gap: '8px',
-        height: `${controlsHeight}px`,
+        gap: 'var(--spacing-sm)',
+        backgroundColor: 'var(--color-surface)',
+        borderTop: '1px solid var(--color-outline)',
+        boxShadow: 'var(--elevation-1)',
+        minHeight: `${controlsHeight}px`,
         flexShrink: 0,
       }}>
         <button
           onClick={() => onIndexChange(currentIndex - 1)}
           disabled={!canGoPrev}
           style={{
-            width: '44px',
-            height: '44px',
-            borderRadius: '50%',
-            border: '1.5px solid var(--color-primary)',
-            backgroundColor: 'transparent',
+            width: '56px',
+            height: '56px',
+            borderRadius: 'var(--radius-full)',
+            border: '2px solid var(--color-primary)',
+            backgroundColor: canGoPrev ? 'transparent' : 'var(--color-outline-variant)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
             cursor: canGoPrev ? 'pointer' : 'not-allowed',
             opacity: canGoPrev ? 1 : 0.5,
-            flexShrink: 0,
+            transition: 'all var(--transition-base)',
+            touchAction: 'manipulation',
+          }}
+          onMouseEnter={(e) => {
+            if (canGoPrev) {
+              e.currentTarget.style.backgroundColor = 'var(--color-primary-container-low-opacity)';
+              e.currentTarget.style.transform = 'scale(1.05)';
+            }
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.backgroundColor = 'transparent';
+            e.currentTarget.style.transform = 'scale(1)';
           }}
           title="Қаблӣ"
         >
-          <ArrowBackIcon size={20} color="var(--color-primary)" />
+          <ArrowBackIcon size={24} color="var(--color-primary)" />
         </button>
         <button
           onClick={onPlay}
           disabled={isPlaying}
           style={{
-            width: '52px',
-            height: '52px',
-            borderRadius: '50%',
+            width: '64px',
+            height: '64px',
+            borderRadius: 'var(--radius-full)',
             backgroundColor: 'var(--color-primary)',
             border: 'none',
             display: 'flex',
@@ -409,35 +509,58 @@ function AlphabetDrill({
             justifyContent: 'center',
             cursor: isPlaying ? 'not-allowed' : 'pointer',
             opacity: isPlaying ? 0.7 : 1,
-            flexShrink: 0,
+            transition: 'all var(--transition-base)',
+            boxShadow: 'var(--elevation-2)',
+            touchAction: 'manipulation',
+          }}
+          onMouseEnter={(e) => {
+            if (!isPlaying) {
+              e.currentTarget.style.transform = 'scale(1.1)';
+              e.currentTarget.style.boxShadow = 'var(--elevation-4)';
+            }
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.transform = 'scale(1)';
+            e.currentTarget.style.boxShadow = 'var(--elevation-2)';
           }}
           title="Пахш кардан"
         >
           {isPlaying ? (
-            <VolumeUpIcon size={26} color="var(--color-on-primary)" />
+            <VolumeUpIcon size={28} color="var(--color-on-primary)" />
           ) : (
-            <PlayArrowIcon size={26} color="var(--color-on-primary)" />
+            <PlayArrowIcon size={28} color="var(--color-on-primary)" />
           )}
         </button>
         <button
           onClick={() => onIndexChange(currentIndex + 1)}
           disabled={!canGoNext}
           style={{
-            width: '44px',
-            height: '44px',
-            borderRadius: '50%',
-            border: '1.5px solid var(--color-primary)',
-            backgroundColor: 'transparent',
+            width: '56px',
+            height: '56px',
+            borderRadius: 'var(--radius-full)',
+            border: '2px solid var(--color-primary)',
+            backgroundColor: canGoNext ? 'transparent' : 'var(--color-outline-variant)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
             cursor: canGoNext ? 'pointer' : 'not-allowed',
             opacity: canGoNext ? 1 : 0.5,
-            flexShrink: 0,
+            transition: 'all var(--transition-base)',
+            touchAction: 'manipulation',
+          }}
+          onMouseEnter={(e) => {
+            if (canGoNext) {
+              e.currentTarget.style.backgroundColor = 'var(--color-primary-container-low-opacity)';
+              e.currentTarget.style.transform = 'scale(1.05)';
+            }
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.backgroundColor = 'transparent';
+            e.currentTarget.style.transform = 'scale(1)';
           }}
           title="Баъдӣ"
         >
-          <ArrowForwardIcon size={20} color="var(--color-primary)" />
+          <ArrowForwardIcon size={24} color="var(--color-primary)" />
         </button>
       </div>
     </div>
@@ -464,13 +587,39 @@ function LetterFormsDrill({
   onPlay: () => void;
   isPlaying: boolean;
 }) {
+  const contentRef = useRef<HTMLDivElement>(null);
+  const touchStartX = useRef<number>(0);
+  const touchEndX = useRef<number>(0);
+  const { isVisible: isTopBarVisible } = useTopBar();
+  
   const targetLesson = module.lessons.find((l) => l.id === lessonNumber) || module.lessons[0];
   const lettersBlock = targetLesson.content.find(
     (b) => b.subtype === 'letters_forms_chart'
   );
   const letters = lettersBlock?.letters || [];
 
-  const { isVisible: isTopBarVisible } = useTopBar();
+  // Swipe gesture handlers
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartX.current = e.touches[0].clientX;
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    touchEndX.current = e.changedTouches[0].clientX;
+    handleSwipe();
+  };
+
+  const handleSwipe = () => {
+    const swipeThreshold = 50;
+    const diff = touchStartX.current - touchEndX.current;
+    
+    if (Math.abs(diff) > swipeThreshold) {
+      if (diff > 0 && currentIndex < letters.length - 1) {
+        onIndexChange(currentIndex + 1);
+      } else if (diff < 0 && currentIndex > 0) {
+        onIndexChange(currentIndex - 1);
+      }
+    }
+  };
 
   if (letters.length === 0) {
     return (
@@ -478,21 +627,9 @@ function LetterFormsDrill({
         minHeight: '100vh',
         backgroundColor: 'var(--color-background)',
       }}>
-        <div 
-          className="app-bar"
-          style={{
-            top: isTopBarVisible ? '56px' : '0px',
-          }}
-        >
-          <div className="app-bar-content">
-            <h1 className="app-bar-title" style={{ fontSize: 'var(--font-size-md)' }}>
-              {lessonTitles[lessonNumber]}
-            </h1>
-          </div>
-        </div>
         <main style={{
           padding: 'var(--spacing-lg) 4px',
-          paddingTop: isTopBarVisible ? 'calc(56px + var(--spacing-md))' : 'var(--spacing-md)',
+          paddingTop: 'var(--spacing-md)',
           maxWidth: '900px',
           margin: '0 auto',
           width: '100%',
@@ -511,207 +648,305 @@ function LetterFormsDrill({
   const examples = current.examples || {};
   const canGoPrev = currentIndex > 0;
   const canGoNext = currentIndex < letters.length - 1;
+  const progress = ((currentIndex + 1) / letters.length) * 100;
 
-  const appBarHeight = isTopBarVisible ? 112 : 56;
-  const progressHeight = 24;
-  const controlsHeight = 60;
-  const availableHeight = `calc(100vh - ${appBarHeight + progressHeight + controlsHeight}px)`;
+  const topBarHeight = isTopBarVisible ? 56 : 0;
+  const headerHeight = 52; // Increased to accommodate text
+  const progressHeight = 32; // Slightly increased for better visibility
+  const controlsHeight = 64;
+  const availableHeight = `calc(100vh - ${topBarHeight + headerHeight + progressHeight + controlsHeight}px)`;
 
   return (
     <div style={{
-      height: '100vh',
+      minHeight: '100vh',
       backgroundColor: 'var(--color-background)',
       display: 'flex',
       flexDirection: 'column',
-      overflow: 'hidden',
     }}>
-      {/* AppBar */}
-      <div 
-        className="app-bar"
-        style={{
-          top: isTopBarVisible ? '56px' : '0px',
-        }}
-      >
-        <div className="app-bar-content">
-          <h1 className="app-bar-title" style={{ fontSize: 'var(--font-size-md)' }}>
+      {/* Header with Back Button */}
+      <div style={{
+        padding: 'var(--spacing-sm) var(--spacing-md)',
+        paddingTop: isTopBarVisible ? `calc(56px + var(--spacing-sm))` : 'var(--spacing-sm)',
+        display: 'flex',
+        alignItems: 'center',
+        gap: 'var(--spacing-sm)',
+        backgroundColor: 'var(--color-surface)',
+        borderBottom: '1px solid var(--color-outline)',
+        boxShadow: 'var(--elevation-1)',
+        minHeight: `${headerHeight}px`,
+        flexShrink: 0,
+      }}>
+        <button
+          onClick={onBack}
+          style={{
+            width: '40px',
+            height: '40px',
+            borderRadius: 'var(--radius-md)',
+            border: '1px solid var(--color-outline)',
+            backgroundColor: 'var(--color-surface)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            cursor: 'pointer',
+            transition: 'all var(--transition-base)',
+            flexShrink: 0,
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.backgroundColor = 'var(--color-primary-container-low-opacity)';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.backgroundColor = 'var(--color-surface)';
+          }}
+          title="Бозгашт"
+        >
+          <ArrowBackIcon size={20} color="var(--color-primary)" />
+        </button>
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <div style={{
+            fontSize: 'var(--font-size-sm)',
+            fontWeight: 'var(--font-weight-semibold)',
+            color: 'var(--color-text-primary)',
+            lineHeight: 1.3,
+            marginBottom: '2px',
+          }}>
             {lessonTitles[lessonNumber]}
-          </h1>
+          </div>
+          <div style={{
+            fontSize: 'var(--font-size-xs)',
+            color: 'var(--color-text-secondary)',
+            lineHeight: 1.2,
+          }}>
+            Ҳарфи {currentIndex + 1} аз {letters.length}
+          </div>
         </div>
       </div>
 
-      {/* Progress Text */}
+      {/* Progress Bar */}
       <div style={{
-        padding: 'var(--spacing-xs) var(--spacing-md)',
-        paddingTop: isTopBarVisible ? 'calc(56px + var(--spacing-xs))' : 'var(--spacing-xs)',
-        textAlign: 'center',
-        color: 'var(--color-text-secondary)',
-        fontSize: 'var(--font-size-xs)',
-        height: `${progressHeight}px`,
+        minHeight: `${progressHeight}px`,
+        padding: 'var(--spacing-sm) var(--spacing-md)',
         display: 'flex',
-        alignItems: 'center',
+        flexDirection: 'column',
         justifyContent: 'center',
-        flexShrink: 0,
-      }}>
-        Ҳарфи {currentIndex + 1} аз {letters.length}
-      </div>
-
-      {/* Main Content */}
-      <div style={{
-        height: availableHeight,
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        padding: 'var(--spacing-xs)',
-        overflow: 'hidden',
+        backgroundColor: 'var(--color-surface)',
+        borderBottom: '1px solid var(--color-outline)',
         flexShrink: 0,
       }}>
         <div style={{
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          gap: '4px',
           width: '100%',
+          height: '4px',
+          backgroundColor: 'var(--color-outline-variant)',
+          borderRadius: 'var(--radius-full)',
+          overflow: 'hidden',
         }}>
-          {/* Main Letter */}
           <div style={{
-            fontSize: 'clamp(48px, 12vw, 72px)',
-            fontFamily: 'Noto_Naskh_Arabic, serif',
-            direction: 'rtl',
-            fontWeight: 'var(--font-weight-bold)',
-            color: 'var(--color-text-primary)',
-            lineHeight: 1.1,
-          }}>
-            {current.letter}
-          </div>
-
-          {/* Name */}
-          {current.name && (
-            <div style={{
-              fontSize: 'clamp(14px, 3vw, 18px)',
-              fontWeight: 'var(--font-weight-semibold)',
-              color: 'var(--color-text-primary)',
-            }}>
-              {current.name}
-            </div>
-          )}
-
-          {/* Forms */}
-          <div style={{
-            display: 'flex',
-            direction: 'rtl',
-            gap: 'var(--spacing-xs)',
-            width: '100%',
-            justifyContent: 'space-evenly',
-            flexWrap: 'wrap',
-            marginTop: '4px',
-          }}>
-            {['initial', 'medial', 'final'].map((formKey) => {
-              const form = forms[formKey];
-              if (!form) return null;
-              return (
-                <div key={formKey} style={{
-                  textAlign: 'center',
-                }}>
-                  <div style={{
-                    fontSize: '10px',
-                    fontWeight: 'var(--font-weight-semibold)',
-                    color: 'var(--color-text-primary)',
-                    marginBottom: '2px',
-                  }}>
-                    {formKey === 'initial' ? 'Аввал' : formKey === 'medial' ? 'Байн' : 'Охир'}
-                  </div>
-                  <div style={{
-                    fontSize: 'clamp(20px, 5vw, 28px)',
-                    fontFamily: 'Noto_Naskh_Arabic, serif',
-                    direction: 'rtl',
-                    fontWeight: 'var(--font-weight-bold)',
-                    color: 'var(--color-text-primary)',
-                    lineHeight: 1.1,
-                  }}>
-                    {form}
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-
-          {/* Examples */}
-          {Object.keys(examples).length > 0 && (
-            <>
-              <div style={{
-                fontSize: 'var(--font-size-xs)',
-                fontWeight: 'var(--font-weight-semibold)',
-                color: 'var(--color-text-primary)',
-                marginTop: '4px',
-              }}>
-                Мисолҳо:
-              </div>
-              <div style={{
-                display: 'flex',
-                direction: 'rtl',
-                gap: 'var(--spacing-xs)',
-                width: '100%',
-                justifyContent: 'space-evenly',
-                flexWrap: 'wrap',
-              }}>
-                {['initial', 'medial', 'final'].map((formKey) => {
-                  const example = examples[formKey];
-                  if (!example) return null;
-                  return (
-                    <div key={formKey} style={{
-                      fontSize: 'clamp(14px, 3vw, 20px)',
-                      fontFamily: 'Noto_Naskh_Arabic, serif',
-                      direction: 'rtl',
-                      color: 'var(--color-text-primary)',
-                      lineHeight: 1.1,
-                    }}>
-                      {example}
-                    </div>
-                  );
-                })}
-              </div>
-            </>
-          )}
+            width: `${progress}%`,
+            height: '100%',
+            backgroundColor: 'var(--color-primary)',
+            borderRadius: 'var(--radius-full)',
+            transition: 'width var(--transition-base)',
+          }} />
         </div>
       </div>
 
-      {/* Bottom Controls */}
+      {/* Main Content - Card Style */}
+      <div 
+        ref={contentRef}
+        onTouchStart={handleTouchStart}
+        onTouchEnd={handleTouchEnd}
+        style={{
+          display: 'flex',
+          alignItems: 'flex-start',
+          justifyContent: 'center',
+          padding: 'var(--spacing-md)',
+          paddingTop: 'var(--spacing-lg)',
+          overflow: 'auto',
+          flexGrow: 0,
+          flexShrink: 1,
+        }}
+      >
+        <div style={{
+          backgroundColor: 'var(--color-surface)',
+          borderRadius: 'var(--radius-lg)',
+          padding: 'clamp(12px, 3vw, 24px)',
+          boxShadow: 'var(--elevation-2)',
+          border: '1px solid var(--color-outline)',
+          width: '100%',
+          maxWidth: '600px',
+          transition: 'transform var(--transition-base), box-shadow var(--transition-base)',
+        }}>
+          <div style={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            gap: 'var(--spacing-md)',
+            width: '100%',
+          }}>
+            {/* Main Letter */}
+            <div style={{
+              fontSize: 'clamp(48px, 12vw, 96px)',
+              fontFamily: 'Noto_Naskh_Arabic, serif',
+              direction: 'rtl',
+              fontWeight: 'var(--font-weight-bold)',
+              color: 'var(--color-text-primary)',
+              lineHeight: 1.1,
+              minHeight: 'clamp(48px, 12vw, 96px)',
+            }}>
+              {current.letter}
+            </div>
+
+            {/* Name */}
+            {current.name && (
+              <div style={{
+                fontSize: 'clamp(16px, 3.5vw, 24px)',
+                fontWeight: 'var(--font-weight-semibold)',
+                color: 'var(--color-text-primary)',
+              }}>
+                {current.name}
+              </div>
+            )}
+
+            {/* Forms */}
+            <div style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(3, 1fr)',
+              gap: 'var(--spacing-sm)',
+              direction: 'rtl',
+              width: '100%',
+            }}>
+              {['initial', 'medial', 'final'].map((formKey) => {
+                const form = forms[formKey];
+                if (!form) return null;
+                return (
+                  <div key={formKey} style={{
+                    textAlign: 'center',
+                    padding: 'var(--spacing-sm)',
+                    backgroundColor: 'var(--color-primary-container-low-opacity)',
+                    borderRadius: 'var(--radius-md)',
+                    border: '1px solid var(--color-outline)',
+                  }}>
+                    <div style={{
+                      fontSize: '10px',
+                      fontWeight: 'var(--font-weight-semibold)',
+                      color: 'var(--color-text-secondary)',
+                      marginBottom: '4px',
+                    }}>
+                      {formKey === 'initial' ? 'Аввал' : formKey === 'medial' ? 'Байн' : 'Охир'}
+                    </div>
+                    <div style={{
+                      fontSize: 'clamp(24px, 6vw, 40px)',
+                      fontFamily: 'Noto_Naskh_Arabic, serif',
+                      direction: 'rtl',
+                      fontWeight: 'var(--font-weight-bold)',
+                      color: 'var(--color-text-primary)',
+                      lineHeight: 1.1,
+                    }}>
+                      {form}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* Examples */}
+            {Object.keys(examples).length > 0 && (
+              <div style={{
+                width: '100%',
+                marginTop: 'var(--spacing-xs)',
+              }}>
+                <div style={{
+                  fontSize: 'var(--font-size-xs)',
+                  fontWeight: 'var(--font-weight-semibold)',
+                  color: 'var(--color-text-secondary)',
+                  marginBottom: 'var(--spacing-sm)',
+                  textAlign: 'center',
+                }}>
+                  Мисолҳо:
+                </div>
+                <div style={{
+                  display: 'grid',
+                  gridTemplateColumns: 'repeat(3, 1fr)',
+                  gap: 'var(--spacing-sm)',
+                  direction: 'rtl',
+                }}>
+                  {['initial', 'medial', 'final'].map((formKey) => {
+                    const example = examples[formKey];
+                    if (!example) return null;
+                    return (
+                      <div key={formKey} style={{
+                        fontSize: 'clamp(16px, 3.5vw, 24px)',
+                        fontFamily: 'Noto_Naskh_Arabic, serif',
+                        direction: 'rtl',
+                        color: 'var(--color-text-primary)',
+                        textAlign: 'center',
+                        padding: 'var(--spacing-xs)',
+                        backgroundColor: 'var(--color-surface-variant)',
+                        borderRadius: 'var(--radius-md)',
+                        lineHeight: 1.1,
+                      }}>
+                        {example}
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* Bottom Controls - Larger Touch Targets */}
       <div style={{
-        padding: 'var(--spacing-xs) var(--spacing-md)',
+        padding: 'var(--spacing-sm) var(--spacing-md)',
+        paddingBottom: 'max(var(--spacing-sm), env(safe-area-inset-bottom))',
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
-        gap: '8px',
-        height: `${controlsHeight}px`,
+        gap: 'var(--spacing-sm)',
+        backgroundColor: 'var(--color-surface)',
+        borderTop: '1px solid var(--color-outline)',
+        boxShadow: 'var(--elevation-1)',
+        minHeight: `${controlsHeight}px`,
         flexShrink: 0,
       }}>
         <button
           onClick={() => onIndexChange(currentIndex - 1)}
           disabled={!canGoPrev}
           style={{
-            width: '44px',
-            height: '44px',
-            borderRadius: '50%',
-            border: '1.5px solid var(--color-primary)',
-            backgroundColor: 'transparent',
+            width: '52px',
+            height: '52px',
+            borderRadius: 'var(--radius-full)',
+            border: '2px solid var(--color-primary)',
+            backgroundColor: canGoPrev ? 'transparent' : 'var(--color-outline-variant)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
             cursor: canGoPrev ? 'pointer' : 'not-allowed',
             opacity: canGoPrev ? 1 : 0.5,
-            flexShrink: 0,
+            transition: 'all var(--transition-base)',
+            touchAction: 'manipulation',
+          }}
+          onMouseEnter={(e) => {
+            if (canGoPrev) {
+              e.currentTarget.style.backgroundColor = 'var(--color-primary-container-low-opacity)';
+              e.currentTarget.style.transform = 'scale(1.05)';
+            }
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.backgroundColor = 'transparent';
+            e.currentTarget.style.transform = 'scale(1)';
           }}
           title="Қаблӣ"
         >
-          <ArrowBackIcon size={20} color="var(--color-primary)" />
+          <ArrowBackIcon size={22} color="var(--color-primary)" />
         </button>
         <button
           onClick={onPlay}
           disabled={isPlaying}
           style={{
-            width: '52px',
-            height: '52px',
-            borderRadius: '50%',
+            width: '56px',
+            height: '56px',
+            borderRadius: 'var(--radius-full)',
             backgroundColor: 'var(--color-primary)',
             border: 'none',
             display: 'flex',
@@ -719,7 +954,19 @@ function LetterFormsDrill({
             justifyContent: 'center',
             cursor: isPlaying ? 'not-allowed' : 'pointer',
             opacity: isPlaying ? 0.7 : 1,
-            flexShrink: 0,
+            transition: 'all var(--transition-base)',
+            boxShadow: 'var(--elevation-2)',
+            touchAction: 'manipulation',
+          }}
+          onMouseEnter={(e) => {
+            if (!isPlaying) {
+              e.currentTarget.style.transform = 'scale(1.1)';
+              e.currentTarget.style.boxShadow = 'var(--elevation-4)';
+            }
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.transform = 'scale(1)';
+            e.currentTarget.style.boxShadow = 'var(--elevation-2)';
           }}
           title="Пахш кардан"
         >
@@ -733,21 +980,32 @@ function LetterFormsDrill({
           onClick={() => onIndexChange(currentIndex + 1)}
           disabled={!canGoNext}
           style={{
-            width: '44px',
-            height: '44px',
-            borderRadius: '50%',
-            border: '1.5px solid var(--color-primary)',
-            backgroundColor: 'transparent',
+            width: '52px',
+            height: '52px',
+            borderRadius: 'var(--radius-full)',
+            border: '2px solid var(--color-primary)',
+            backgroundColor: canGoNext ? 'transparent' : 'var(--color-outline-variant)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
             cursor: canGoNext ? 'pointer' : 'not-allowed',
             opacity: canGoNext ? 1 : 0.5,
-            flexShrink: 0,
+            transition: 'all var(--transition-base)',
+            touchAction: 'manipulation',
+          }}
+          onMouseEnter={(e) => {
+            if (canGoNext) {
+              e.currentTarget.style.backgroundColor = 'var(--color-primary-container-low-opacity)';
+              e.currentTarget.style.transform = 'scale(1.05)';
+            }
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.backgroundColor = 'transparent';
+            e.currentTarget.style.transform = 'scale(1)';
           }}
           title="Баъдӣ"
         >
-          <ArrowForwardIcon size={20} color="var(--color-primary)" />
+          <ArrowForwardIcon size={22} color="var(--color-primary)" />
         </button>
       </div>
     </div>
@@ -776,6 +1034,11 @@ function VowelsDrill({
   onPlay: () => void;
   isPlaying: boolean;
 }) {
+  const contentRef = useRef<HTMLDivElement>(null);
+  const touchStartX = useRef<number>(0);
+  const touchEndX = useRef<number>(0);
+  const { isVisible: isTopBarVisible } = useTopBar();
+  
   const targetLesson = module.lessons.find((l) => l.id === lessonNumber) || module.lessons[0];
   const syllablesBlock = targetLesson.content.find(
     (b) => b.subtype === 'syllables_examples'
@@ -816,101 +1079,214 @@ function VowelsDrill({
   const currentSyllables = letterGroups[currentLetter] || [];
   const canGoPrev = currentIndex > 0;
   const canGoNext = currentIndex < uniqueLetters.length - 1;
-  const { isVisible: isTopBarVisible } = useTopBar();
+  const progress = ((currentIndex + 1) / uniqueLetters.length) * 100;
 
-  const appBarHeight = isTopBarVisible ? 112 : 56;
-  const progressHeight = 24;
-  const controlsHeight = 60;
-  const availableHeight = `calc(100vh - ${appBarHeight + progressHeight + controlsHeight}px)`;
+  // Swipe gesture handlers
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartX.current = e.touches[0].clientX;
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    touchEndX.current = e.changedTouches[0].clientX;
+    handleSwipe();
+  };
+
+  const handleSwipe = () => {
+    const swipeThreshold = 50;
+    const diff = touchStartX.current - touchEndX.current;
+    
+    if (Math.abs(diff) > swipeThreshold) {
+      if (diff > 0 && canGoNext) {
+        // Swipe left - next
+        onIndexChange(currentIndex + 1);
+      } else if (diff < 0 && canGoPrev) {
+        // Swipe right - previous
+        onIndexChange(currentIndex - 1);
+      }
+    }
+  };
+
+  const topBarHeight = isTopBarVisible ? 56 : 0;
+  const headerHeight = 52; // Increased to accommodate text
+  const progressHeight = 32; // Slightly increased for better visibility
+  const controlsHeight = 64;
+  const availableHeight = `calc(100vh - ${topBarHeight + headerHeight + progressHeight + controlsHeight}px)`;
 
   return (
     <div style={{
-      height: '100vh',
+      minHeight: '100vh',
       backgroundColor: 'var(--color-background)',
       display: 'flex',
       flexDirection: 'column',
-      overflow: 'hidden',
     }}>
-      {/* AppBar */}
-      <div 
-        className="app-bar"
-        style={{
-          top: isTopBarVisible ? '56px' : '0px',
-        }}
-      >
-        <div className="app-bar-content">
-          <h1 className="app-bar-title" style={{ fontSize: 'var(--font-size-md)' }}>
-            {targetLesson.title}
-          </h1>
+      {/* Header with Back Button */}
+      <div style={{
+        padding: 'var(--spacing-sm) var(--spacing-md)',
+        paddingTop: isTopBarVisible ? `calc(56px + var(--spacing-sm))` : 'var(--spacing-sm)',
+        display: 'flex',
+        alignItems: 'center',
+        gap: 'var(--spacing-sm)',
+        backgroundColor: 'var(--color-surface)',
+        borderBottom: '1px solid var(--color-outline)',
+        boxShadow: 'var(--elevation-1)',
+        minHeight: `${headerHeight}px`,
+        flexShrink: 0,
+      }}>
+        <button
+          onClick={onBack}
+          style={{
+            width: '40px',
+            height: '40px',
+            borderRadius: 'var(--radius-md)',
+            border: '1px solid var(--color-outline)',
+            backgroundColor: 'var(--color-surface)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            cursor: 'pointer',
+            transition: 'all var(--transition-base)',
+            flexShrink: 0,
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.backgroundColor = 'var(--color-primary-container-low-opacity)';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.backgroundColor = 'var(--color-surface)';
+          }}
+          title="Бозгашт"
+        >
+          <ArrowBackIcon size={20} color="var(--color-primary)" />
+        </button>
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <div style={{
+            fontSize: 'var(--font-size-sm)',
+            fontWeight: 'var(--font-weight-semibold)',
+            color: 'var(--color-text-primary)',
+            lineHeight: 1.3,
+            marginBottom: '2px',
+          }}>
+            {lessonTitles[lessonNumber]}
+          </div>
+          <div style={{
+            fontSize: 'var(--font-size-xs)',
+            color: 'var(--color-text-secondary)',
+            lineHeight: 1.2,
+          }}>
+            {currentIndex + 1} / {uniqueLetters.length}
+          </div>
         </div>
       </div>
 
-      {/* Progress Text */}
+      {/* Progress Bar */}
       <div style={{
-        padding: '4px var(--spacing-md)',
-        paddingTop: isTopBarVisible ? 'calc(56px + 4px)' : '4px',
-        textAlign: 'center',
-        color: 'var(--color-text-secondary)',
-        fontSize: 'var(--font-size-xs)',
-        height: `${progressHeight}px`,
+        minHeight: `${progressHeight}px`,
+        padding: 'var(--spacing-sm) var(--spacing-md)',
         display: 'flex',
-        alignItems: 'center',
+        flexDirection: 'column',
         justifyContent: 'center',
+        backgroundColor: 'var(--color-surface)',
+        borderBottom: '1px solid var(--color-outline)',
         flexShrink: 0,
       }}>
-        {currentIndex + 1} / {uniqueLetters.length}
+        <div style={{
+          width: '100%',
+          height: '4px',
+          backgroundColor: 'var(--color-outline-variant)',
+          borderRadius: 'var(--radius-full)',
+          overflow: 'hidden',
+        }}>
+          <div style={{
+            width: `${progress}%`,
+            height: '100%',
+            backgroundColor: 'var(--color-primary)',
+            borderRadius: 'var(--radius-full)',
+            transition: 'width var(--transition-base)',
+          }} />
+        </div>
       </div>
 
-      {/* Main Content */}
-      <div style={{
-        height: availableHeight,
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        padding: 'var(--spacing-xs)',
-        overflow: 'hidden',
-        flexShrink: 0,
-      }}>
-        {renderVowelContent(lessonNumber, currentLetter, currentSyllables, drillType)}
+      {/* Main Content - Card Style with Swipe Support */}
+      <div 
+        ref={contentRef}
+        onTouchStart={handleTouchStart}
+        onTouchEnd={handleTouchEnd}
+        style={{
+          display: 'flex',
+          alignItems: 'flex-start',
+          justifyContent: 'center',
+          padding: 'var(--spacing-md)',
+          paddingTop: 'var(--spacing-lg)',
+          overflow: 'hidden',
+          flexGrow: 0,
+          flexShrink: 1,
+        }}
+      >
+        <div style={{
+          backgroundColor: 'var(--color-surface)',
+          borderRadius: 'var(--radius-lg)',
+          padding: 'clamp(16px, 4vw, 32px)',
+          boxShadow: 'var(--elevation-2)',
+          border: '1px solid var(--color-outline)',
+          width: '100%',
+          maxWidth: '600px',
+          transition: 'transform var(--transition-base), box-shadow var(--transition-base)',
+        }}>
+          {renderVowelContent(lessonNumber, currentLetter, currentSyllables, drillType)}
+        </div>
       </div>
 
-      {/* Bottom Controls */}
+      {/* Bottom Controls - Larger Touch Targets */}
       <div style={{
-        padding: 'var(--spacing-xs) var(--spacing-md)',
+        padding: 'var(--spacing-sm) var(--spacing-md)',
+        paddingBottom: 'max(var(--spacing-sm), env(safe-area-inset-bottom))',
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
-        gap: '8px',
-        height: `${controlsHeight}px`,
+        gap: 'var(--spacing-sm)',
+        backgroundColor: 'var(--color-surface)',
+        borderTop: '1px solid var(--color-outline)',
+        boxShadow: 'var(--elevation-1)',
+        minHeight: `${controlsHeight}px`,
         flexShrink: 0,
       }}>
         <button
           onClick={() => onIndexChange(currentIndex - 1)}
           disabled={!canGoPrev}
           style={{
-            width: '44px',
-            height: '44px',
-            borderRadius: '50%',
-            border: '1.5px solid var(--color-primary)',
-            backgroundColor: 'transparent',
+            width: '52px',
+            height: '52px',
+            borderRadius: 'var(--radius-full)',
+            border: '2px solid var(--color-primary)',
+            backgroundColor: canGoPrev ? 'transparent' : 'var(--color-outline-variant)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
             cursor: canGoPrev ? 'pointer' : 'not-allowed',
             opacity: canGoPrev ? 1 : 0.5,
-            flexShrink: 0,
+            transition: 'all var(--transition-base)',
+            touchAction: 'manipulation',
+          }}
+          onMouseEnter={(e) => {
+            if (canGoPrev) {
+              e.currentTarget.style.backgroundColor = 'var(--color-primary-container-low-opacity)';
+              e.currentTarget.style.transform = 'scale(1.05)';
+            }
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.backgroundColor = 'transparent';
+            e.currentTarget.style.transform = 'scale(1)';
           }}
           title="Қаблӣ"
         >
-          <ArrowBackIcon size={20} color="var(--color-primary)" />
+          <ArrowBackIcon size={22} color="var(--color-primary)" />
         </button>
         <button
           onClick={onPlay}
           disabled={isPlaying}
           style={{
-            width: '52px',
-            height: '52px',
-            borderRadius: '50%',
+            width: '56px',
+            height: '56px',
+            borderRadius: 'var(--radius-full)',
             backgroundColor: 'var(--color-primary)',
             border: 'none',
             display: 'flex',
@@ -918,7 +1294,19 @@ function VowelsDrill({
             justifyContent: 'center',
             cursor: isPlaying ? 'not-allowed' : 'pointer',
             opacity: isPlaying ? 0.7 : 1,
-            flexShrink: 0,
+            transition: 'all var(--transition-base)',
+            boxShadow: 'var(--elevation-2)',
+            touchAction: 'manipulation',
+          }}
+          onMouseEnter={(e) => {
+            if (!isPlaying) {
+              e.currentTarget.style.transform = 'scale(1.1)';
+              e.currentTarget.style.boxShadow = 'var(--elevation-4)';
+            }
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.transform = 'scale(1)';
+            e.currentTarget.style.boxShadow = 'var(--elevation-2)';
           }}
           title="Пахш кардан"
         >
@@ -932,21 +1320,32 @@ function VowelsDrill({
           onClick={() => onIndexChange(currentIndex + 1)}
           disabled={!canGoNext}
           style={{
-            width: '44px',
-            height: '44px',
-            borderRadius: '50%',
-            border: '1.5px solid var(--color-primary)',
-            backgroundColor: 'transparent',
+            width: '52px',
+            height: '52px',
+            borderRadius: 'var(--radius-full)',
+            border: '2px solid var(--color-primary)',
+            backgroundColor: canGoNext ? 'transparent' : 'var(--color-outline-variant)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
             cursor: canGoNext ? 'pointer' : 'not-allowed',
             opacity: canGoNext ? 1 : 0.5,
-            flexShrink: 0,
+            transition: 'all var(--transition-base)',
+            touchAction: 'manipulation',
+          }}
+          onMouseEnter={(e) => {
+            if (canGoNext) {
+              e.currentTarget.style.backgroundColor = 'var(--color-primary-container-low-opacity)';
+              e.currentTarget.style.transform = 'scale(1.05)';
+            }
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.backgroundColor = 'transparent';
+            e.currentTarget.style.transform = 'scale(1)';
           }}
           title="Баъдӣ"
         >
-          <ArrowForwardIcon size={20} color="var(--color-primary)" />
+          <ArrowForwardIcon size={22} color="var(--color-primary)" />
         </button>
       </div>
     </div>
@@ -963,20 +1362,21 @@ function renderVowelContent(
   if (drillType === 'pronunciation' && syllables.length > 0) {
     const syllable = syllables[0];
     return (
-      <div style={{ textAlign: 'center' }}>
+      <div style={{ textAlign: 'center', width: '100%' }}>
         <div style={{
-          fontSize: 'clamp(48px, 12vw, 72px)',
+          fontSize: 'clamp(56px, 14vw, 96px)',
           fontFamily: 'Noto_Naskh_Arabic, serif',
           direction: 'rtl',
           fontWeight: 'var(--font-weight-bold)',
           color: 'var(--color-text-primary)',
-          marginBottom: '2px',
+          marginBottom: 'var(--spacing-xs)',
           lineHeight: 1.1,
+          minHeight: 'clamp(56px, 14vw, 96px)',
         }}>
           {`${syllable.letter}${syllable.vowel}`}
         </div>
         <div style={{
-          fontSize: 'clamp(14px, 3vw, 18px)',
+          fontSize: 'clamp(18px, 4vw, 28px)',
           fontWeight: 'var(--font-weight-semibold)',
           color: 'var(--color-text-primary)',
         }}>
@@ -993,20 +1393,21 @@ function renderVowelContent(
       ? 'لاء'
       : `${syllable.letter}َ` + 'لَّ' + 'ا';
     return (
-      <div style={{ textAlign: 'center' }}>
+      <div style={{ textAlign: 'center', width: '100%' }}>
         <div style={{
-          fontSize: 'clamp(48px, 12vw, 72px)',
+          fontSize: 'clamp(56px, 14vw, 96px)',
           fontFamily: 'Noto_Naskh_Arabic, serif',
           direction: 'rtl',
           fontWeight: 'var(--font-weight-bold)',
           color: 'var(--color-text-primary)',
-          marginBottom: '2px',
+          marginBottom: 'var(--spacing-xs)',
           lineHeight: 1.1,
+          minHeight: 'clamp(56px, 14vw, 96px)',
         }}>
           {displayText}
         </div>
         <div style={{
-          fontSize: 'clamp(14px, 3vw, 18px)',
+          fontSize: 'clamp(18px, 4vw, 28px)',
           fontWeight: 'var(--font-weight-semibold)',
           color: 'var(--color-text-primary)',
         }}>
@@ -1023,20 +1424,21 @@ function renderVowelContent(
       ? 'لاء'
       : `${syllable.letter}ِ` + 'نِّ' + 'يْ';
     return (
-      <div style={{ textAlign: 'center' }}>
+      <div style={{ textAlign: 'center', width: '100%' }}>
         <div style={{
-          fontSize: 'clamp(48px, 12vw, 72px)',
+          fontSize: 'clamp(56px, 14vw, 96px)',
           fontFamily: 'Noto_Naskh_Arabic, serif',
           direction: 'rtl',
           fontWeight: 'var(--font-weight-bold)',
           color: 'var(--color-text-primary)',
-          marginBottom: '2px',
+          marginBottom: 'var(--spacing-xs)',
           lineHeight: 1.1,
+          minHeight: 'clamp(56px, 14vw, 96px)',
         }}>
           {displayText}
         </div>
         <div style={{
-          fontSize: 'clamp(14px, 3vw, 18px)',
+          fontSize: 'clamp(18px, 4vw, 28px)',
           fontWeight: 'var(--font-weight-semibold)',
           color: 'var(--color-text-primary)',
         }}>
@@ -1053,15 +1455,16 @@ function renderVowelContent(
         display: 'flex',
         direction: 'rtl',
         flexWrap: 'wrap',
-        gap: 'var(--spacing-xs)',
+        gap: 'var(--spacing-sm)',
         justifyContent: 'center',
         alignItems: 'center',
+        width: '100%',
       }}>
         {syllables.map((syllable, index) => (
           <div
             key={index}
             style={{
-              fontSize: 'clamp(32px, 8vw, 48px)',
+              fontSize: 'clamp(36px, 9vw, 64px)',
               fontFamily: 'Noto_Naskh_Arabic, serif',
               direction: 'rtl',
               fontWeight: 'var(--font-weight-bold)',
@@ -1082,46 +1485,48 @@ function renderVowelContent(
       <div style={{ textAlign: 'center', width: '100%' }}>
         {/* Letter */}
         <div style={{
-          fontSize: 'clamp(48px, 12vw, 72px)',
+          fontSize: 'clamp(56px, 14vw, 96px)',
           fontFamily: 'Noto_Naskh_Arabic, serif',
           direction: 'rtl',
           fontWeight: 'var(--font-weight-bold)',
           color: 'var(--color-text-primary)',
-          marginBottom: '4px',
+          marginBottom: 'var(--spacing-sm)',
           lineHeight: 1.1,
+          minHeight: 'clamp(56px, 14vw, 96px)',
         }}>
           {letter}
         </div>
 
         {/* All harakats */}
         <div style={{
-          display: 'flex',
+          display: 'grid',
+          gridTemplateColumns: `repeat(${Math.min(syllables.length, 3)}, 1fr)`,
+          gap: 'var(--spacing-sm)',
           direction: 'rtl',
-          justifyContent: 'center',
-          gap: '4px',
-          flexWrap: 'wrap',
         }}>
           {syllables.map((syllable, index) => (
             <div key={index} style={{
-              flex: 1,
-              minWidth: '60px',
               textAlign: 'center',
+              padding: 'var(--spacing-sm)',
+              backgroundColor: 'var(--color-primary-container-low-opacity)',
+              borderRadius: 'var(--radius-md)',
+              border: '1px solid var(--color-outline)',
             }}>
               <div style={{
-                fontSize: 'clamp(32px, 8vw, 48px)',
+                fontSize: 'clamp(36px, 9vw, 64px)',
                 fontFamily: 'Noto_Naskh_Arabic, serif',
                 direction: 'rtl',
                 fontWeight: 'var(--font-weight-bold)',
                 color: 'var(--color-text-primary)',
-                marginBottom: '2px',
+                marginBottom: '4px',
                 lineHeight: 1.1,
               }}>
                 {`${syllable.letter}${syllable.vowel}`}
               </div>
               <div style={{
-                fontSize: 'clamp(12px, 2.5vw, 16px)',
+                fontSize: 'clamp(14px, 3vw, 20px)',
                 fontWeight: 'var(--font-weight-semibold)',
-                color: 'var(--color-text-primary)',
+                color: 'var(--color-text-secondary)',
               }}>
                 {syllable.syllable}
               </div>

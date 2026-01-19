@@ -1,7 +1,7 @@
 'use client';
 
 import { useSearchParams, useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, Suspense } from 'react';
 import Link from 'next/link';
 
 interface YouTubeVideo {
@@ -177,7 +177,7 @@ async function fetchYouTubeVideos(): Promise<YouTubeVideo[]> {
   }
 }
 
-export default function YouTubePage() {
+function YouTubePageContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const videoId = searchParams.get('v');
@@ -418,6 +418,30 @@ export default function YouTubePage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function YouTubePage() {
+  return (
+    <Suspense
+      fallback={
+        <div style={{
+          minHeight: '100vh',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          background: 'var(--color-background)',
+          padding: '20px',
+          textAlign: 'center',
+        }}>
+          <div style={{ fontSize: '18px', color: 'var(--color-text-secondary)' }}>
+            Боргирӣ...
+          </div>
+        </div>
+      }
+    >
+      <YouTubePageContent />
+    </Suspense>
   );
 }
 

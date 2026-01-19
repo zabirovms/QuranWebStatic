@@ -72,12 +72,23 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   // Fallback if no data
   if (descriptionParts.length === 0) {
-    descriptionParts.push(`Оят ${verseNumber} аз сураи ${surahName}`);
+    descriptionParts.push(`Ояти ${verseNumber} аз сураи ${surahName} (${surahNumber})`);
   }
 
-  const description = descriptionParts.join('. ') + ` (Қуръон ${surahNumber}:${verseNumber})`;
+  // Add tafsir keyword and surah number context
+  const tafsirContext = `Тафсири сураи ${surahName} (${surahNumber}) ояти ${verseNumber}`;
+  let description = `${tafsirContext}. ${descriptionParts.join('. ')} (Қуръон ${surahNumber}:${verseNumber})`;
 
-  const title = `Сураи ${surahName} ояти ${verseNumber}`;
+  // Include surah number in title for better SEO
+  let title = `Сураи ${surahName} (${surahNumber}) ояти ${verseNumber}`;
+
+  // Special-case: Ayat al-Kursi (Surah 2, Verse 255)
+  // Add well-known name variants so users can find it by "Оят ал-Курсӣ" search
+  if (surahNumber === 2 && verseNumber === 255) {
+    const ayatKursiLabel = 'Оятул курсӣ (Оят ал-Курсӣ)';
+    title = `${ayatKursiLabel} - Сураи ${surahName} (${surahNumber}) ояти ${verseNumber}`;
+    description = `${ayatKursiLabel}. ${description}`;
+  }
 
   return {
     title,
@@ -90,14 +101,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       canonical: canonicalUrl,
     },
     openGraph: {
-      title: `Сураи ${surahName} ояти ${verseNumber}`,
+      title: `Сураи ${surahName} (${surahNumber}) ояти ${verseNumber}`,
       description,
       type: 'article',
       url: canonicalUrl,
     },
     twitter: {
       card: 'summary',
-      title: `Сураи ${surahName} ояти ${verseNumber}`,
+      title: `Сураи ${surahName} (${surahNumber}) ояти ${verseNumber}`,
       description,
     },
   };

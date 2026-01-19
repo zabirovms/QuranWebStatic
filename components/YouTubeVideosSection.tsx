@@ -344,25 +344,25 @@ export default function YouTubeVideosSection() {
           ) : videos.length > 0 ? (
             videos.map((video, index) => (
               <Link
-                key={index}
-                href={`/youtube/${video.videoId}?title=${encodeURIComponent(video.title)}`}
-                className="scrollable-container"
-                style={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  width: '280px',
-                  minWidth: '280px',
-                  flexShrink: 0,
-                  height: '200px',
-                  borderRadius: '12px',
-                  textDecoration: 'none',
-                  color: 'inherit',
-                  background: 'var(--color-surface)',
-                  border: '1px solid var(--color-outline)',
-                  boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
-                  overflow: 'hidden',
-                }}
-              >
+                  key={index}
+                  href={`/youtube?v=${encodeURIComponent(video.videoId)}&title=${encodeURIComponent(video.title)}`}
+                  className="scrollable-container"
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    width: '280px',
+                    minWidth: '280px',
+                    flexShrink: 0,
+                    height: '200px',
+                    borderRadius: '12px',
+                    textDecoration: 'none',
+                    color: 'inherit',
+                    background: 'var(--color-surface)',
+                    border: '1px solid var(--color-outline)',
+                    boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+                    overflow: 'hidden',
+                  }}
+                >
                 <div style={{
                   height: '140px',
                   width: '100%',

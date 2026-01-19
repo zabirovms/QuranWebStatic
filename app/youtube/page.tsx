@@ -1,8 +1,7 @@
 'use client';
 
-import { useParams, useSearchParams } from 'next/navigation';
+import { useSearchParams, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 
 interface YouTubeVideo {
@@ -178,11 +177,10 @@ async function fetchYouTubeVideos(): Promise<YouTubeVideo[]> {
   }
 }
 
-export default function YouTubeVideoPage() {
-  const params = useParams();
+export default function YouTubePage() {
   const searchParams = useSearchParams();
   const router = useRouter();
-  const videoId = params.videoId as string;
+  const videoId = searchParams.get('v');
   const title = searchParams.get('title') || 'Видео';
   const [isClient, setIsClient] = useState(false);
   const [videos, setVideos] = useState<YouTubeVideo[]>([]);
@@ -199,7 +197,7 @@ export default function YouTubeVideoPage() {
     });
   }, []);
 
-  if (!isClient) {
+  if (!isClient || !videoId) {
     return (
       <div style={{
         minHeight: '100vh',
@@ -207,9 +205,22 @@ export default function YouTubeVideoPage() {
         alignItems: 'center',
         justifyContent: 'center',
         background: 'var(--color-background)',
+        padding: '20px',
+        textAlign: 'center',
       }}>
-        <div style={{ textAlign: 'center' }}>
-          <div style={{ fontSize: '18px', color: 'var(--color-text-secondary)' }}>Боргирӣ...</div>
+        <div>
+          {!videoId ? (
+            <>
+              <div style={{ fontSize: '18px', color: 'var(--color-text-secondary)', marginBottom: '12px' }}>
+                Видео интихоб нашудааст.
+              </div>
+              <div style={{ fontSize: '14px', color: 'var(--color-text-secondary)' }}>
+                Лутфан видеоро аз бахши &quot;Видеоҳо&quot; дар саҳифаи асосӣ интихоб кунед.
+              </div>
+            </>
+          ) : (
+            <div style={{ fontSize: '18px', color: 'var(--color-text-secondary)' }}>Боргирӣ...</div>
+          )}
         </div>
       </div>
     );
@@ -316,7 +327,7 @@ export default function YouTubeVideoPage() {
               {otherVideos.map((video) => (
                 <Link
                   key={video.videoId}
-                  href={`/youtube/${video.videoId}?title=${encodeURIComponent(video.title)}`}
+                  href={`/youtube?v=${encodeURIComponent(video.videoId)}&title=${encodeURIComponent(video.title)}`}
                   style={{
                     display: 'flex',
                     flexDirection: 'column',
@@ -409,3 +420,4 @@ export default function YouTubeVideoPage() {
     </div>
   );
 }
+

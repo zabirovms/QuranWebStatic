@@ -5,6 +5,8 @@ import Footer from '@/components/Footer'
 import ThemeInitializer from '@/components/ThemeInitializer'
 import MiniAudioPlayer from '@/components/MiniAudioPlayer'
 import { TopBarProvider } from '@/lib/contexts/TopBarContext'
+import MainContentWrapper from '@/components/MainContentWrapper'
+import IoniconsLoader from '@/components/IoniconsLoader'
 
 export const viewport: Viewport = {
   width: 'device-width',
@@ -45,9 +47,9 @@ export default function RootLayout({
         <ThemeInitializer />
         <TopBarProvider>
         <TopBar />
-          <main style={{ marginTop: '56px', flex: 1, paddingTop: 0 }}>
+          <MainContentWrapper>
           {children}
-        </main>
+        </MainContentWrapper>
         <Footer />
         <MiniAudioPlayer />
         </TopBarProvider>

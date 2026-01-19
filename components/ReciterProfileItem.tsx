@@ -62,14 +62,14 @@ export default function ReciterProfileItem({ reciter }: ReciterProfileItemProps)
           alignItems: 'center',
           textDecoration: 'none',
           color: 'inherit',
-          minWidth: '80px',
+          minWidth: 'clamp(70px, 12vw, 80px)',
           cursor: reciter.hasVerseByVerse ? 'pointer' : 'default',
         }}
       >
         {/* Profile circle with image or icon */}
         <div style={{
-          width: '64px',
-          height: '64px',
+          width: 'clamp(56px, 10vw, 64px)',
+          height: 'clamp(56px, 10vw, 64px)',
           borderRadius: '50%',
           background: `linear-gradient(135deg, var(--color-primary), var(--color-secondary))`,
           padding: '2px',
@@ -79,7 +79,7 @@ export default function ReciterProfileItem({ reciter }: ReciterProfileItemProps)
             height: '100%',
             borderRadius: '50%',
             backgroundColor: 'var(--color-surface)',
-            border: '4px solid var(--color-surface)',
+            border: 'clamp(2px, 0.5vw, 4px) solid var(--color-surface)',
             overflow: 'hidden',
             display: 'flex',
             alignItems: 'center',
@@ -90,8 +90,8 @@ export default function ReciterProfileItem({ reciter }: ReciterProfileItemProps)
                 <Image
                   src={photoUrl}
                   alt={reciter.nameTajik || reciter.name}
-                  width={56}
-                  height={56}
+                  width={64}
+                  height={64}
                   style={{
                     width: '100%',
                     height: '100%',
@@ -122,7 +122,7 @@ export default function ReciterProfileItem({ reciter }: ReciterProfileItemProps)
                 opacity: 0.6,
               }}>
                 <PersonIcon
-                  size={32}
+                  size={28}
                   color="var(--color-on-surface)"
                 />
               </div>
@@ -130,13 +130,13 @@ export default function ReciterProfileItem({ reciter }: ReciterProfileItemProps)
           </div>
         </div>
         <div style={{
-          marginTop: '4px',
-          fontSize: '10px',
+          marginTop: 'clamp(2px, 0.5vw, 4px)',
+          fontSize: 'clamp(9px, 2vw, 10px)',
           fontWeight: 500,
           color: 'var(--color-on-surface)',
           textAlign: 'center',
-          maxWidth: '80px',
-          maxHeight: '16px',
+          maxWidth: 'clamp(70px, 12vw, 80px)',
+          maxHeight: 'clamp(14px, 3vw, 16px)',
           overflow: 'hidden',
           textOverflow: 'ellipsis',
           whiteSpace: 'nowrap',
@@ -152,9 +152,12 @@ export default function ReciterProfileItem({ reciter }: ReciterProfileItemProps)
           transform: 'translate(-50%, -50%)',
           zIndex: 9999,
           backgroundColor: 'rgba(0, 0, 0, 0.8)',
-          padding: '24px',
-          borderRadius: '12px',
+          padding: 'clamp(16px, 4vw, 24px)',
+          borderRadius: 'clamp(8px, 2vw, 12px)',
           color: 'var(--color-on-surface)',
+          fontSize: 'clamp(12px, 3vw, 14px)',
+          maxWidth: '90vw',
+          textAlign: 'center',
         }}>
           Боргирӣ карда истодааст...
         </div>

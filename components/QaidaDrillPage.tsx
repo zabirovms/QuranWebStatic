@@ -300,7 +300,7 @@ function AlphabetDrill({
       {/* Header with Back Button */}
       <div style={{
         padding: 'var(--spacing-sm) var(--spacing-md)',
-        paddingTop: isTopBarVisible ? `calc(56px + var(--spacing-sm))` : 'var(--spacing-sm)',
+        paddingTop: 'var(--spacing-sm)',
         display: 'flex',
         alignItems: 'center',
         gap: 'var(--spacing-sm)',
@@ -309,6 +309,9 @@ function AlphabetDrill({
         boxShadow: 'var(--elevation-1)',
         minHeight: `${headerHeight}px`,
         flexShrink: 0,
+        position: 'sticky',
+        top: isTopBarVisible ? '56px' : '0',
+        zIndex: 1018,
       }}>
         <button
           onClick={onBack}
@@ -365,6 +368,9 @@ function AlphabetDrill({
         backgroundColor: 'var(--color-surface)',
         borderBottom: '1px solid var(--color-outline)',
         flexShrink: 0,
+        position: 'sticky',
+        top: isTopBarVisible ? `calc(56px + ${headerHeight}px)` : `${headerHeight}px`,
+        zIndex: 1017,
       }}>
         <div style={{
           width: '100%',
@@ -394,9 +400,10 @@ function AlphabetDrill({
           justifyContent: 'center',
           padding: 'var(--spacing-md)',
           paddingTop: 'var(--spacing-lg)',
-          overflow: 'hidden',
-          flexGrow: 0,
+          overflow: 'auto',
+          flexGrow: 1,
           flexShrink: 1,
+          minHeight: 0,
         }}
       >
         <div style={{
@@ -463,6 +470,9 @@ function AlphabetDrill({
         boxShadow: 'var(--elevation-1)',
         minHeight: `${controlsHeight}px`,
         flexShrink: 0,
+        position: 'sticky',
+        bottom: 0,
+        zIndex: 1018,
       }}>
         <button
           onClick={() => onIndexChange(currentIndex - 1)}
@@ -666,7 +676,7 @@ function LetterFormsDrill({
       {/* Header with Back Button */}
       <div style={{
         padding: 'var(--spacing-sm) var(--spacing-md)',
-        paddingTop: isTopBarVisible ? `calc(56px + var(--spacing-sm))` : 'var(--spacing-sm)',
+        paddingTop: 'var(--spacing-sm)',
         display: 'flex',
         alignItems: 'center',
         gap: 'var(--spacing-sm)',
@@ -675,6 +685,9 @@ function LetterFormsDrill({
         boxShadow: 'var(--elevation-1)',
         minHeight: `${headerHeight}px`,
         flexShrink: 0,
+        position: 'sticky',
+        top: isTopBarVisible ? '56px' : '0',
+        zIndex: 1018,
       }}>
         <button
           onClick={onBack}
@@ -731,6 +744,9 @@ function LetterFormsDrill({
         backgroundColor: 'var(--color-surface)',
         borderBottom: '1px solid var(--color-outline)',
         flexShrink: 0,
+        position: 'sticky',
+        top: isTopBarVisible ? `calc(56px + ${headerHeight}px)` : `${headerHeight}px`,
+        zIndex: 1017,
       }}>
         <div style={{
           width: '100%',
@@ -908,6 +924,9 @@ function LetterFormsDrill({
         boxShadow: 'var(--elevation-1)',
         minHeight: `${controlsHeight}px`,
         flexShrink: 0,
+        position: 'sticky',
+        bottom: 0,
+        zIndex: 1018,
       }}>
         <button
           onClick={() => onIndexChange(currentIndex - 1)}
@@ -1122,7 +1141,7 @@ function VowelsDrill({
       {/* Header with Back Button */}
       <div style={{
         padding: 'var(--spacing-sm) var(--spacing-md)',
-        paddingTop: isTopBarVisible ? `calc(56px + var(--spacing-sm))` : 'var(--spacing-sm)',
+        paddingTop: 'var(--spacing-sm)',
         display: 'flex',
         alignItems: 'center',
         gap: 'var(--spacing-sm)',
@@ -1131,6 +1150,9 @@ function VowelsDrill({
         boxShadow: 'var(--elevation-1)',
         minHeight: `${headerHeight}px`,
         flexShrink: 0,
+        position: 'sticky',
+        top: isTopBarVisible ? '56px' : '0',
+        zIndex: 1018,
       }}>
         <button
           onClick={onBack}
@@ -1187,6 +1209,9 @@ function VowelsDrill({
         backgroundColor: 'var(--color-surface)',
         borderBottom: '1px solid var(--color-outline)',
         flexShrink: 0,
+        position: 'sticky',
+        top: isTopBarVisible ? `calc(56px + ${headerHeight}px)` : `${headerHeight}px`,
+        zIndex: 1017,
       }}>
         <div style={{
           width: '100%',
@@ -1248,6 +1273,9 @@ function VowelsDrill({
         boxShadow: 'var(--elevation-1)',
         minHeight: `${controlsHeight}px`,
         flexShrink: 0,
+        position: 'sticky',
+        bottom: 0,
+        zIndex: 1018,
       }}>
         <button
           onClick={() => onIndexChange(currentIndex - 1)}

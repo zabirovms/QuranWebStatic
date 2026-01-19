@@ -56,6 +56,24 @@ export async function getReciters(): Promise<Reciter[]> {
       }
     });
     
+    // Add Tajik audio editions
+    const tajikEditions: Reciter[] = [
+      {
+        id: 'tg.akmal_mansurov',
+        name: 'Tajik - Akmal Mansurov',
+        nameTajik: 'Тоҷикӣ - Акмал Мансуров',
+        nameArabic: '',
+        hasVerseByVerse: false,
+      },
+    ];
+    
+    // Add Tajik editions to the map
+    tajikEditions.forEach(edition => {
+      if (!reciterMap.has(edition.id)) {
+        reciterMap.set(edition.id, edition);
+      }
+    });
+    
     cachedReciters = Array.from(reciterMap.values());
     return cachedReciters;
   } catch (error) {

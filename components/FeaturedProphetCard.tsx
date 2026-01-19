@@ -67,8 +67,8 @@ export default function FeaturedProphetCard({ prophet }: FeaturedProphetCardProp
       className="card card-elevation-2 surah-card"
       style={{
         display: 'block',
-        minWidth: '160px',
-        height: '120px',
+        minWidth: 'clamp(140px, 20vw, 160px)',
+        height: 'clamp(100px, 15vw, 120px)',
         border: `1.5px solid ${borderColor}`,
         borderRadius: 'var(--radius-lg)',
         backgroundColor: 'var(--color-surface)',
@@ -105,8 +105,8 @@ export default function FeaturedProphetCard({ prophet }: FeaturedProphetCardProp
             alt={prophet.name}
             className="surah-name-svg"
             style={{
-              width: '160px',
-              height: '120px',
+              width: 'clamp(140px, 20vw, 160px)',
+              height: 'clamp(100px, 15vw, 120px)',
               objectFit: 'contain',
             }}
             onError={() => setImageError(true)}

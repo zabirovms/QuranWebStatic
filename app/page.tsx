@@ -91,7 +91,7 @@ export default async function HomePage() {
           backgroundPosition: 'center',
           backgroundRepeat: 'no-repeat',
           color: 'var(--color-on-primary)',
-          padding: 'clamp(24px, 5vw, 40px) clamp(16px, 4vw, 20px) clamp(16px, 4vw, 24px)',
+          padding: 'clamp(24px, 5vw, 40px) clamp(4px, 1vw, 8px) clamp(16px, 4vw, 24px)',
           boxShadow: 'var(--elevation-2)',
           marginBottom: '40px',
           position: 'relative',
@@ -147,29 +147,29 @@ export default async function HomePage() {
         }}
       >
         <div style={{ 
-          padding: '0 clamp(16px, 4vw, 20px) clamp(24px, 6vw, 40px)',
+          padding: '0 clamp(8px, 1vw, 12px) clamp(24px, 6vw, 40px)',
           maxWidth: '1200px',
           margin: '0 auto',
           position: 'relative',
           zIndex: 2,
         }}>
         {/* Featured Surahs Section */}
-        <div style={{ marginBottom: '32px' }}>
-          <div style={{
-            backgroundColor: 'var(--color-surface)',
-            borderRadius: 'var(--radius-xl)',
-            padding: 'clamp(16px, 4vw, 24px)',
-            boxShadow: 'var(--elevation-2)',
-            border: '1px solid var(--color-outline)',
-          }}>
+        <div style={{ marginBottom: 'clamp(20px, 4vw, 32px)' }}>
+          <div             style={{
+              backgroundColor: 'var(--color-surface)',
+              borderRadius: 'var(--radius-xl)',
+              padding: 'clamp(12px, 3vw, 24px)',
+              boxShadow: 'var(--elevation-2)',
+              border: '1px solid var(--color-outline)',
+            }}>
             <div style={{ 
               display: 'flex', 
               justifyContent: 'space-between', 
               alignItems: 'center',
-              marginBottom: '16px',
+              marginBottom: 'clamp(12px, 2vw, 16px)',
             }}>
               <h2 style={{ 
-                fontSize: '1.5rem', 
+                fontSize: 'clamp(1.125rem, 4vw, 1.5rem)', 
                 fontWeight: 'bold',
                 margin: 0,
                 color: 'var(--color-text-primary)',
@@ -186,10 +186,10 @@ export default async function HomePage() {
                 className="scrollable-container"
                 style={{ 
                   display: 'inline-flex',
-                  gap: '16px',
+                  gap: 'clamp(12px, 2vw, 16px)',
                   overflowX: 'auto',
                   overflowY: 'hidden',
-                  padding: '8px 12px',
+                  padding: 'clamp(6px, 1vw, 12px) clamp(8px, 1.5vw, 12px)',
                   maxWidth: '100%',
                 }}
               >
@@ -205,22 +205,22 @@ export default async function HomePage() {
         </div>
 
         {/* Quoted Verses Section */}
-        <div style={{ marginBottom: '32px' }}>
-          <div style={{
-            backgroundColor: 'var(--color-surface)',
-            borderRadius: 'var(--radius-xl)',
-            padding: 'clamp(16px, 4vw, 24px)',
-            boxShadow: 'var(--elevation-2)',
-            border: '1px solid var(--color-outline)',
-          }}>
+        <div style={{ marginBottom: 'clamp(16px, 3vw, 32px)' }}>
+          <div             style={{
+              backgroundColor: 'var(--color-surface)',
+              borderRadius: 'var(--radius-xl)',
+              padding: 'clamp(12px, 3vw, 24px)',
+              boxShadow: 'var(--elevation-2)',
+              border: '1px solid var(--color-outline)',
+            }}>
             <div style={{ 
               display: 'flex', 
               justifyContent: 'space-between', 
               alignItems: 'center',
-              marginBottom: '16px',
+              marginBottom: 'clamp(12px, 2vw, 16px)',
             }}>
               <h2 style={{ 
-                fontSize: '1.5rem', 
+                fontSize: 'clamp(1.125rem, 4vw, 1.5rem)', 
                 fontWeight: 'bold',
                 margin: 0,
                 color: 'var(--color-text-primary)',
@@ -237,10 +237,10 @@ export default async function HomePage() {
                 className="scrollable-container"
                 style={{ 
                   display: 'inline-flex',
-                  gap: '16px',
+                  gap: 'clamp(12px, 2vw, 16px)',
                   overflowX: 'auto',
                   overflowY: 'hidden',
-                  padding: '8px 12px',
+                  padding: 'clamp(6px, 1vw, 12px) clamp(8px, 1.5vw, 12px)',
                   maxWidth: '100%',
                 }}
               >
@@ -251,10 +251,10 @@ export default async function HomePage() {
                     className="scrollable-container"
                   >
                     <div style={{
-                      fontSize: '1.125rem',
+                      fontSize: 'clamp(1rem, 2.5vw, 1.125rem)',
                       lineHeight: '1.5',
                       textAlign: 'center',
-                      marginBottom: '12px',
+                      marginBottom: 'clamp(8px, 2vw, 12px)',
                       flex: 1,
                       color: 'var(--color-text-primary)',
                     }}>
@@ -294,35 +294,35 @@ export default async function HomePage() {
         <PrayerTimesSection />
 
         {/* YouTube Videos Section */}
-        <div style={{ marginBottom: '32px' }}>
-          <div style={{
-            backgroundColor: 'var(--color-surface)',
-            borderRadius: 'var(--radius-xl)',
-            padding: 'clamp(16px, 4vw, 24px)',
-            boxShadow: 'var(--elevation-2)',
-            border: '1px solid var(--color-outline)',
-          }}>
+        <div style={{ marginBottom: 'clamp(16px, 3vw, 32px)' }}>
+          <div             style={{
+              backgroundColor: 'var(--color-surface)',
+              borderRadius: 'var(--radius-xl)',
+              padding: 'clamp(12px, 3vw, 24px)',
+              boxShadow: 'var(--elevation-2)',
+              border: '1px solid var(--color-outline)',
+            }}>
             <YouTubeVideosSection />
           </div>
         </div>
 
         {/* Featured Prophets Section */}
-        <div style={{ marginBottom: '32px' }}>
-          <div style={{
-            backgroundColor: 'var(--color-surface)',
-            borderRadius: 'var(--radius-xl)',
-            padding: 'clamp(16px, 4vw, 24px)',
-            boxShadow: 'var(--elevation-2)',
-            border: '1px solid var(--color-outline)',
-          }}>
+        <div style={{ marginBottom: 'clamp(16px, 3vw, 32px)' }}>
+          <div             style={{
+              backgroundColor: 'var(--color-surface)',
+              borderRadius: 'var(--radius-xl)',
+              padding: 'clamp(12px, 3vw, 24px)',
+              boxShadow: 'var(--elevation-2)',
+              border: '1px solid var(--color-outline)',
+            }}>
             <div style={{ 
               display: 'flex', 
               justifyContent: 'space-between', 
               alignItems: 'center',
-              marginBottom: '16px',
+              marginBottom: 'clamp(12px, 2vw, 16px)',
             }}>
               <h2 style={{ 
-                fontSize: '1.5rem', 
+                fontSize: 'clamp(1.125rem, 4vw, 1.5rem)', 
                 fontWeight: 'bold',
                 margin: 0,
                 color: 'var(--color-text-primary)',
@@ -339,10 +339,10 @@ export default async function HomePage() {
                 className="scrollable-container"
                 style={{ 
                   display: 'inline-flex',
-                  gap: '16px',
+                  gap: 'clamp(12px, 2vw, 16px)',
                   overflowX: 'auto',
                   overflowY: 'hidden',
-                  padding: '8px 12px',
+                  padding: 'clamp(6px, 1vw, 12px) clamp(8px, 1.5vw, 12px)',
                   maxWidth: '100%',
                 }}
               >
@@ -358,22 +358,22 @@ export default async function HomePage() {
         </div>
 
         {/* Duas Section */}
-        <div style={{ marginBottom: '32px' }}>
-          <div style={{
-            backgroundColor: 'var(--color-surface)',
-            borderRadius: 'var(--radius-xl)',
-            padding: 'clamp(16px, 4vw, 24px)',
-            boxShadow: 'var(--elevation-2)',
-            border: '1px solid var(--color-outline)',
-          }}>
+        <div style={{ marginBottom: 'clamp(16px, 3vw, 32px)' }}>
+          <div             style={{
+              backgroundColor: 'var(--color-surface)',
+              borderRadius: 'var(--radius-xl)',
+              padding: 'clamp(12px, 3vw, 24px)',
+              boxShadow: 'var(--elevation-2)',
+              border: '1px solid var(--color-outline)',
+            }}>
             <div style={{ 
               display: 'flex', 
               justifyContent: 'space-between', 
               alignItems: 'center',
-              marginBottom: '16px',
+              marginBottom: 'clamp(12px, 2vw, 16px)',
             }}>
               <h2 style={{ 
-                fontSize: '1.5rem', 
+                fontSize: 'clamp(1.125rem, 4vw, 1.5rem)', 
                 fontWeight: 'bold',
                 margin: 0,
                 color: 'var(--color-text-primary)',
@@ -390,10 +390,10 @@ export default async function HomePage() {
                 className="scrollable-container"
                 style={{ 
                   display: 'inline-flex',
-                  gap: '16px',
+                  gap: 'clamp(12px, 2vw, 16px)',
                   overflowX: 'auto',
                   overflowY: 'hidden',
-                  padding: '8px 12px',
+                  padding: 'clamp(6px, 1vw, 12px) clamp(8px, 1.5vw, 12px)',
                   maxWidth: '100%',
                 }}
               >
@@ -402,21 +402,21 @@ export default async function HomePage() {
                   key={index}
                   href={`/duas/rabbano?surah=${dua.surah}&verse=${dua.verse}`}
                   className="scrollable-container"
-                  minWidth="300px"
-                  maxWidth="300px"
+                  minWidth="clamp(240px, 40vw, 300px)"
+                  maxWidth="clamp(240px, 40vw, 300px)"
                 >
                   <div style={{
-                    fontSize: '32px',
+                    fontSize: 'clamp(24px, 5vw, 32px)',
                     textAlign: 'center',
-                    marginBottom: '8px',
+                    marginBottom: 'clamp(6px, 1vw, 8px)',
                   }}>
                     🕌
                   </div>
                   <div style={{
-                    fontSize: '0.875rem',
+                    fontSize: 'clamp(0.8rem, 2vw, 0.875rem)',
                     lineHeight: '1.5',
                     textAlign: 'center',
-                    marginBottom: '12px',
+                    marginBottom: 'clamp(8px, 2vw, 12px)',
                     flex: 1,
                     color: 'var(--color-text-primary)',
                   }}>
@@ -446,22 +446,22 @@ export default async function HomePage() {
         <HadithSection />
 
         {/* Live Streams Section */}
-        <div style={{ marginBottom: '32px' }}>
-          <div style={{
-            backgroundColor: 'var(--color-surface)',
-            borderRadius: 'var(--radius-xl)',
-            padding: 'clamp(16px, 4vw, 24px)',
-            boxShadow: 'var(--elevation-2)',
-            border: '1px solid var(--color-outline)',
-          }}>
+        <div style={{ marginBottom: 'clamp(16px, 3vw, 32px)' }}>
+          <div             style={{
+              backgroundColor: 'var(--color-surface)',
+              borderRadius: 'var(--radius-xl)',
+              padding: 'clamp(12px, 3vw, 24px)',
+              boxShadow: 'var(--elevation-2)',
+              border: '1px solid var(--color-outline)',
+            }}>
             <div style={{ 
               display: 'flex', 
               justifyContent: 'space-between', 
               alignItems: 'center',
-              marginBottom: '16px',
+              marginBottom: 'clamp(12px, 2vw, 16px)',
             }}>
               <h2 style={{ 
-                fontSize: '1.5rem', 
+                fontSize: 'clamp(1.125rem, 4vw, 1.5rem)', 
                 fontWeight: 'bold',
                 margin: 0,
                 color: 'var(--color-text-primary)',
@@ -474,10 +474,10 @@ export default async function HomePage() {
                 className="scrollable-container"
                 style={{ 
                   display: 'inline-flex',
-                  gap: '16px',
+                  gap: 'clamp(12px, 2vw, 16px)',
                   overflowX: 'auto',
                   overflowY: 'hidden',
-                  padding: '8px 12px',
+                  padding: 'clamp(6px, 1vw, 12px) clamp(8px, 1.5vw, 12px)',
                   maxWidth: '100%',
                 }}
               >
@@ -496,12 +496,12 @@ export default async function HomePage() {
         </div>
 
         {/* Tasbeeh Section */}
-        <div style={{ marginBottom: '32px' }}>
+        <div style={{ marginBottom: 'clamp(16px, 3vw, 32px)' }}>
           <div style={{
-            padding: 'clamp(16px, 4vw, 24px)',
+            padding: 'clamp(12px, 3vw, 24px)',
             border: '1px solid var(--color-outline)',
             borderRadius: 'var(--radius-xl)',
-            background: `linear-gradient(135deg, var(--color-primary-container-low-opacity) 0%, var(--color-primary-container-low-opacity) 100%)`,
+            backgroundColor: 'var(--color-surface)',
             boxShadow: 'var(--elevation-2)',
             maxWidth: '100%',
             margin: '0 auto',
@@ -510,13 +510,13 @@ export default async function HomePage() {
               display: 'flex', 
               justifyContent: 'space-between', 
               alignItems: 'center',
-              marginBottom: '16px',
+              marginBottom: 'clamp(12px, 2vw, 16px)',
             }}>
               <h2 style={{ 
-                fontSize: '1.5rem', 
+                fontSize: 'clamp(1.125rem, 4vw, 1.5rem)', 
                 fontWeight: 'bold',
                 margin: 0,
-                color: 'var(--color-primary)',
+                color: 'var(--color-text-primary)',
               }}>
                 Зикрҳо
               </h2>
@@ -527,13 +527,13 @@ export default async function HomePage() {
             </div>
             <div 
               className="scrollable-container"
-              style={{ 
-                display: 'flex',
-                gap: '16px',
-                overflowX: 'auto',
-                overflowY: 'hidden',
-                padding: '8px 12px',
-              }}
+            style={{ 
+              display: 'flex',
+              gap: 'clamp(12px, 2vw, 16px)',
+              overflowX: 'auto',
+              overflowY: 'hidden',
+              padding: 'clamp(6px, 1vw, 12px) clamp(8px, 1.5vw, 12px)',
+            }}
             >
               {displayTasbeehs.map((tasbeeh, index) => (
                 <HoverableTasbeehCard
@@ -548,22 +548,22 @@ export default async function HomePage() {
         </div>
 
         {/* Gallery Section */}
-        <div style={{ marginBottom: '32px' }}>
-          <div style={{
-            backgroundColor: 'var(--color-surface)',
-            borderRadius: 'var(--radius-xl)',
-            padding: 'clamp(16px, 4vw, 24px)',
-            boxShadow: 'var(--elevation-2)',
-            border: '1px solid var(--color-outline)',
-          }}>
+        <div style={{ marginBottom: 'clamp(16px, 3vw, 32px)' }}>
+          <div             style={{
+              backgroundColor: 'var(--color-surface)',
+              borderRadius: 'var(--radius-xl)',
+              padding: 'clamp(12px, 3vw, 24px)',
+              boxShadow: 'var(--elevation-2)',
+              border: '1px solid var(--color-outline)',
+            }}>
             <div style={{ 
               display: 'flex', 
               justifyContent: 'space-between', 
               alignItems: 'center',
-              marginBottom: '16px',
+              marginBottom: 'clamp(12px, 2vw, 16px)',
             }}>
               <h2 style={{ 
-                fontSize: '1.5rem', 
+                fontSize: 'clamp(1.125rem, 4vw, 1.5rem)', 
                 fontWeight: 'bold',
                 margin: 0,
                 color: 'var(--color-text-primary)',
@@ -580,12 +580,12 @@ export default async function HomePage() {
         </div>
 
         {/* Asmaul Husna Section */}
-        <div style={{ marginBottom: '32px' }}>
+        <div style={{ marginBottom: 'clamp(16px, 3vw, 32px)' }}>
           <div style={{
-            padding: 'clamp(16px, 4vw, 24px)',
+            padding: 'clamp(12px, 3vw, 24px)',
             border: '1px solid var(--color-outline)',
             borderRadius: 'var(--radius-xl)',
-            background: `linear-gradient(135deg, var(--color-primary-container-low-opacity) 0%, var(--color-primary-container-low-opacity) 100%)`,
+            backgroundColor: 'var(--color-surface)',
             boxShadow: 'var(--elevation-2)',
             maxWidth: '100%',
             margin: '0 auto',
@@ -594,13 +594,13 @@ export default async function HomePage() {
               display: 'flex', 
               justifyContent: 'space-between', 
               alignItems: 'center',
-              marginBottom: '16px',
+              marginBottom: 'clamp(12px, 2vw, 16px)',
             }}>
               <h2 style={{ 
-                fontSize: '1.5rem', 
+                fontSize: 'clamp(1.125rem, 4vw, 1.5rem)', 
                 fontWeight: 'bold',
                 margin: 0,
-                color: 'var(--color-primary)',
+                color: 'var(--color-text-primary)',
               }}>
                 Асмоул Ҳусно
               </h2>
@@ -614,10 +614,10 @@ export default async function HomePage() {
                 className="scrollable-container"
                 style={{ 
                   display: 'inline-flex',
-                  gap: '16px',
+                  gap: 'clamp(12px, 2vw, 16px)',
                   overflowX: 'auto',
                   overflowY: 'hidden',
-                  padding: '8px 12px',
+                  padding: 'clamp(6px, 1vw, 12px) clamp(8px, 1.5vw, 12px)',
                   maxWidth: '100%',
                 }}
               >

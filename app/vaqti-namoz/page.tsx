@@ -447,17 +447,77 @@ export default function PrayerTimesPage() {
             </article>
           )}
 
-          {/* Loading State */}
+          {/* Loading State - Skeleton for Prayer Cards */}
           {isLoading && (
-            <div
+            <article
               style={{
-                textAlign: 'center',
-                padding: 'var(--spacing-3xl)',
-                color: 'var(--color-text-secondary)',
+                backgroundColor: 'var(--color-surface)',
+                borderRadius: 'var(--radius-xl)',
+                padding: 'var(--spacing-xl)',
+                marginBottom: 'var(--spacing-xl)',
+                boxShadow: 'var(--elevation-2)',
+                border: '2px solid var(--color-primary)',
               }}
             >
-              Боргирӣ...
-            </div>
+              <div
+                style={{
+                  width: '200px',
+                  height: '24px',
+                  backgroundColor: 'var(--color-surface-variant)',
+                  borderRadius: 'var(--radius-sm)',
+                  margin: '0 auto var(--spacing-lg)',
+                  animation: 'pulse 1.5s ease-in-out infinite',
+                }}
+              />
+              <div
+                style={{
+                  display: 'grid',
+                  gridTemplateColumns: 'repeat(auto-fit, minmax(120px, 1fr))',
+                  gap: '12px',
+                }}
+              >
+                {[1, 2, 3, 4, 5, 6].map((index) => (
+                  <div
+                    key={index}
+                    style={{
+                      textAlign: 'center',
+                      padding: '16px',
+                      backgroundColor: 'var(--color-primary-container-low-opacity)',
+                      borderRadius: 'var(--radius-md)',
+                      border: '1px solid var(--color-outline)',
+                      animation: 'pulse 1.5s ease-in-out infinite',
+                    }}
+                  >
+                    <div style={{
+                      width: '60px',
+                      height: '16px',
+                      backgroundColor: 'var(--color-surface-variant)',
+                      borderRadius: 'var(--radius-sm)',
+                      margin: '0 auto 8px',
+                      animation: 'pulse 1.5s ease-in-out infinite',
+                    }} />
+                    <div style={{
+                      width: '50px',
+                      height: '24px',
+                      backgroundColor: 'var(--color-surface-variant)',
+                      borderRadius: 'var(--radius-sm)',
+                      margin: '0 auto',
+                      animation: 'pulse 1.5s ease-in-out infinite',
+                    }} />
+                  </div>
+                ))}
+              </div>
+              <style dangerouslySetInnerHTML={{ __html: `
+                @keyframes pulse {
+                  0%, 100% {
+                    opacity: 1;
+                  }
+                  50% {
+                    opacity: 0.5;
+                  }
+                }
+              `}} />
+            </article>
           )}
 
           {/* Error State */}

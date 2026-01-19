@@ -7,6 +7,7 @@ import { MenuIcon, CloseIcon } from './Icons';
 import { useTopBar } from '@/lib/contexts/TopBarContext';
 import BukhariSidebar from './BukhariSidebar';
 import BukhariSearch from './BukhariSearch';
+import { useSidebarHover } from './MagicCurveSidebar';
 
 interface BukhariTopBarProps {
   currentBookNumber?: number;
@@ -22,7 +23,14 @@ export default function BukhariTopBar({
   const pathname = usePathname();
   const { isVisible } = useTopBar();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isMobile, setIsMobile] = useState(false);
+  // Default to true (mobile) to prevent content shift on initial render
+  const [isMobile, setIsMobile] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return window.innerWidth < 768;
+    }
+    return true; // Default to mobile on SSR to prevent flash/shift
+  });
+  const isSidebarHovered = useSidebarHover();
 
   useEffect(() => {
     const checkMobile = () => {
@@ -40,7 +48,7 @@ export default function BukhariTopBar({
         style={{
           position: 'fixed',
           top: isVisible ? '56px' : '0px',
-          left: 0,
+          left: isMobile ? 0 : (isSidebarHovered ? '280px' : '64px'),
           right: 0,
           height: '56px',
           backgroundColor: 'var(--color-primary)',
@@ -49,8 +57,8 @@ export default function BukhariTopBar({
           alignItems: 'center',
           padding: '0 clamp(12px, 3vw, 16px)',
           gap: 'clamp(8px, 2vw, 12px)',
-          zIndex: 999,
-          transition: 'top 0.4s ease-out',
+          zIndex: 1019,
+          transition: 'top 0.4s ease-out, left 0.5s ease',
         }}
       >
         {/* Hamburger Menu Button */}

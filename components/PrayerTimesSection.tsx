@@ -88,11 +88,11 @@ export default function PrayerTimesSection() {
 
   if (isLoading) {
     return (
-      <div style={{ marginBottom: '32px' }}>
+      <div style={{ marginBottom: 'clamp(16px, 3vw, 32px)' }}>
         <div style={{
           backgroundColor: 'var(--color-surface)',
           borderRadius: 'var(--radius-xl)',
-          padding: '24px',
+          padding: 'clamp(12px, 3vw, 24px)',
           boxShadow: 'var(--elevation-2)',
           border: '1px solid var(--color-outline)',
         }}>
@@ -103,7 +103,7 @@ export default function PrayerTimesSection() {
             marginBottom: '16px',
           }}>
             <h2 style={{ 
-              fontSize: '1.5rem', 
+              fontSize: 'clamp(1.125rem, 4vw, 1.5rem)', 
               fontWeight: 'bold',
               margin: 0,
               color: 'var(--color-text-primary)',
@@ -121,7 +121,7 @@ export default function PrayerTimesSection() {
             gridTemplateColumns: 'repeat(auto-fit, minmax(120px, 1fr))',
             gap: '12px',
           }}>
-            {[1, 2, 3, 4, 5].map((index) => (
+            {[1, 2, 3, 4, 5, 6].map((index) => (
               <div
                 key={index}
                 style={{

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { MenuIcon, CloseIcon, PaletteIcon, SearchIcon, NavigationIcon } from './Icons';
@@ -8,6 +8,7 @@ import { useTopBar } from '@/lib/contexts/TopBarContext';
 import SettingsDrawer from './SettingsDrawer';
 import SearchDrawer from './SearchDrawer';
 import NavigationDrawer from './NavigationDrawer';
+import MagicCurveSidebar, { useSidebarHover } from './MagicCurveSidebar';
 
 export default function TopBar() {
   const pathname = usePathname();
@@ -17,27 +18,44 @@ export default function TopBar() {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isNavigationOpen, setIsNavigationOpen] = useState(false);
   const { isVisible } = useTopBar();
+  const isSidebarHovered = useSidebarHover();
+  // Default to true (mobile) to ensure sidebar is hidden on first render
+  const [isMobile, setIsMobile] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return window.innerWidth <= 768;
+    }
+    return true; // Default to mobile on SSR to prevent flash
+  });
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   const navItems = [
-    { href: '/', label: 'Асосӣ', icon: '🏠', id: 'home' },
-    { href: '/quran', label: 'Қуръон', icon: '📖', id: 'quran' },
-    { href: '/bukhari', label: 'Саҳеҳи Бухорӣ', icon: '📖', id: 'bukhari' },
-    { href: '/vaqti-namoz', label: 'Вақтҳои намоз', icon: '🕌', id: 'prayer-times' },
-    { href: '/learn-words', label: 'Омӯзиш', icon: '📚', id: 'learn' },
-    { href: '/audio-home', label: 'Қироат', icon: '🎵', id: 'audio' },
+    { href: '/', label: 'Асосӣ', icon: 'home', id: 'home' },
+    { href: '/quran', label: 'Қуръон', icon: 'book', id: 'quran' },
+    { href: '/bukhari', label: 'Саҳеҳи Бухорӣ', icon: 'library', id: 'bukhari' },
+    { href: '/vaqti-namoz', label: 'Вақтҳои намоз', icon: 'time', id: 'prayer-times' },
+    { href: '/learn-words', label: 'Омӯзиш', icon: 'school', id: 'learn' },
+    { href: '/audio-home', label: 'Қироат', icon: 'musical-notes', id: 'audio' },
   ];
 
   const homeSections = [
-    { href: '/quoted-verses', label: 'Иқтибосҳо аз Қуръон', icon: '💬', id: 'quoted-verses' },
-    { href: '/tasbeeh', label: 'Зикрҳо', icon: '📿', id: 'tasbeeh' },
-    { href: '/prophets', label: 'Пайғамбарон', icon: '👤', id: 'prophets' },
-    { href: '/duas', label: 'Дуоҳо', icon: '🙏', id: 'duas' },
-    { href: '/asmaul-husna', label: 'Асмоул Ҳусно', icon: '✨', id: 'asmaul-husna' },
-    { href: '/gallery', label: 'Галерея', icon: '🖼️', id: 'gallery' },
-    { href: '/downloads', label: 'Махзани Маърифат', icon: '📚', id: 'downloads' },
-    { href: 'https://play.google.com/store/apps/details?id=com.quran.tj.quranapp', label: 'Барномаи мобилӣ', icon: '📱', id: 'mobile-app', external: true },
-    { href: '/#live-streams', label: 'Пахшҳои зинда', icon: '📺', id: 'live-streams' },
-    { href: '/#youtube-videos', label: 'Видеоҳои YouTube', icon: '▶️', id: 'youtube-videos' },
+    { href: '/quoted-verses', label: 'Иқтибосҳо аз Қуръон', icon: 'chatbubbles', id: 'quoted-verses' },
+    { href: '/tasbeeh', label: 'Зикрҳо', icon: 'ellipse', id: 'tasbeeh' },
+    { href: '/prophets', label: 'Пайғамбарон', icon: 'people', id: 'prophets' },
+    { href: '/duas', label: 'Дуоҳо', icon: 'heart', id: 'duas' },
+    { href: '/asmaul-husna', label: 'Асмоул Ҳусно', icon: 'star', id: 'asmaul-husna' },
+    { href: '/gallery', label: 'Галерея', icon: 'images', id: 'gallery' },
+    { href: '/downloads', label: 'Махзани Маърифат', icon: 'download', id: 'downloads' },
+    { href: 'https://play.google.com/store/apps/details?id=com.quran.tj.quranapp', label: 'Барномаи мобилӣ', icon: 'logo-android', id: 'mobile-app', external: true },
+    { href: '/#live-streams', label: 'Пахшҳои зинда', icon: 'tv', id: 'live-streams' },
+    { href: '/#youtube-videos', label: 'Видеоҳои YouTube', icon: 'play-circle', id: 'youtube-videos' },
   ];
 
   const getActiveIndex = () => {
@@ -79,7 +97,7 @@ export default function TopBar() {
         style={{
           position: 'fixed',
           top: isVisible ? 0 : '-56px',
-          left: 0,
+          left: isMobile ? 0 : (isSidebarHovered ? '280px' : '64px'),
           right: 0,
           height: '56px',
           backgroundColor: 'var(--color-background)',
@@ -89,34 +107,35 @@ export default function TopBar() {
           padding: '0 clamp(12px, 3vw, 16px)',
           gap: 'clamp(8px, 2vw, 12px)',
           zIndex: 1000,
-          transition: 'top 0.4s ease-out',
+          transition: 'top 0.4s ease-out, left 0.5s ease',
         }}
       >
-        {/* Hamburger Menu Button */}
-        <button
-          onClick={() => setIsMenuOpen(!isMenuOpen)}
-          onMouseEnter={() => setIsMenuOpen(true)}
-          style={{
-            width: '40px',
-            height: '40px',
-            padding: 0,
-            border: 'none',
-            backgroundColor: 'transparent',
-            cursor: 'pointer',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            borderRadius: '4px',
-            flexShrink: 0,
-          }}
-          title="Меню"
-        >
-          {isMenuOpen ? (
-            <CloseIcon size={24} color="var(--color-text-primary)" />
-          ) : (
-            <MenuIcon size={24} color="var(--color-text-primary)" />
-          )}
-        </button>
+        {/* Hamburger Menu Button - Only visible on mobile, toggles sidebar */}
+        {isMobile && (
+          <button
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+            style={{
+              width: '40px',
+              height: '40px',
+              padding: 0,
+              border: 'none',
+              backgroundColor: 'transparent',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              borderRadius: '4px',
+              flexShrink: 0,
+            }}
+            title="Меню"
+          >
+            {isMenuOpen ? (
+              <CloseIcon size={24} color="var(--color-text-primary)" />
+            ) : (
+              <MenuIcon size={24} color="var(--color-text-primary)" />
+            )}
+          </button>
+        )}
 
         {/* App Title - Only this is clickable */}
         <Link
@@ -233,233 +252,13 @@ export default function TopBar() {
         </button>
       </header>
 
-      {/* Side Menu Overlay */}
-      {isMenuOpen && (
-        <>
-          {/* Menu Panel */}
-          <nav
-            style={{
-              position: 'fixed',
-              top: 0,
-              left: 0,
-              bottom: 0,
-              width: '280px',
-              maxWidth: '80vw',
-              backgroundColor: 'var(--color-background)',
-              boxShadow: 'var(--elevation-4)',
-              zIndex: 2002,
-              overflowY: 'auto',
-              paddingBottom: '8px',
-            }}
-            onMouseEnter={() => setIsMenuOpen(true)}
-            onMouseLeave={() => setIsMenuOpen(false)}
-            onClick={(e) => e.stopPropagation()}
-          >
-            {/* Menu Header */}
-            <div
-              style={{
-                position: 'sticky',
-                top: 0,
-                display: 'flex',
-                alignItems: 'center',
-                padding: '0 16px',
-                height: '56px',
-                backgroundColor: 'var(--color-background)',
-                borderBottom: '1px solid var(--color-outline)',
-                zIndex: 1,
-              }}
-            >
-              <button
-                onClick={() => setIsMenuOpen(false)}
-                style={{
-                  width: '40px',
-                  height: '40px',
-                  padding: 0,
-                  border: 'none',
-                  backgroundColor: 'transparent',
-                  cursor: 'pointer',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  borderRadius: '4px',
-                }}
-                title="Пӯшидан"
-              >
-                <MenuIcon size={24} color="var(--color-text-primary)" />
-              </button>
-              <Link
-                href="/"
-                onClick={handleLinkClick}
-                style={{
-                  flex: 1,
-                  marginLeft: '16px',
-                  fontSize: 'var(--font-size-lg)',
-                  fontWeight: 600,
-                  color: 'var(--color-text-primary)',
-                  textDecoration: 'none',
-                  cursor: 'pointer',
-                }}
-              >
-                Quran.tj
-              </Link>
-            </div>
-
-            {/* Menu Items */}
-            <div style={{ padding: '8px 0' }}>
-            {navItems.map((item, index) => {
-              const active = index === activeIndex;
-              const iconColor = active ? activeIconColor : inactiveIconColor;
-              
-              return (
-                <Link
-                  key={item.id}
-                  href={item.href}
-                  prefetch={true}
-                  onClick={handleLinkClick}
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    padding: '16px 24px',
-                    textDecoration: 'none',
-                    color: active ? activeIconColor : inactiveIconColor,
-                    backgroundColor: active ? 'var(--color-surface-variant)' : 'transparent',
-                    borderLeft: active ? '3px solid var(--color-primary)' : '3px solid transparent',
-                    transition: 'background-color 0.2s ease',
-                  }}
-                  onMouseEnter={(e) => {
-                    if (!active) {
-                      e.currentTarget.style.backgroundColor = 'var(--color-surface-variant)';
-                    }
-                  }}
-                  onMouseLeave={(e) => {
-                    if (!active) {
-                      e.currentTarget.style.backgroundColor = 'transparent';
-                    }
-                  }}
-                >
-                  <span
-                    style={{
-                      fontSize: '24px',
-                      marginRight: '16px',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      width: '32px',
-                    }}
-                  >
-                    {item.icon}
-                  </span>
-                  <span
-                    style={{
-                      fontSize: 'var(--font-size-base)',
-                      fontWeight: active ? 600 : 400,
-                    }}
-                  >
-                    {item.label}
-                  </span>
-                </Link>
-              );
-            })}
-
-            {/* Divider */}
-            <div style={{
-              height: '1px',
-              backgroundColor: 'var(--color-outline)',
-              margin: '8px 16px',
-            }} />
-
-            {/* Home Page Sections */}
-            {homeSections.map((section, index) => {
-              const active = index === getActiveSectionIndex();
-              const isExternal = (section as any).external === true;
-              
-              const linkStyle = {
-                display: 'flex',
-                alignItems: 'center',
-                padding: '16px 24px',
-                textDecoration: 'none',
-                color: active ? activeIconColor : inactiveIconColor,
-                backgroundColor: active ? 'var(--color-surface-variant)' : 'transparent',
-                borderLeft: active ? '3px solid var(--color-primary)' : '3px solid transparent',
-                transition: 'background-color 0.2s ease',
-              };
-
-              const content = (
-                <>
-                  <span
-                    style={{
-                      fontSize: '24px',
-                      marginRight: '16px',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      width: '32px',
-                    }}
-                  >
-                    {section.icon}
-                  </span>
-                  <span
-                    style={{
-                      fontSize: 'var(--font-size-base)',
-                      fontWeight: active ? 600 : 400,
-                    }}
-                  >
-                    {section.label}
-                  </span>
-                </>
-              );
-
-              if (isExternal) {
-                return (
-                  <a
-                    key={section.id}
-                    href={section.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    onClick={handleLinkClick}
-                    style={linkStyle}
-                    onMouseEnter={(e) => {
-                      if (!active) {
-                        e.currentTarget.style.backgroundColor = 'var(--color-surface-variant)';
-                      }
-                    }}
-                    onMouseLeave={(e) => {
-                      if (!active) {
-                        e.currentTarget.style.backgroundColor = 'transparent';
-                      }
-                    }}
-                  >
-                    {content}
-                  </a>
-                );
-              }
-              
-              return (
-                <Link
-                  key={section.id}
-                  href={section.href}
-                  prefetch={true}
-                  onClick={handleLinkClick}
-                  style={linkStyle}
-                  onMouseEnter={(e) => {
-                    if (!active) {
-                      e.currentTarget.style.backgroundColor = 'var(--color-surface-variant)';
-                    }
-                  }}
-                  onMouseLeave={(e) => {
-                    if (!active) {
-                      e.currentTarget.style.backgroundColor = 'transparent';
-                    }
-                  }}
-                >
-                  {content}
-                </Link>
-              );
-            })}
-            </div>
-          </nav>
-        </>
-      )}
+      {/* Magic Curve Sidebar - Always visible on desktop, toggleable on mobile */}
+      <MagicCurveSidebar
+        navItems={navItems}
+        homeSections={homeSections}
+        isOpen={isMobile ? isMenuOpen : true}
+        onClose={() => setIsMenuOpen(false)}
+      />
 
       {/* Settings Drawer */}
       <SettingsDrawer

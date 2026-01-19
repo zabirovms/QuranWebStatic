@@ -46,8 +46,8 @@ export default function FeaturedSurahCard({ surah }: FeaturedSurahCardProps) {
       className="card card-elevation-2 surah-card"
       style={{
         display: 'block',
-        minWidth: '160px',
-        height: '120px',
+        minWidth: 'clamp(140px, 20vw, 160px)',
+        height: 'clamp(100px, 15vw, 120px)',
         border: `1.5px solid ${borderColor}`,
         borderRadius: 'var(--radius-lg)',
         textDecoration: 'none',
@@ -84,8 +84,8 @@ export default function FeaturedSurahCard({ surah }: FeaturedSurahCardProps) {
             alt={surah.name}
             className="surah-name-svg"
             style={{
-              width: '160px',
-              height: '120px',
+              width: 'clamp(140px, 20vw, 160px)',
+              height: 'clamp(100px, 15vw, 120px)',
               objectFit: 'contain',
             }}
             onError={() => setImageError(true)}

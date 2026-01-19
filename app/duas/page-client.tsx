@@ -206,6 +206,7 @@ export default function DuasPageClient({
           gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
           gap: 'var(--spacing-xl)',
           marginBottom: 'var(--spacing-2xl)',
+          alignItems: 'stretch',
         }}>
           <CategoryCard
             title="Дуоҳои Раббано"
@@ -310,6 +311,7 @@ function CategoryCard({
       <div
         style={{
           width: '100%',
+          height: '100%',
           padding: 'var(--spacing-2xl)',
           borderRadius: 'var(--radius-xl)',
           background: 'var(--color-surface)',
@@ -317,6 +319,8 @@ function CategoryCard({
           cursor: 'pointer',
           transition: 'all 0.2s ease',
           border: '1px solid var(--color-outline)',
+          display: 'flex',
+          flexDirection: 'column',
         }}
         onMouseEnter={(e) => {
           e.currentTarget.style.transform = 'translateY(-4px)';
@@ -394,7 +398,7 @@ function CategoryCard({
           <div style={{
             borderTop: '1px solid var(--color-outline-variant)',
             paddingTop: 'var(--spacing-lg)',
-            marginTop: 'var(--spacing-lg)',
+            marginTop: 'auto',
           }}>
             <div style={{
               fontSize: 'var(--font-size-sm)',
@@ -427,6 +431,18 @@ function CategoryCard({
                 }}>
                   {dua.arabic}
                 </div>
+                {dua.transliteration && (
+                  <div style={{
+                    direction: 'ltr',
+                    textAlign: 'left',
+                    fontSize: 'var(--font-size-xs)',
+                    color: 'var(--color-text-secondary)',
+                    fontStyle: 'italic',
+                    marginBottom: '4px',
+                  }}>
+                    {dua.transliteration}
+                  </div>
+                )}
                 <div style={{
                   fontSize: 'var(--font-size-xs)',
                   color: 'var(--color-text-secondary)',

@@ -2,19 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { 
-  FavoriteIcon, 
-  PrivacyTipIcon, 
-  CloudIcon, 
-  LanguageIcon, 
-  AudiotrackIcon, 
-  PersonIcon, 
-  LibraryBooksIcon, 
-  InstagramIcon, 
-  FacebookIcon, 
-  YouTubeIcon, 
-  EmailIcon 
-} from './Icons';
+import LocalIcon from './LocalIcon';
 
 
 export default function Footer() {
@@ -56,32 +44,32 @@ export default function Footer() {
                 gap: 'var(--spacing-sm)',
               }}>
                 <FooterLink
-                  icon={<CloudIcon size={18} color="#2196F3" />}
+                  icon={<LocalIcon name="cloud" style={{ width: '18px', height: '18px', color: '#2196F3' }} />}
                   text="AlQuran Cloud"
                   url="https://alquran.cloud/"
                 />
                 <FooterLink
-                  icon={<LanguageIcon size={18} color="#4CAF50" />}
+                  icon={<LocalIcon name="language" style={{ width: '18px', height: '18px', color: '#4CAF50' }} />}
                   text="Tanzil.net"
                   url="https://tanzil.net/"
                 />
                 <FooterLink
-                  icon={<AudiotrackIcon size={18} color="#FF9800" />}
+                  icon={<LocalIcon name="musical-notes" style={{ width: '18px', height: '18px', color: '#FF9800' }} />}
                   text="CDN Islamic Network"
                   url="https://alquran.cloud/cdn"
                 />
                 <FooterLink
-                  icon={<PersonIcon size={18} color="#0088CC" />}
+                  icon={<LocalIcon name="person" style={{ width: '18px', height: '18px', color: '#0088CC' }} />}
                   text="Акмал Мансуров"
                   url="https://t.me/Qurantajik"
                 />
                 <FooterLink
-                  icon={<PersonIcon size={18} color="#009688" />}
+                  icon={<LocalIcon name="person" style={{ width: '18px', height: '18px', color: '#009688' }} />}
                   text="Абуаломуддин"
                   url={null}
                 />
                 <FooterLink
-                  icon={<LibraryBooksIcon size={18} color="#9C27B0" />}
+                  icon={<LocalIcon name="library" style={{ width: '18px', height: '18px', color: '#9C27B0' }} />}
                   text="Quranic Universal Library"
                   url="https://qul.tarteel.ai/"
                 />
@@ -104,27 +92,27 @@ export default function Footer() {
                 gap: 'var(--spacing-sm)',
               }}>
                 <FooterLink
-                  icon={<InstagramIcon size={18} color="#E4405F" />}
+                  icon={<LocalIcon name="logo-instagram" style={{ width: '18px', height: '18px', color: '#E4405F' }} />}
                   text="Instagram"
                   url="https://www.instagram.com/quran.tj.official"
                 />
                 <FooterLink
-                  icon={<FacebookIcon size={18} color="#1877F2" />}
+                  icon={<LocalIcon name="logo-facebook" style={{ width: '18px', height: '18px', color: '#1877F2' }} />}
                   text="Facebook"
                   url={null}
                 />
                 <FooterLink
-                  icon={<YouTubeIcon size={18} color="#FF0000" />}
+                  icon={<LocalIcon name="logo-youtube" style={{ width: '18px', height: '18px', color: '#FF0000' }} />}
                   text="YouTube"
                   url="https://www.youtube.com/@balkhiverse"
                 />
                 <FooterLink
-                  icon={<span style={{ fontSize: '18px' }}>📱</span>}
+                  icon={<LocalIcon name="logo-android" style={{ width: '18px', height: '18px' }} />}
                   text="Барномаи мобилӣ"
                   url="https://play.google.com/store/apps/details?id=com.quran.tj.quranapp"
                 />
                 <FooterLink
-                  icon={<EmailIcon size={18} color="var(--color-primary)" />}
+                  icon={<LocalIcon name="mail" style={{ width: '18px', height: '18px', color: 'var(--color-primary)' }} />}
                   text="info@quran.tj"
                   url="mailto:info@quran.tj?subject=Тамос%20бо%20барномаи%20Қуръон"
                 />
@@ -147,47 +135,47 @@ export default function Footer() {
                 gap: 'var(--spacing-sm)',
               }}>
                 <FooterLink
-                  icon={<span style={{ fontSize: '18px' }}>🏠</span>}
+                  icon={<LocalIcon name="home" style={{ width: '18px', height: '18px' }} />}
                   text="Асосӣ"
                   url="/"
                 />
                 <FooterLink
-                  icon={<span style={{ fontSize: '18px' }}>📖</span>}
+                  icon={<LocalIcon name="book" style={{ width: '18px', height: '18px' }} />}
                   text="Қуръон"
                   url="/quran"
                 />
                 <FooterLink
-                  icon={<span style={{ fontSize: '18px' }}>📚</span>}
+                  icon={<LocalIcon name="school" style={{ width: '18px', height: '18px' }} />}
                   text="Омӯзиш"
                   url="/learn-words"
                 />
                 <FooterLink
-                  icon={<span style={{ fontSize: '18px' }}>🎵</span>}
+                  icon={<LocalIcon name="musical-notes" style={{ width: '18px', height: '18px' }} />}
                   text="Қироат"
                   url="/audio-home"
                 />
                 <FooterLink
-                  icon={<span style={{ fontSize: '18px' }}>💬</span>}
+                  icon={<LocalIcon name="chatbubbles" style={{ width: '18px', height: '18px' }} />}
                   text="Иқтибосҳо аз Қуръон"
                   url="/quoted-verses"
                 />
                 <FooterLink
-                  icon={<span style={{ fontSize: '18px' }}>👤</span>}
+                  icon={<LocalIcon name="people" style={{ width: '18px', height: '18px' }} />}
                   text="Пайғамбарон"
                   url="/prophets"
                 />
                 <FooterLink
-                  icon={<span style={{ fontSize: '18px' }}>🙏</span>}
+                  icon={<LocalIcon name="heart" style={{ width: '18px', height: '18px' }} />}
                   text="Дуоҳо"
                   url="/duas"
                 />
                 <FooterLink
-                  icon={<span style={{ fontSize: '18px' }}>🖼️</span>}
+                  icon={<LocalIcon name="images" style={{ width: '18px', height: '18px' }} />}
                   text="Галерея"
                   url="/gallery"
                 />
                 <FooterLink
-                  icon={<span style={{ fontSize: '18px' }}>📚</span>}
+                  icon={<LocalIcon name="download" style={{ width: '18px', height: '18px' }} />}
                   text="Махзани Маърифат"
                   url="/downloads"
                 />
@@ -458,7 +446,7 @@ function ShareRateDialog({ onClose }: { onClose: () => void }) {
             alignItems: 'center',
             justifyContent: 'center',
           }}>
-            <FavoriteIcon size={48} color="var(--color-primary)" />
+            <LocalIcon name="heart" style={{ width: '48px', height: '48px', color: 'var(--color-primary)' }} />
           </div>
         </div>
         <div style={{

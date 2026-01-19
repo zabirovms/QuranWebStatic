@@ -6,6 +6,7 @@ import GalleryLayoutSwitcher, { GalleryLayout } from '@/components/gallery/Galle
 import StandardGalleryLayout from '@/components/gallery/StandardGalleryLayout';
 import StandardImageViewer from '@/components/StandardImageViewer';
 import { useTopBar } from '@/lib/contexts/TopBarContext';
+import { useSidebarHover } from '@/components/MagicCurveSidebar';
 
 interface GalleryPageClientProps {
   initialPictures: ImageData[];
@@ -21,6 +22,14 @@ export default function GalleryPageClient({
   initialWallpapers 
 }: GalleryPageClientProps) {
   const { isVisible: isTopBarVisible } = useTopBar();
+  const isSidebarHovered = useSidebarHover();
+  // Default to true (mobile) to prevent content shift on initial render
+  const [isMobile, setIsMobile] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return window.innerWidth <= 768;
+    }
+    return true; // Default to mobile on SSR to prevent flash/shift
+  });
   const [images, setImages] = useState<ImageData[]>(initialPictures);
   const [wallpaperImages, setWallpaperImages] = useState<ImageData[]>(initialWallpapers);
   const [selectedImage, setSelectedImage] = useState<ImageData | null>(null);
@@ -213,6 +222,15 @@ export default function GalleryPageClient({
     return () => window.removeEventListener('scroll', handleScroll);
   }, [activeLayout, loadMoreImages, loadMoreWallpapers]);
 
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
   const handleLayoutChange = (layout: GalleryLayout) => {
     setActiveLayout(layout);
     if (layout === GalleryLayout.ZARDEVOR && wallpaperImages.length === 0 && initialWallpapers.length === 0) {
@@ -264,12 +282,12 @@ export default function GalleryPageClient({
         style={{
           position: 'fixed',
           top: isTopBarVisible ? '56px' : '0',
-          left: 0,
+          left: isMobile ? 0 : (isSidebarHovered ? '280px' : '64px'),
           right: 0,
           zIndex: 1019,
           backgroundColor: 'var(--color-background)',
           borderBottom: '1px solid var(--color-outline)',
-          transition: 'top 0.3s ease-in-out',
+          transition: 'top 0.3s ease-in-out, left 0.5s ease',
         }}
       >
         <GalleryLayoutSwitcher

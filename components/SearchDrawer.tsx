@@ -113,24 +113,52 @@ export default function SearchDrawer({ isOpen, onClose, initialQuery = '' }: Sea
     setSelectedFilter(filter);
   };
 
-  const getTranslationText = (verse: Verse, filter: FilterType): string => {
-    const translationToUse = (filter !== null && filter !== 'both' && filter !== 'arabic' && filter !== 'transliteration') 
-        ? filter 
-        : currentTranslation;
+  const getMatchedText = (verse: Verse, matchedFields: string[]): string => {
+    // Get the first matched field (prioritize the most relevant match)
+    const matchedField = matchedFields[0];
     
-    switch (translationToUse) {
-      case 'tajik':
+    switch (matchedField) {
+      case 'arabicText':
+        return verse.arabicText;
+      case 'transliteration':
+        return verse.transliteration || '';
+      case 'tajikText':
         return verse.tajikText;
-      case 'tj_2':
-        return verse.tj2 ?? verse.tajikText;
-      case 'tj_3':
-        return verse.tj3 ?? verse.tajikText;
+      case 'tj2':
+        return verse.tj2 || verse.tajikText;
+      case 'tj3':
+        return verse.tj3 || verse.tajikText;
       case 'farsi':
-        return verse.farsi ?? verse.tajikText;
+        return verse.farsi || verse.tajikText;
       case 'russian':
-        return verse.russian ?? verse.tajikText;
+        return verse.russian || verse.tajikText;
       default:
-        return verse.tajikText;
+        // Fallback: if no specific match, try to find any matching field
+        if (matchedFields.includes('arabicText')) return verse.arabicText;
+        if (matchedFields.includes('tajikText')) return verse.tajikText;
+        if (matchedFields.includes('transliteration') && verse.transliteration) return verse.transliteration;
+        return verse.tajikText || verse.arabicText;
+    }
+  };
+
+  const getMatchedFieldLabel = (matchedField: string): string => {
+    switch (matchedField) {
+      case 'arabicText':
+        return 'Арабӣ';
+      case 'transliteration':
+        return 'Транслитератсия';
+      case 'tajikText':
+        return 'Абдул Муҳаммад Оятӣ';
+      case 'tj2':
+        return 'Абуаломуддин (бо тафсир)';
+      case 'tj3':
+        return 'Pioneers of Translation Center';
+      case 'farsi':
+        return 'Форсӣ';
+      case 'russian':
+        return 'Эльмир Кулиев';
+      default:
+        return '';
     }
   };
 
@@ -524,7 +552,10 @@ export default function SearchDrawer({ isOpen, onClose, initialQuery = '' }: Sea
                   {results.map((result) => {
                     const verse = result.data as Verse;
                     const surahName = getSurahNameTajik(verse.surahId);
-                    const translationText = getTranslationText(verse, selectedFilter);
+                    const matchedText = getMatchedText(verse, result.matchedFields);
+                    const matchedFieldLabel = result.matchedFields[0] ? getMatchedFieldLabel(result.matchedFields[0]) : '';
+                    const isArabic = result.matchedFields[0] === 'arabicText';
+                    const isTransliteration = result.matchedFields[0] === 'transliteration';
 
                     return (
                       <div
@@ -552,7 +583,7 @@ export default function SearchDrawer({ isOpen, onClose, initialQuery = '' }: Sea
                           display: 'flex',
                           alignItems: 'center',
                           gap: '8px',
-                          marginBottom: '12px',
+                          marginBottom: matchedText ? '12px' : '0',
                         }}>
                           <div style={{
                             padding: '4px 8px',
@@ -572,48 +603,33 @@ export default function SearchDrawer({ isOpen, onClose, initialQuery = '' }: Sea
                           }}>
                             {surahName}
                           </div>
+                          {matchedFieldLabel && (
+                            <div style={{
+                              fontSize: 'var(--font-size-xs)',
+                              color: 'var(--color-text-secondary)',
+                              backgroundColor: 'var(--color-surface)',
+                              padding: '2px 8px',
+                              borderRadius: '8px',
+                            }}>
+                              {matchedFieldLabel}
+                            </div>
+                          )}
                         </div>
 
-                        {/* Arabic text */}
-                        <div style={{
-                          direction: 'rtl',
-                          fontSize: '20px',
-                          lineHeight: '1.8',
-                          fontFamily: "'Amiri', 'Noto Naskh Arabic', 'Arabic Typesetting', serif",
-                          color: 'var(--color-text-primary)',
-                          marginBottom: '8px',
-                        }}>
-                          <span lang="ar">{renderHighlightedText(verse.arabicText, query)}</span>
-                        </div>
-
-                        {/* Transliteration */}
-                        {verse.transliteration && (
-                          <div style={{
-                            fontSize: 'var(--font-size-sm)',
-                            color: 'var(--color-text-secondary)',
-                            fontStyle: 'italic',
-                            marginBottom: '8px',
-                          }}>
-                            {renderHighlightedText(verse.transliteration, query)}
-                          </div>
-                        )}
-
-                        {/* Translation */}
-                        {translationText ? (
-                          <div style={{
-                            fontSize: 'var(--font-size-base)',
-                            color: 'var(--color-text-primary)',
-                            lineHeight: '1.4',
-                          }}>
-                            {renderHighlightedText(translationText, query)}
-                          </div>
-                        ) : (
-                          <div style={{
-                            fontSize: 'var(--font-size-sm)',
-                            color: 'var(--color-text-secondary)',
-                            fontStyle: 'italic',
-                          }}>
-                            Тарҷума мавҷуд нест
+                        {/* Matched text only */}
+                        {matchedText && (
+                          <div
+                            lang={isArabic ? 'ar' : undefined}
+                            style={{
+                              direction: isArabic ? 'rtl' : 'ltr',
+                              fontSize: isArabic ? '20px' : (isTransliteration ? 'var(--font-size-sm)' : 'var(--font-size-base)'),
+                              lineHeight: isArabic ? '1.8' : '1.4',
+                              fontFamily: isArabic ? "'Amiri', 'Noto Naskh Arabic', 'Arabic Typesetting', serif" : 'inherit',
+                              color: 'var(--color-text-primary)',
+                              fontStyle: isTransliteration ? 'italic' : 'normal',
+                            }}
+                          >
+                            {renderHighlightedText(matchedText, query)}
                           </div>
                         )}
                       </div>

@@ -16,7 +16,7 @@ function TasbeehPageContent() {
   const [completedTasbeehs, setCompletedTasbeehs] = useState(0);
   const [targetCount, setTargetCount] = useState(33);
   const [showCompletionDialog, setShowCompletionDialog] = useState(false);
-  const [activeTab, setActiveTab] = useState<'counter' | 'collection'>('counter');
+  const [activeTab, setActiveTab] = useState<'counter' | 'collection'>('collection');
   const [isLoadingData, setIsLoadingData] = useState(true);
   const [loadError, setLoadError] = useState<string | null>(null);
   
@@ -175,21 +175,6 @@ function TasbeehPageContent() {
           marginBottom: '24px',
         }}>
           <button
-            onClick={() => setActiveTab('counter')}
-            style={{
-              flex: 1,
-              padding: '12px',
-              border: 'none',
-              backgroundColor: 'transparent',
-              borderBottom: activeTab === 'counter' ? '2px solid var(--color-primary)' : '2px solid transparent',
-              color: activeTab === 'counter' ? 'var(--color-primary)' : 'var(--color-text-primary)',
-              fontWeight: activeTab === 'counter' ? 'bold' : 'normal',
-              cursor: 'pointer',
-            }}
-          >
-            Тасбеҳгӯяк
-          </button>
-          <button
             onClick={() => setActiveTab('collection')}
             style={{
               flex: 1,
@@ -203,6 +188,21 @@ function TasbeehPageContent() {
             }}
           >
             Зикрҳо
+          </button>
+          <button
+            onClick={() => setActiveTab('counter')}
+            style={{
+              flex: 1,
+              padding: '12px',
+              border: 'none',
+              backgroundColor: 'transparent',
+              borderBottom: activeTab === 'counter' ? '2px solid var(--color-primary)' : '2px solid transparent',
+              color: activeTab === 'counter' ? 'var(--color-primary)' : 'var(--color-text-primary)',
+              fontWeight: activeTab === 'counter' ? 'bold' : 'normal',
+              cursor: 'pointer',
+            }}
+          >
+            Тасбеҳгӯяк
           </button>
         </div>
 

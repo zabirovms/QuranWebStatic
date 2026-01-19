@@ -74,7 +74,7 @@ export default function VocabularyPage() {
         </div>
         <main style={{
           padding: 'var(--spacing-lg) 4px',
-          paddingTop: isTopBarVisible ? 'calc(56px + var(--spacing-md))' : 'var(--spacing-md)',
+          paddingTop: 'var(--spacing-md)',
           maxWidth: '900px',
           margin: '0 auto',
           width: '100%',
@@ -130,7 +130,7 @@ export default function VocabularyPage() {
       <main style={{ 
         flex: 1, 
         overflow: 'auto',
-        paddingTop: isTopBarVisible ? 'calc(56px + var(--spacing-md))' : 'var(--spacing-md)',
+        paddingTop: 'calc(56px + var(--spacing-md))', /* Account for app-bar (56px) + spacing */
         paddingBottom: 'calc(60px + var(--spacing-md))',
         paddingLeft: 'clamp(16px, 4vw, 4px)',
         paddingRight: 'clamp(16px, 4vw, 4px)',

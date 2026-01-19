@@ -462,11 +462,14 @@ class AudioService {
       // Check if this is Tajik translation audio (uses separate API)
       if (normalizedEdition === 'tg.akmal_mansurov') {
         const { tajikAudioService } = await import('./tajik-audio-service');
+        console.log('[AudioService] Fetching Tajik audio URL for surah', surahNumber);
         const tajikUrl = await tajikAudioService.getAudioUrlForSurah(surahNumber);
-        if (tajikUrl) {
+        console.log('[AudioService] Tajik audio URL result:', tajikUrl);
+        if (tajikUrl && tajikUrl.trim() !== '') {
           audioUrl = tajikUrl;
           console.log('[AudioService] Using Tajik translation API URL for surah', surahNumber, '->', audioUrl);
         } else {
+          console.error('[AudioService] Tajik audio URL is null or empty for surah', surahNumber);
           throw new Error(`Tajik audio not available for surah ${surahNumber}`);
         }
       } else {
@@ -493,6 +496,8 @@ class AudioService {
       // Clear alignment data for full surah mode
       this.currentAlignment = null;
       this.isLoadingAlignment = false;
+      
+      // Update state with loading status
       this.updateState({
         isLoading: true,
         error: null,
@@ -502,6 +507,8 @@ class AudioService {
         currentUrl: audioUrl,
         currentWordNumber: null, // No word tracking in full surah mode
       });
+      
+      console.log('[AudioService] Starting to load audio from URL:', audioUrl);
 
       // Clear previous source and reset
       if (this.audio.src) {
@@ -585,6 +592,11 @@ class AudioService {
       });
 
       await this.audio.play();
+      console.log('[AudioService] Audio playback started successfully');
+      this.updateState({
+        isLoading: false,
+        isPlaying: true,
+      });
       this.startPositionPolling();
     } catch (error) {
       console.error('[AudioService] Error playing surah:', error);

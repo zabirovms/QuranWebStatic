@@ -9,6 +9,7 @@ import { ArrowBackIcon, RefreshIcon, ShuffleIcon, ShareIcon, PlayArrowIcon, Paus
 import LoadingSpinner from '@/components/LoadingSpinner';
 import ErrorDisplay from '@/components/ErrorDisplay';
 import { useTopBar } from '@/lib/contexts/TopBarContext';
+import { useSidebarHover } from '@/components/MagicCurveSidebar';
 import { getAudioService, PlaybackState } from '@/lib/services/audio-service';
 import { SettingsService } from '@/lib/services/settings-service';
 
@@ -28,7 +29,15 @@ const getVerseNumber = (ref: string): number => {
 function QuotedVersesPageContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const isSidebarHovered = useSidebarHover();
   const { isVisible: isTopBarVisible } = useTopBar();
+  // Default to true (mobile) to prevent content shift on initial render
+  const [isMobile, setIsMobile] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return window.innerWidth <= 768;
+    }
+    return true; // Default to mobile on SSR to prevent flash/shift
+  });
   const [verses, setVerses] = useState<QuotedVerse[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [loadError, setLoadError] = useState<string | null>(null);
@@ -69,6 +78,15 @@ function QuotedVersesPageContent() {
       loadBackgroundImages();
     }
   }, [activeTab]);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   // Handle ref query parameter
   useEffect(() => {
@@ -219,14 +237,14 @@ function QuotedVersesPageContent() {
         <div style={{
           position: 'fixed',
           top: isTopBarVisible ? '56px' : '0px',
-          left: 0,
+          left: isMobile ? 0 : (isSidebarHovered ? '280px' : '64px'),
           right: 0,
           display: 'flex',
           borderBottom: '1px solid var(--color-outline)',
           backgroundColor: 'var(--color-background)',
           zIndex: 1019,
           height: '48px',
-          transition: 'top 0.4s ease-out',
+          transition: 'top 0.4s ease-out, left 0.5s ease',
         }}>
           {(['simple', 'styled'] as Tab[]).map((tab) => (
           <button

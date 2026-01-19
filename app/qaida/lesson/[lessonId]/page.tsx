@@ -119,7 +119,7 @@ export default function QaidaLessonPage({
     }}>
       {/* Content */}
       <main style={{
-        padding: 'var(--spacing-lg) 4px',
+        padding: 'clamp(8px, 2vw, var(--spacing-lg)) clamp(4px, 1vw, 4px)',
         paddingTop: 'var(--spacing-md)',
         maxWidth: '900px',
         margin: '0 auto',
@@ -194,9 +194,11 @@ function LessonBody({
 
   return (
     <div style={{
-      padding: 'var(--spacing-lg)',
+      padding: 'clamp(8px, 2vw, var(--spacing-lg))',
       maxWidth: '800px',
       margin: '0 auto',
+      width: '100%',
+      boxSizing: 'border-box',
     }}>
       {/* Header with Objectives */}
       {lesson.id < 5 && (
@@ -205,8 +207,10 @@ function LessonBody({
             backgroundColor: 'var(--color-primary-container-low-opacity)',
             borderRadius: '16px',
             padding: 'var(--spacing-lg)',
-            marginBottom: 'var(--spacing-lg)',
+            marginBottom: 'var(--spacing-xl)',
             boxShadow: 'none',
+            position: 'relative',
+            zIndex: 0,
           }}>
             {(lesson.objectives && lesson.objectives.length > 0) && lesson.id < 5 && (
               <>
@@ -219,7 +223,7 @@ function LessonBody({
                   Ҳадафи дарс:
                 </h3>
                 <ul style={{
-                  margin: '0',
+                  margin: '0 0 var(--spacing-md) 0',
                   paddingLeft: 'var(--spacing-lg)',
                   listStyle: 'disc',
                 }}>
@@ -238,7 +242,9 @@ function LessonBody({
             )}
             {lesson.id === 1 && (
               <>
-                <div style={{ marginTop: 'var(--spacing-md)' }}>
+                <div style={{ 
+                  marginTop: lesson.objectives && lesson.objectives.length > 0 ? 'var(--spacing-md)' : '0',
+                }}>
                   <button
                     onClick={() => router.push('/qaida/lesson/1/letter/alif')}
                     className="btn btn-primary"
@@ -252,7 +258,9 @@ function LessonBody({
             )}
             {lesson.id === 2 && (
               <>
-                <div style={{ marginTop: 'var(--spacing-md)' }}>
+                <div style={{ 
+                  marginTop: lesson.objectives && lesson.objectives.length > 0 ? 'var(--spacing-md)' : '0',
+                }}>
                   <button
                     onClick={() => {
                       const syllablesBlock = lesson.content.find(
@@ -274,7 +282,9 @@ function LessonBody({
             )}
             {lesson.id === 5 && (
               <>
-                <div style={{ marginTop: 'var(--spacing-md)' }}>
+                <div style={{ 
+                  marginTop: lesson.objectives && lesson.objectives.length > 0 ? 'var(--spacing-md)' : '0',
+                }}>
                   <button
                     onClick={() => {
                       const lettersBlock = lesson.content.find(
@@ -366,15 +376,27 @@ function LettersChart({ letters }: { letters: QaidaLetter[] }) {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
   
-  const itemWidth = (screenWidth - 16 * 2 - 8 * 4) / 5;
+  // Account for container padding and gaps on mobile
+  // Main padding: clamp(8px, 2vw, var(--spacing-lg)) = ~8-16px on mobile
+  // LessonBody padding: clamp(8px, 2vw, var(--spacing-lg)) = ~8-16px on mobile
+  // Total horizontal padding: ~16-32px on mobile
+  const mainPadding = screenWidth <= 768 ? 8 : 16;
+  const lessonBodyPadding = screenWidth <= 768 ? 8 : 16;
+  const totalPadding = (mainPadding + lessonBodyPadding) * 2; // left + right
+  const gapSpacing = screenWidth <= 768 ? 8 : 12; // var(--spacing-sm) = 8px
+  const itemWidth = Math.max(50, (screenWidth - totalPadding - gapSpacing * 4) / 5);
 
   return (
-    <div style={{ marginTop: 'var(--spacing-sm)', marginBottom: 'var(--spacing-lg)' }}>
+    <div style={{ 
+      marginTop: 0, 
+      marginBottom: 'var(--spacing-lg)',
+    }}>
       <h4 style={{
         fontSize: 'var(--font-size-base)',
         fontWeight: 'var(--font-weight-semibold)',
         color: 'var(--color-text-primary)',
         marginBottom: 'var(--spacing-sm)',
+        marginTop: 0,
       }}>
         Ҳарфҳо:
       </h4>
@@ -390,11 +412,14 @@ function LettersChart({ letters }: { letters: QaidaLetter[] }) {
             key={letter.id}
             style={{
               width: `${itemWidth}px`,
+              minWidth: `${itemWidth}px`,
+              maxWidth: `${itemWidth}px`,
               padding: '10px 8px',
               borderRadius: '12px',
               backgroundColor: 'var(--color-surface-variant)',
               border: '1px solid var(--color-outline)',
               textAlign: 'center',
+              boxSizing: 'border-box',
             }}
           >
             <div style={{
@@ -439,15 +464,27 @@ function LettersChartLesson1({ letters }: { letters: QaidaLetter[] }) {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
   
-  const itemWidth = (screenWidth - 16 * 2 - 8 * 4) / 5;
+  // Account for container padding and gaps on mobile
+  // Main padding: clamp(8px, 2vw, var(--spacing-lg)) = ~8-16px on mobile
+  // LessonBody padding: clamp(8px, 2vw, var(--spacing-lg)) = ~8-16px on mobile
+  // Total horizontal padding: ~16-32px on mobile
+  const mainPadding = screenWidth <= 768 ? 8 : 16;
+  const lessonBodyPadding = screenWidth <= 768 ? 8 : 16;
+  const totalPadding = (mainPadding + lessonBodyPadding) * 2; // left + right
+  const gapSpacing = screenWidth <= 768 ? 8 : 12; // var(--spacing-sm) = 8px
+  const itemWidth = Math.max(50, (screenWidth - totalPadding - gapSpacing * 4) / 5);
 
   return (
-    <div style={{ marginTop: 'var(--spacing-sm)', marginBottom: 'var(--spacing-lg)' }}>
+    <div style={{ 
+      marginTop: 0, 
+      marginBottom: 'var(--spacing-lg)',
+    }}>
       <h4 style={{
         fontSize: 'var(--font-size-base)',
         fontWeight: 'var(--font-weight-semibold)',
         color: 'var(--color-text-primary)',
         marginBottom: 'var(--spacing-sm)',
+        marginTop: 0,
       }}>
         Ҳарфҳо:
       </h4>
@@ -464,12 +501,18 @@ function LettersChartLesson1({ letters }: { letters: QaidaLetter[] }) {
             onClick={() => router.push(`/qaida/lesson/1/letter/${letter.id}`)}
             style={{
               width: `${itemWidth}px`,
+              minWidth: `${itemWidth}px`,
+              maxWidth: `${itemWidth}px`,
               padding: '10px 8px',
               borderRadius: '12px',
               backgroundColor: 'var(--color-surface-variant)',
               border: '1px solid var(--color-outline)',
               cursor: 'pointer',
               textAlign: 'center',
+              boxSizing: 'border-box',
+              position: 'relative',
+              zIndex: 1,
+              flexShrink: 0,
             }}
           >
             <div style={{
@@ -766,7 +809,12 @@ function SyllablesExamples({ examples, lessonId }: { examples: QaidaSyllableExam
     return () => window.removeEventListener('resize', handleResize);
   }, []);
   
-  const itemWidth = (screenWidth - 16 * 2 - 8 * 3) / 4;
+  // Account for container padding and gaps on mobile
+  const mainPadding = screenWidth <= 768 ? 8 : 16;
+  const lessonBodyPadding = screenWidth <= 768 ? 8 : 16;
+  const totalPadding = (mainPadding + lessonBodyPadding) * 2; // left + right
+  const gapSpacing = screenWidth <= 768 ? 8 : 12; // var(--spacing-sm) = 8px
+  const itemWidth = Math.max(50, (screenWidth - totalPadding - gapSpacing * 3) / 4);
   const isClickable = lessonId === 2 || lessonId === 3 || lessonId === 4 || lessonId === 6 || lessonId === 7 || lessonId === 8;
 
   return (
@@ -804,6 +852,8 @@ function SyllablesExamples({ examples, lessonId }: { examples: QaidaSyllableExam
         flexWrap: 'wrap',
         gap: 'var(--spacing-sm)',
         justifyContent: 'center',
+        position: 'relative',
+        zIndex: 1,
       }}>
         {examples.map((e) => {
           const displayText = lessonId === 6
@@ -819,10 +869,13 @@ function SyllablesExamples({ examples, lessonId }: { examples: QaidaSyllableExam
           const CardContent = (
             <div style={{
               width: `${itemWidth}px`,
+              minWidth: `${itemWidth}px`,
+              maxWidth: `${itemWidth}px`,
               padding: '12px 8px',
               borderRadius: '12px',
               backgroundColor: 'var(--color-surface-variant)',
               textAlign: 'center',
+              boxSizing: 'border-box',
             }}>
               <div style={{
                 fontSize: '28px',
@@ -846,6 +899,7 @@ function SyllablesExamples({ examples, lessonId }: { examples: QaidaSyllableExam
                   background: 'none',
                   cursor: 'pointer',
                   padding: 0,
+                  flexShrink: 0,
                 }}
               >
                 {CardContent}

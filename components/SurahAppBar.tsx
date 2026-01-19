@@ -1,9 +1,11 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { BookmarkIcon, SettingsIcon } from './Icons';
 import { useTopBar } from '@/lib/contexts/TopBarContext';
 import { Surah } from '@/lib/types';
+import { useSidebarHover } from './MagicCurveSidebar';
 
 interface SurahAppBarProps {
   surah: Surah;
@@ -26,6 +28,23 @@ export default function SurahAppBar({
 }: SurahAppBarProps) {
   const router = useRouter();
   const { isVisible: isTopBarVisible } = useTopBar();
+  const isSidebarHovered = useSidebarHover();
+  // Default to true (mobile) to prevent content shift on initial render
+  const [isMobile, setIsMobile] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return window.innerWidth <= 768;
+    }
+    return true; // Default to mobile on SSR to prevent flash/shift
+  });
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   const handleSettings = () => {
     if (onSettingsClick) {
@@ -46,7 +65,10 @@ export default function SurahAppBar({
       className="app-bar"
       style={{
         top: isTopBarVisible ? '56px' : '0px',
-        transition: 'top 0.4s ease-out',
+        left: isMobile ? 0 : (isSidebarHovered ? '280px' : '64px'),
+        right: 0,
+        transition: 'top 0.4s ease-out, left 0.5s ease',
+        zIndex: 1019,
       }}
     >
       <div className="app-bar-content">

@@ -106,7 +106,7 @@ function ProphetsPageContent() {
         paddingLeft: 'clamp(16px, 4vw, 4px)',
         paddingRight: 'clamp(16px, 4vw, 4px)',
         paddingBottom: 'var(--spacing-lg)',
-        paddingTop: isTopBarVisible ? 'calc(56px + var(--spacing-md))' : 'var(--spacing-md)',
+        paddingTop: 'var(--spacing-md)',
         maxWidth: '900px',
         margin: '0 auto',
         width: '100%',

@@ -1,12 +1,14 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import { Story, StorySlide } from '@/lib/types/story';
 import { Reciter } from '@/lib/data/reciter-data-client';
 import { markStoryAsRead } from '@/lib/data/story-data-client';
 import { buildVerseAudioUrl } from '@/lib/utils/audio-helper';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
+import { CloseIcon } from './Icons';
 
 interface StoryViewerProps {
   story: Story;
@@ -159,6 +161,28 @@ export default function StoryViewer({ story, reciter, onClose }: StoryViewerProp
   const progressAnimationRef = useRef<number | null>(null);
   const audioServiceRef = useRef<StoryAudioService | null>(null);
   const fadeInRef = useRef(true);
+  const [isMounted, setIsMounted] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  useEffect(() => {
+    // Prevent body scroll when story is open
+    if (isMounted) {
+      document.body.style.overflow = 'hidden';
+      return () => {
+        document.body.style.overflow = '';
+      };
+    }
+  }, [isMounted]);
 
   useEffect(() => {
     // Initialize audio service
@@ -515,7 +539,8 @@ export default function StoryViewer({ story, reciter, onClose }: StoryViewerProp
   };
 
   if (!story.slides || story.slides.length === 0) {
-    return (
+    if (!isMounted || typeof document === 'undefined') return null;
+    return createPortal(
       <div style={{
         position: 'fixed',
         top: 0,
@@ -523,14 +548,15 @@ export default function StoryViewer({ story, reciter, onClose }: StoryViewerProp
         right: 0,
         bottom: 0,
         backgroundColor: '#000',
-        zIndex: 9999,
+        zIndex: 99999,
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
         color: '#fff',
       }}>
         No slides available
-      </div>
+      </div>,
+      document.body
     );
   }
 
@@ -539,7 +565,9 @@ export default function StoryViewer({ story, reciter, onClose }: StoryViewerProp
   const verseReference = currentSlide.verseReference || 'Қори';
   const opacity = 1.0 - Math.min(1, dragOffset / 300);
 
-  return (
+  if (!isMounted || typeof document === 'undefined') return null;
+
+  const storyContent = (
     <div
       ref={containerRef}
       style={{
@@ -549,7 +577,7 @@ export default function StoryViewer({ story, reciter, onClose }: StoryViewerProp
         right: 0,
         bottom: 0,
         backgroundColor: '#000',
-        zIndex: 9999,
+        zIndex: 99999,
         opacity: isClosing ? 0 : (fadeInRef.current ? 0 : 1),
         transition: 'opacity 0.3s ease',
       }}
@@ -564,14 +592,14 @@ export default function StoryViewer({ story, reciter, onClose }: StoryViewerProp
       {/* Progress bars at top */}
       <div style={{
         position: 'absolute',
-        top: '8px',
-        left: '8px',
-        right: '8px',
+        top: 'clamp(4px, 1.5vw, 8px)',
+        left: 'clamp(4px, 1.5vw, 8px)',
+        right: 'clamp(4px, 1.5vw, 8px)',
         zIndex: 10000,
       }}>
         <div style={{
           display: 'flex',
-          gap: '4px',
+          gap: 'clamp(2px, 1vw, 4px)',
         }}>
           {story.slides.map((_, index) => {
             const isActive = index === currentSlideIndex;
@@ -582,7 +610,7 @@ export default function StoryViewer({ story, reciter, onClose }: StoryViewerProp
                 key={index}
                 style={{
                   flex: 1,
-                  height: '4px',
+                  height: 'clamp(3px, 1vw, 4px)',
                   backgroundColor: 'rgba(255, 255, 255, 0.3)',
                   borderRadius: '2px',
                   position: 'relative',
@@ -618,25 +646,81 @@ export default function StoryViewer({ story, reciter, onClose }: StoryViewerProp
         </div>
       </div>
 
+      {/* Close button - Top right */}
+      <button
+        onClick={(e) => {
+          e.stopPropagation();
+          handleClose();
+        }}
+        onTouchStart={(e) => {
+          e.stopPropagation();
+          e.currentTarget.style.backgroundColor = 'rgba(0, 0, 0, 0.7)';
+          e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.6)';
+          e.currentTarget.style.transform = 'scale(0.95)';
+        }}
+        onTouchEnd={(e) => {
+          e.stopPropagation();
+          e.currentTarget.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
+          e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.3)';
+          e.currentTarget.style.transform = 'scale(1)';
+        }}
+        style={{
+          position: 'absolute',
+          top: 'clamp(24px, 6vw, 40px)',
+          right: 'clamp(8px, 3vw, 16px)',
+          width: 'clamp(40px, 8vw, 48px)',
+          height: 'clamp(40px, 8vw, 48px)',
+          borderRadius: '50%',
+          backgroundColor: 'rgba(0, 0, 0, 0.5)',
+          border: '2px solid rgba(255, 255, 255, 0.3)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          cursor: 'pointer',
+          zIndex: 10001,
+          transition: 'all 0.2s ease',
+          padding: 0,
+          outline: 'none',
+          WebkitTapHighlightColor: 'transparent',
+          touchAction: 'manipulation',
+        }}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.backgroundColor = 'rgba(0, 0, 0, 0.7)';
+          e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.6)';
+          e.currentTarget.style.transform = 'scale(1.1)';
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
+          e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.3)';
+          e.currentTarget.style.transform = 'scale(1)';
+        }}
+        aria-label="Close story"
+      >
+        <CloseIcon 
+          size={isMobile ? 20 : 24} 
+          color="#fff" 
+        />
+      </button>
+
       {/* Header with reciter image and title */}
       <div style={{
         position: 'absolute',
-        top: '40px',
-        left: '16px',
-        right: '16px',
+        top: 'clamp(24px, 6vw, 40px)',
+        left: 'clamp(8px, 3vw, 16px)',
+        right: 'clamp(60px, 12vw, 72px)', // Make room for close button
         zIndex: 10000,
       }}>
         <div style={{
           display: 'flex',
           alignItems: 'center',
-          gap: '8px',
+          gap: 'clamp(6px, 2vw, 8px)',
         }}>
           {/* Reciter image */}
           <div style={{
-            width: '48px',
-            height: '48px',
+            width: 'clamp(40px, 8vw, 48px)',
+            height: 'clamp(40px, 8vw, 48px)',
             borderRadius: '50%',
-            border: '2.5px solid #fff',
+            border: 'clamp(2px, 0.5vw, 2.5px) solid #fff',
             overflow: 'hidden',
             flexShrink: 0,
           }}>
@@ -669,7 +753,7 @@ export default function StoryViewer({ story, reciter, onClose }: StoryViewerProp
           <div style={{ flex: 1, minWidth: 0 }}>
             <div style={{
               color: '#fff',
-              fontSize: '14px',
+              fontSize: 'clamp(12px, 3vw, 14px)',
               fontWeight: 600,
               overflow: 'hidden',
               textOverflow: 'ellipsis',
@@ -679,7 +763,7 @@ export default function StoryViewer({ story, reciter, onClose }: StoryViewerProp
             </div>
             <div style={{
               color: 'rgba(255, 255, 255, 0.6)',
-              fontSize: '12px',
+              fontSize: 'clamp(10px, 2.5vw, 12px)',
               overflow: 'hidden',
               textOverflow: 'ellipsis',
               whiteSpace: 'nowrap',
@@ -706,6 +790,8 @@ export default function StoryViewer({ story, reciter, onClose }: StoryViewerProp
       </div>
     </div>
   );
+
+  return createPortal(storyContent, document.body);
 
   function buildSlideContent(slide: StorySlide, photoUrl: string | null) {
     if (slide.type === 'image' || slide.type === 'video') {
@@ -791,28 +877,28 @@ export default function StoryViewer({ story, reciter, onClose }: StoryViewerProp
           {/* Scrollable text content */}
           <div style={{
             position: 'absolute',
-            top: '120px',
-            left: '40px',
-            right: '40px',
-            bottom: '40px',
+            top: 'clamp(80px, 15vw, 120px)',
+            left: 'clamp(16px, 5vw, 40px)',
+            right: 'clamp(16px, 5vw, 40px)',
+            bottom: 'clamp(16px, 5vw, 40px)',
             overflowY: 'auto',
             display: 'flex',
             alignItems: 'flex-start',
             justifyContent: 'center',
-            paddingTop: '20px',
+            paddingTop: 'clamp(10px, 3vw, 20px)',
           }}>
             {hasArabicAndTranslation ? (
               <div style={{
                 display: 'flex',
                 flexDirection: 'column',
                 alignItems: 'center',
-                gap: '24px',
+                gap: 'clamp(16px, 4vw, 24px)',
                 maxWidth: '100%',
               }}>
                 {/* Arabic text */}
                 <div style={{
                   color: '#fff',
-                  fontSize: '28px',
+                  fontSize: 'clamp(20px, 5vw, 28px)',
                   fontWeight: 'bold',
                   lineHeight: 1.5,
                   textAlign: 'center',
@@ -824,7 +910,7 @@ export default function StoryViewer({ story, reciter, onClose }: StoryViewerProp
                 {/* Translation */}
                 <div style={{
                   color: 'rgba(255, 255, 255, 0.7)',
-                  fontSize: '20px',
+                  fontSize: 'clamp(14px, 4vw, 20px)',
                   fontWeight: 'normal',
                   lineHeight: 1.4,
                   textAlign: 'center',
@@ -835,7 +921,7 @@ export default function StoryViewer({ story, reciter, onClose }: StoryViewerProp
             ) : (
               <div style={{
                 color: '#fff',
-                fontSize: '24px',
+                fontSize: 'clamp(18px, 4.5vw, 24px)',
                 fontWeight: 'bold',
                 lineHeight: 1.3,
                 textAlign: 'center',

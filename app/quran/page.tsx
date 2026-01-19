@@ -7,6 +7,7 @@ import { getAllVerses } from '@/lib/data/verse-data-client';
 import { Surah, Verse } from '@/lib/types';
 import { BookmarkService, Bookmark } from '@/lib/services/bookmark-service';
 import { useTopBar } from '@/lib/contexts/TopBarContext';
+import { useSidebarHover } from '@/components/MagicCurveSidebar';
 import LoadingSpinner from '@/components/LoadingSpinner';
 
 type Tab = 'surah' | 'juz' | 'page' | 'bookmarks';
@@ -27,6 +28,14 @@ interface PageInfo {
 
 export default function QuranPage() {
   const { isVisible: isTopBarVisible } = useTopBar();
+  const isSidebarHovered = useSidebarHover();
+  // Default to true (mobile) to prevent content shift on initial render
+  const [isMobile, setIsMobile] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return window.innerWidth <= 768;
+    }
+    return true; // Default to mobile on SSR to prevent flash/shift
+  });
   const [activeTab, setActiveTab] = useState<Tab>('surah');
   const [surahs, setSurahs] = useState<Surah[]>([]);
   const [juzList, setJuzList] = useState<JuzInfo[]>([]);
@@ -110,6 +119,15 @@ export default function QuranPage() {
     }
   }, [activeTab]);
 
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
 
   const removeBookmark = (uniqueKey: string) => {
     const bookmarkService = BookmarkService.getInstance();
@@ -138,14 +156,14 @@ export default function QuranPage() {
       <div style={{
         position: 'fixed',
         top: isTopBarVisible ? '56px' : '0px',
-        left: 0,
+        left: isMobile ? 0 : (isSidebarHovered ? '280px' : '64px'),
         right: 0,
         display: 'flex',
         borderBottom: '1px solid var(--color-outline)',
         backgroundColor: 'var(--color-background)',
         zIndex: 1019,
         height: '48px',
-        transition: 'top 0.4s ease-out',
+        transition: 'top 0.4s ease-out, left 0.5s ease',
       }}>
         {(['surah', 'juz', 'page', 'bookmarks'] as Tab[]).map((tab) => (
           <button

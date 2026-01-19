@@ -10,12 +10,10 @@ import { getReciterPhotoUrl, hasMappedImage, initializeReciterPhotoCache } from 
 import LoadingSpinner from '@/components/LoadingSpinner';
 import Image from 'next/image';
 import { PersonIcon } from '@/components/Icons';
-import { useTopBar } from '@/lib/contexts/TopBarContext';
 import ReciterProfileItem from '@/components/ReciterProfileItem';
 
 export default function AudioHomePage() {
   const router = useRouter();
-  const { isVisible: isTopBarVisible } = useTopBar();
   const [reciters, setReciters] = useState<Reciter[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -67,7 +65,6 @@ export default function AudioHomePage() {
     }}>
       <main style={{
         padding: 'var(--spacing-md) var(--spacing-md)',
-        paddingTop: isTopBarVisible ? 'calc(56px + var(--spacing-md))' : 'var(--spacing-md)',
         maxWidth: '100%',
         margin: '0',
         width: '100%',
@@ -81,12 +78,13 @@ export default function AudioHomePage() {
               className="scrollable-container"
               style={{ 
                 display: 'flex',
-                gap: 'var(--spacing-md)',
+                gap: 'clamp(8px, 2vw, var(--spacing-md))',
                 overflowX: 'auto',
                 overflowY: 'hidden',
-                padding: 'var(--spacing-sm)',
+                padding: 'clamp(4px, 1vw, var(--spacing-sm))',
                 scrollbarWidth: 'none',
                 msOverflowStyle: 'none',
+                WebkitOverflowScrolling: 'touch',
               }}
             >
               {storyReciters.map((reciter, index) => (

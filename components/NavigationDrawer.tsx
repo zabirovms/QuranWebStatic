@@ -766,43 +766,9 @@ export default function NavigationDrawer({ isOpen, onClose }: NavigationDrawerPr
                               fontSize: 'var(--font-size-sm)',
                               fontWeight: 'var(--font-weight-medium)',
                               color: 'var(--color-text-primary)',
-                              marginBottom: '4px',
                             }}>
                               Оят {verse.verseNumber}
                             </div>
-                            {verse.arabicText && (
-                              <div style={{
-                                fontSize: 'var(--font-size-base)',
-                                fontWeight: 'var(--font-weight-normal)',
-                                color: 'var(--color-text-primary)',
-                                fontFamily: "'Amiri', 'Noto Naskh Arabic', 'Arabic Typesetting', serif",
-                                direction: 'rtl',
-                                textAlign: 'right',
-                                marginBottom: '4px',
-                                overflow: 'hidden',
-                                textOverflow: 'ellipsis',
-                                display: '-webkit-box',
-                                WebkitLineClamp: 2,
-                                WebkitBoxOrient: 'vertical',
-                                lineHeight: '1.8',
-                              }}>
-                                <span lang="ar">{verse.arabicText}</span>
-                              </div>
-                            )}
-                            {verse.tajikText && (
-                              <div style={{
-                                fontSize: 'var(--font-size-xs)',
-                                color: 'var(--color-text-secondary)',
-                                overflow: 'hidden',
-                                textOverflow: 'ellipsis',
-                                display: '-webkit-box',
-                                WebkitLineClamp: 2,
-                                WebkitBoxOrient: 'vertical',
-                                lineHeight: '1.4',
-                              }}>
-                                {verse.tajikText}
-                              </div>
-                            )}
                           </Link>
                         ))
                       )}

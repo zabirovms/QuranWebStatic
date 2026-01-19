@@ -43,11 +43,11 @@ export default function HadithSection() {
   }
 
   return (
-    <div style={{ marginBottom: '32px' }}>
-      <div style={{
-        backgroundColor: 'var(--color-surface)',
-        borderRadius: 'var(--radius-xl)',
-        padding: '24px',
+      <div style={{ marginBottom: 'clamp(16px, 3vw, 32px)' }}>
+        <div style={{
+          backgroundColor: 'var(--color-surface)',
+          borderRadius: 'var(--radius-xl)',
+          padding: 'clamp(12px, 3vw, 24px)',
         boxShadow: 'var(--elevation-2)',
         border: '1px solid var(--color-outline)',
       }}>
@@ -58,7 +58,7 @@ export default function HadithSection() {
           marginBottom: '16px',
         }}>
           <h2 style={{ 
-            fontSize: '1.5rem', 
+            fontSize: 'clamp(1.125rem, 4vw, 1.5rem)', 
             fontWeight: 'bold',
             margin: 0,
             color: 'var(--color-text-primary)',
@@ -75,10 +75,10 @@ export default function HadithSection() {
             className="scrollable-container"
             style={{ 
               display: 'inline-flex',
-              gap: '16px',
+              gap: 'clamp(12px, 2vw, 16px)',
               overflowX: 'auto',
               overflowY: 'hidden',
-              padding: '8px 12px',
+              padding: 'clamp(6px, 1vw, 12px) clamp(8px, 1.5vw, 12px)',
               maxWidth: '100%',
               width: '100%',
             }}

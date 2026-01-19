@@ -6,7 +6,6 @@ import ThemeInitializer from '@/components/ThemeInitializer'
 import MiniAudioPlayer from '@/components/MiniAudioPlayer'
 import { TopBarProvider } from '@/lib/contexts/TopBarContext'
 import MainContentWrapper from '@/components/MainContentWrapper'
-import IoniconsLoader from '@/components/IoniconsLoader'
 
 export const viewport: Viewport = {
   width: 'device-width',

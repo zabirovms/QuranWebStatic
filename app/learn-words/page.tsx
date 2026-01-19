@@ -103,7 +103,9 @@ export default function LearnWordsPage() {
                   Омӯхтани хондани Қуръон аз сифр (алифбо) то сураҳо
                 </p>
               </div>
-              <ArrowForwardIosIcon size={arrowSize} color="var(--color-text-secondary)" style={{ flexShrink: 0 }} />
+              <div style={{ flexShrink: 0 }}>
+                <ArrowForwardIosIcon size={arrowSize} color="var(--color-text-secondary)" />
+              </div>
             </div>
           </Link>
 
@@ -236,7 +238,9 @@ export default function LearnWordsPage() {
                   Бо омӯхтани ҳудудан 750 калимаи асосӣ, шумо метавонед зиёда аз 85%-и Қуръонро бифаҳмед.
                 </p>
               </div>
-              <ArrowForwardIosIcon size={arrowSize} color="var(--color-text-secondary)" style={{ flexShrink: 0 }} />
+              <div style={{ flexShrink: 0 }}>
+                <ArrowForwardIosIcon size={arrowSize} color="var(--color-text-secondary)" />
+              </div>
             </div>
           </Link>
 

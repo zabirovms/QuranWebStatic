@@ -3,6 +3,7 @@
 import { useSidebarHover } from './MagicCurveSidebar';
 import { useTopBar } from '@/lib/contexts/TopBarContext';
 import { useEffect, useState } from 'react';
+import { throttle } from '@/lib/utils/throttle';
 
 export default function MainContentWrapper({ children }: { children: React.ReactNode }) {
   const isSidebarHovered = useSidebarHover();
@@ -20,8 +21,10 @@ export default function MainContentWrapper({ children }: { children: React.React
       setIsMobile(window.innerWidth <= 768);
     };
     checkMobile();
-    window.addEventListener('resize', checkMobile);
-    return () => window.removeEventListener('resize', checkMobile);
+    // Throttle resize handler to reduce TBT (Phase 2, Section 3.3)
+    const throttledCheckMobile = throttle(checkMobile, 150);
+    window.addEventListener('resize', throttledCheckMobile, { passive: true });
+    return () => window.removeEventListener('resize', throttledCheckMobile);
   }, []);
 
   return (

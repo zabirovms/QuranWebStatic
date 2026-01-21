@@ -6,6 +6,7 @@ import { BookmarkIcon, SettingsIcon } from './Icons';
 import { useTopBar } from '@/lib/contexts/TopBarContext';
 import { Surah } from '@/lib/types';
 import { useSidebarHover } from './MagicCurveSidebar';
+import { throttle } from '@/lib/utils/throttle';
 
 interface SurahAppBarProps {
   surah: Surah;
@@ -42,8 +43,10 @@ export default function SurahAppBar({
       setIsMobile(window.innerWidth <= 768);
     };
     checkMobile();
-    window.addEventListener('resize', checkMobile);
-    return () => window.removeEventListener('resize', checkMobile);
+    // Throttle resize handler to reduce TBT (Phase 2, Section 3.3)
+    const throttledCheckMobile = throttle(checkMobile, 150);
+    window.addEventListener('resize', throttledCheckMobile, { passive: true });
+    return () => window.removeEventListener('resize', throttledCheckMobile);
   }, []);
 
   const handleSettings = () => {

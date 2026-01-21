@@ -58,44 +58,48 @@ export default function TranslationDropdown({
   }, [isOpen]);
 
   // Calculate dropdown position to keep it within viewport
+  // Use requestAnimationFrame to batch layout reads and avoid forced reflow (Phase 2, Section 3.3)
   useEffect(() => {
     if (isOpen && triggerRef.current && dropdownRef.current) {
-      const triggerRect = triggerRef.current.getBoundingClientRect();
-      const dropdown = dropdownRef.current;
-      const viewportWidth = window.innerWidth;
-      const viewportHeight = window.innerHeight;
-      const dropdownWidth = 280; // minWidth
-      const dropdownHeight = Math.min(300, viewportHeight - 200);
-      
-      let right = 0;
-      let left: number | undefined = undefined;
-      
-      // Check if dropdown would go off-screen on the right
-      const style: React.CSSProperties = {
-        position: 'fixed',
-        minWidth: '280px',
-        maxWidth: `min(400px, calc(100vw - 32px))`,
-        maxHeight: `${dropdownHeight}px`,
-      };
-      
-      if (triggerRect.right - dropdownWidth < 16) {
-        // Position from left edge instead
-        style.left = `${Math.max(16, triggerRect.left)}px`;
-      } else {
-        style.right = `${Math.max(16, viewportWidth - triggerRect.right)}px`;
-      }
-      
-      // Check if dropdown would go off-screen on the bottom
-      const spaceBelow = viewportHeight - triggerRect.bottom;
-      const spaceAbove = triggerRect.top;
-      
-      if (spaceBelow < dropdownHeight && spaceAbove > spaceBelow) {
-        style.top = `${Math.max(16, triggerRect.top - dropdownHeight - 8)}px`;
-      } else {
-        style.top = `${triggerRect.bottom + 4}px`;
-      }
-      
-      setDropdownStyle(style);
+      // Batch all layout reads in requestAnimationFrame to avoid forced reflow
+      requestAnimationFrame(() => {
+        if (!triggerRef.current || !dropdownRef.current) return;
+        
+        // Read all layout properties at once (batched)
+        const triggerRect = triggerRef.current.getBoundingClientRect();
+        const viewportWidth = window.innerWidth;
+        const viewportHeight = window.innerHeight;
+        const dropdownWidth = 280; // minWidth
+        const dropdownHeight = Math.min(300, viewportHeight - 200);
+        
+        // Calculate all values before any writes
+        const style: React.CSSProperties = {
+          position: 'fixed',
+          minWidth: '280px',
+          maxWidth: `min(400px, calc(100vw - 32px))`,
+          maxHeight: `${dropdownHeight}px`,
+        };
+        
+        if (triggerRect.right - dropdownWidth < 16) {
+          // Position from left edge instead
+          style.left = `${Math.max(16, triggerRect.left)}px`;
+        } else {
+          style.right = `${Math.max(16, viewportWidth - triggerRect.right)}px`;
+        }
+        
+        // Check if dropdown would go off-screen on the bottom
+        const spaceBelow = viewportHeight - triggerRect.bottom;
+        const spaceAbove = triggerRect.top;
+        
+        if (spaceBelow < dropdownHeight && spaceAbove > spaceBelow) {
+          style.top = `${Math.max(16, triggerRect.top - dropdownHeight - 8)}px`;
+        } else {
+          style.top = `${triggerRect.bottom + 4}px`;
+        }
+        
+        // Apply all style changes at once (single write)
+        setDropdownStyle(style);
+      });
     }
   }, [isOpen]);
 

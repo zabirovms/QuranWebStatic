@@ -9,6 +9,7 @@ import SettingsDrawer from './SettingsDrawer';
 import SearchDrawer from './SearchDrawer';
 import NavigationDrawer from './NavigationDrawer';
 import MagicCurveSidebar, { useSidebarHover } from './MagicCurveSidebar';
+import { throttle } from '@/lib/utils/throttle';
 
 export default function TopBar() {
   const pathname = usePathname();
@@ -32,8 +33,10 @@ export default function TopBar() {
       setIsMobile(window.innerWidth <= 768);
     };
     checkMobile();
-    window.addEventListener('resize', checkMobile);
-    return () => window.removeEventListener('resize', checkMobile);
+    // Throttle resize handler to reduce TBT (Phase 2, Section 3.3)
+    const throttledCheckMobile = throttle(checkMobile, 150);
+    window.addEventListener('resize', throttledCheckMobile, { passive: true });
+    return () => window.removeEventListener('resize', throttledCheckMobile);
   }, []);
 
   const navItems = [

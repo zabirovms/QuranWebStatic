@@ -11,12 +11,14 @@ export default function Footer() {
 
   return (
     <>
-      <footer style={{
-        backgroundColor: 'var(--color-surface-variant)',
-        borderTop: '1px solid var(--color-outline)',
-        padding: 'var(--spacing-2xl) var(--spacing-lg)',
-        marginTop: 'auto',
-      }}>
+      <footer 
+        data-nosnippet
+        style={{
+          backgroundColor: 'var(--color-surface-variant)',
+          borderTop: '1px solid var(--color-outline)',
+          padding: 'var(--spacing-2xl) var(--spacing-lg)',
+          marginTop: 'auto',
+        }}>
         <div style={{
           maxWidth: '1200px',
           margin: '0 auto',

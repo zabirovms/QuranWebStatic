@@ -33,12 +33,28 @@ export default function SearchPlaceholder() {
     href: string;
     type: 'surah' | 'verse' | 'juz' | 'page';
   }>>([]);
+  const [surahsLoaded, setSurahsLoaded] = useState(false);
+  const [recentNavsLoaded, setRecentNavsLoaded] = useState(false);
   const searchInputRef = useRef<HTMLInputElement>(null);
   const settingsService = SettingsService.getInstance();
 
-  // Load recent navigations from localStorage
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
+  // Load surahs data only when user interacts (Solution 2: Defer data loading)
+  const loadSurahsIfNeeded = async () => {
+    if (!surahsLoaded && surahs.length === 0) {
+      setSurahsLoaded(true);
+      try {
+        const loadedSurahs = await getAllSurahs();
+        setSurahs(loadedSurahs);
+      } catch (error) {
+        console.error('Error loading surahs:', error);
+      }
+    }
+  };
+
+  // Load recent navigations from localStorage only when user interacts
+  const loadRecentNavigationsIfNeeded = () => {
+    if (!recentNavsLoaded && typeof window !== 'undefined') {
+      setRecentNavsLoaded(true);
       const saved = localStorage.getItem('quran_recent_navigations');
       if (saved) {
         try {
@@ -48,7 +64,7 @@ export default function SearchPlaceholder() {
         }
       }
     }
-  }, []);
+  };
 
   // Save navigation to localStorage
   const saveNavigation = (label: string, href: string, type: 'surah' | 'verse' | 'juz' | 'page') => {
@@ -62,11 +78,6 @@ export default function SearchPlaceholder() {
       localStorage.setItem('quran_recent_navigations', JSON.stringify(updated));
     }
   };
-
-  // Load surahs
-  useEffect(() => {
-    getAllSurahs().then(setSurahs).catch(console.error);
-  }, []);
 
   // Parse special search patterns
   const parseSearchQuery = (query: string): {
@@ -346,7 +357,7 @@ export default function SearchPlaceholder() {
       width: '100%',
       maxWidth: '600px',
       margin: '0 auto',
-      zIndex: 1000,
+      zIndex: 9999,
     }}>
       {/* Search Input */}
       <div
@@ -375,7 +386,7 @@ export default function SearchPlaceholder() {
           fontSize: 'var(--font-size-lg)',
           transition: 'background-color 0.2s ease, border-color 0.2s ease, border-radius 0.2s ease',
           position: 'relative',
-          zIndex: showResults || showSuggestions ? 1001 : 1000,
+          zIndex: showResults || showSuggestions ? 10000 : 9999,
           cursor: 'text',
         }}
       >
@@ -384,7 +395,14 @@ export default function SearchPlaceholder() {
           ref={searchInputRef}
           type="text"
           value={query}
-          onChange={(e) => setQuery(e.target.value)}
+          onChange={(e) => {
+            setQuery(e.target.value);
+            // Load data when user starts typing
+            if (e.target.value.length > 0) {
+              loadSurahsIfNeeded();
+              loadRecentNavigationsIfNeeded();
+            }
+          }}
           onFocus={() => {
             setIsFocused(true);
           }}
@@ -441,7 +459,7 @@ export default function SearchPlaceholder() {
             boxShadow: 'var(--elevation-4)',
             border: '2px solid var(--color-primary-low-opacity)',
             borderTop: 'none',
-            zIndex: 1000,
+            zIndex: 9999,
             marginTop: '-2px', // Overlap with search input border
           }}
           onMouseDown={(e) => e.preventDefault()} // Prevent blur when clicking/tapping results
@@ -593,7 +611,7 @@ export default function SearchPlaceholder() {
             boxShadow: 'var(--elevation-4)',
             border: '2px solid var(--color-primary-low-opacity)',
             borderTop: 'none',
-            zIndex: 1000,
+            zIndex: 9999,
             marginTop: '-2px', // Overlap with search input border
           }}
           onMouseDown={(e) => e.preventDefault()} // Prevent blur when clicking/tapping results

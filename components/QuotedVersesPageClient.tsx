@@ -4,6 +4,7 @@ import { useEffect, useState, useRef, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { QuotedVerse } from '@/lib/types';
 import { BackgroundService } from '@/lib/services/background-service';
+import { throttle } from '@/lib/utils/throttle';
 import {
   RefreshIcon,
   ShuffleIcon,
@@ -61,14 +62,14 @@ function QuotedVersesPageContent({ initialVerses }: QuotedVersesPageClientProps)
   const audioService = getAudioService();
   const settingsService = SettingsService.getInstance();
 
-  // Initialize verses from server-provided data (shuffled as before)
+  // Initialize verses from server-provided data (already shuffled on server - Phase 2, Section 3.2)
   useEffect(() => {
     try {
       setIsLoading(true);
       setLoadError(null);
       if (initialVerses && initialVerses.length > 0) {
-        const shuffled = [...initialVerses].sort(() => Math.random() - 0.5);
-        setVerses(shuffled);
+        // Data is already shuffled on server, no need to process on client
+        setVerses(initialVerses);
       } else {
         setLoadError('Маълумот ёфт нашуд');
       }
@@ -92,8 +93,10 @@ function QuotedVersesPageContent({ initialVerses }: QuotedVersesPageClientProps)
       setIsMobile(window.innerWidth <= 768);
     };
     checkMobile();
-    window.addEventListener('resize', checkMobile);
-    return () => window.removeEventListener('resize', checkMobile);
+    // Throttle resize handler to reduce TBT (Phase 2, Section 3.3)
+    const throttledCheckMobile = throttle(checkMobile, 150);
+    window.addEventListener('resize', throttledCheckMobile, { passive: true });
+    return () => window.removeEventListener('resize', throttledCheckMobile);
   }, []);
 
   // Handle ref query parameter

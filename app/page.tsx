@@ -1,20 +1,440 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import dynamic from 'next/dynamic';
 import { getHomeFeaturedContent } from '@/lib/data/home-featured';
 import FeaturedSurahCard from '@/components/FeaturedSurahCard';
 import FeaturedProphetCard from '@/components/FeaturedProphetCard';
 import SearchPlaceholder from '@/components/SearchPlaceholder';
-import YouTubeVideosSection from '@/components/YouTubeVideosSection';
-import GallerySection from '@/components/GallerySection';
-import AllSurahsList from '@/components/AllSurahsList';
 import HeroCTAButton from '@/components/HeroCTAButton';
 import SectionLink from '@/components/SectionLink';
 import HoverableCard from '@/components/HoverableCard';
 import HoverableTasbeehCard from '@/components/HoverableTasbeehCard';
 import HoverableAsmaulHusnaCard from '@/components/HoverableAsmaulHusnaCard';
 import HoverableLiveStreamCard from '@/components/HoverableLiveStreamCard';
-import PrayerTimesSection from '@/components/PrayerTimesSection';
-import HadithSection from '@/components/HadithSection';
+
+// Code-split heavy components below the fold (Phase 2, Section 3.1)
+const PrayerTimesSection = dynamic(() => import('@/components/PrayerTimesSection'), {
+  ssr: false,
+  loading: () => (
+    <div style={{ marginBottom: 'clamp(16px, 3vw, 32px)' }}>
+      <div style={{
+        backgroundColor: 'var(--color-surface)',
+        borderRadius: 'var(--radius-xl)',
+        padding: 'clamp(12px, 3vw, 24px)',
+        boxShadow: 'var(--elevation-2)',
+        border: '1px solid var(--color-outline)',
+      }}>
+        <div style={{ 
+          display: 'flex', 
+          justifyContent: 'space-between', 
+          alignItems: 'center',
+          marginBottom: '16px',
+        }}>
+          <div style={{
+            width: '140px',
+            height: '28px',
+            backgroundColor: 'var(--color-surface-variant)',
+            borderRadius: 'var(--radius-sm)',
+            animation: 'pulse 1.5s ease-in-out infinite',
+          }} />
+          <div style={{
+            width: '60px',
+            height: '20px',
+            backgroundColor: 'var(--color-surface-variant)',
+            borderRadius: 'var(--radius-sm)',
+            animation: 'pulse 1.5s ease-in-out infinite',
+          }} />
+        </div>
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(120px, 1fr))',
+          gap: '12px',
+        }}>
+          {[1, 2, 3, 4, 5, 6].map((index) => (
+            <div
+              key={index}
+              style={{
+                textAlign: 'center',
+                padding: '16px',
+                backgroundColor: 'var(--color-primary-container-low-opacity)',
+                borderRadius: 'var(--radius-md)',
+                border: '1px solid var(--color-outline)',
+                animation: 'pulse 1.5s ease-in-out infinite',
+              }}
+            >
+              <div style={{
+                width: '60px',
+                height: '16px',
+                backgroundColor: 'var(--color-surface-variant)',
+                borderRadius: 'var(--radius-sm)',
+                margin: '0 auto 8px',
+                animation: 'pulse 1.5s ease-in-out infinite',
+              }} />
+              <div style={{
+                width: '50px',
+                height: '24px',
+                backgroundColor: 'var(--color-surface-variant)',
+                borderRadius: 'var(--radius-sm)',
+                margin: '0 auto',
+                animation: 'pulse 1.5s ease-in-out infinite',
+              }} />
+            </div>
+          ))}
+        </div>
+        <style dangerouslySetInnerHTML={{ __html: `
+          @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+          }
+        `}} />
+      </div>
+    </div>
+  ),
+});
+
+const YouTubeVideosSection = dynamic(() => import('@/components/YouTubeVideosSection'), {
+  ssr: false,
+  loading: () => (
+    <div style={{ textAlign: 'center' }}>
+      <div style={{ 
+        display: 'flex', 
+        justifyContent: 'space-between', 
+        alignItems: 'center',
+        marginBottom: '16px',
+      }}>
+        <div style={{
+          width: '100px',
+          height: '28px',
+          backgroundColor: 'var(--color-surface-variant)',
+          borderRadius: 'var(--radius-sm)',
+          animation: 'pulse 1.5s ease-in-out infinite',
+        }} />
+        <div style={{
+          width: '24px',
+          height: '24px',
+          borderRadius: '50%',
+          backgroundColor: 'var(--color-surface-variant)',
+          animation: 'pulse 1.5s ease-in-out infinite',
+        }} />
+      </div>
+      <div style={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
+        <div 
+          className="scrollable-container"
+          style={{ 
+            display: 'inline-flex',
+            gap: '12px',
+            overflowX: 'auto',
+            overflowY: 'hidden',
+            padding: '8px 4px',
+            maxWidth: '100%',
+          }}
+        >
+          {Array.from({ length: 3 }).map((_, index) => (
+            <div
+              key={index}
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                width: '280px',
+                minWidth: '280px',
+                flexShrink: 0,
+                height: '200px',
+                borderRadius: '12px',
+                background: 'var(--color-surface)',
+                border: '1px solid var(--color-outline)',
+                boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+                overflow: 'hidden',
+                animation: 'pulse 1.5s ease-in-out infinite',
+              }}
+            >
+              <div style={{
+                height: '140px',
+                width: '100%',
+                backgroundColor: 'var(--color-surface-variant)',
+                animation: 'pulse 1.5s ease-in-out infinite',
+              }} />
+              <div style={{
+                padding: '12px',
+                flex: 1,
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '8px',
+              }}>
+                <div style={{
+                  width: '100%',
+                  height: '16px',
+                  backgroundColor: 'var(--color-surface-variant)',
+                  borderRadius: 'var(--radius-sm)',
+                  animation: 'pulse 1.5s ease-in-out infinite',
+                }} />
+                <div style={{
+                  width: '60%',
+                  height: '14px',
+                  backgroundColor: 'var(--color-surface-variant)',
+                  borderRadius: 'var(--radius-sm)',
+                  animation: 'pulse 1.5s ease-in-out infinite',
+                }} />
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+      <style dangerouslySetInnerHTML={{ __html: `
+        @keyframes pulse {
+          0%, 100% { opacity: 1; }
+          50% { opacity: 0.5; }
+        }
+      `}} />
+    </div>
+  ),
+});
+
+const GallerySection = dynamic(() => import('@/components/GallerySection'), {
+  ssr: false,
+  loading: () => (
+    <div style={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
+      <div 
+        className="scrollable-container"
+        style={{
+          height: '310px',
+          display: 'inline-flex',
+          gap: '12px',
+          overflowX: 'auto',
+          overflowY: 'hidden',
+          padding: '8px 12px',
+          maxWidth: '100%',
+        }}
+      >
+        {Array.from({ length: 3 }).map((_, index) => (
+          <div
+            key={index}
+            style={{
+              position: 'relative',
+              minWidth: '200px',
+              maxWidth: '200px',
+              height: '280px',
+              borderRadius: '12px',
+              overflow: 'hidden',
+              flexShrink: 0,
+              backgroundColor: 'var(--color-surface-variant)',
+              animation: 'pulse 1.5s ease-in-out infinite',
+            }}
+          >
+            <div style={{
+              width: '100%',
+              height: '100%',
+              backgroundColor: 'var(--color-surface-variant)',
+              animation: 'pulse 1.5s ease-in-out infinite',
+            }} />
+          </div>
+        ))}
+      </div>
+      <style dangerouslySetInnerHTML={{ __html: `
+        @keyframes pulse {
+          0%, 100% { opacity: 1; }
+          50% { opacity: 0.5; }
+        }
+      `}} />
+    </div>
+  ),
+});
+
+const AllSurahsList = dynamic(() => import('@/components/AllSurahsList'), {
+  ssr: false,
+  loading: () => (
+    <div style={{ marginBottom: '16px' }}>
+      <div style={{ 
+        display: 'flex', 
+        justifyContent: 'space-between', 
+        alignItems: 'center',
+        padding: '0 4px',
+        marginBottom: '8px',
+      }}>
+        <div style={{
+          width: '140px',
+          height: '28px',
+          backgroundColor: 'var(--color-surface-variant)',
+          borderRadius: 'var(--radius-sm)',
+          animation: 'pulse 1.5s ease-in-out infinite',
+        }} />
+      </div>
+      <div className="surahs-grid">
+        {Array.from({ length: 6 }).map((_, index) => (
+          <div
+            key={index}
+            style={{
+              display: 'block',
+              padding: '16px',
+              border: '1px solid var(--color-outline)',
+              borderRadius: 'var(--radius-lg)',
+              backgroundColor: 'var(--color-surface)',
+              boxShadow: 'var(--elevation-1)',
+              animation: 'pulse 1.5s ease-in-out infinite',
+            }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+              <div style={{
+                width: '40px',
+                height: '40px',
+                borderRadius: '50%',
+                backgroundColor: 'var(--color-surface-variant)',
+                flexShrink: 0,
+                animation: 'pulse 1.5s ease-in-out infinite',
+              }} />
+              <div style={{ flex: 1 }}>
+                <div style={{
+                  width: '120px',
+                  height: '20px',
+                  backgroundColor: 'var(--color-surface-variant)',
+                  borderRadius: 'var(--radius-sm)',
+                  marginBottom: '8px',
+                  animation: 'pulse 1.5s ease-in-out infinite',
+                }} />
+                <div style={{
+                  width: '80px',
+                  height: '16px',
+                  backgroundColor: 'var(--color-surface-variant)',
+                  borderRadius: 'var(--radius-sm)',
+                  animation: 'pulse 1.5s ease-in-out infinite',
+                }} />
+              </div>
+              <div style={{
+                width: '90px',
+                height: '45px',
+                backgroundColor: 'var(--color-surface-variant)',
+                borderRadius: 'var(--radius-sm)',
+                animation: 'pulse 1.5s ease-in-out infinite',
+              }} />
+            </div>
+          </div>
+        ))}
+      </div>
+      <style dangerouslySetInnerHTML={{ __html: `
+        @keyframes pulse {
+          0%, 100% { opacity: 1; }
+          50% { opacity: 0.5; }
+        }
+      `}} />
+    </div>
+  ),
+});
+
+const HadithSection = dynamic(() => import('@/components/HadithSection'), {
+  ssr: false,
+  loading: () => (
+    <div style={{ marginBottom: 'clamp(16px, 3vw, 32px)' }}>
+      <div style={{
+        backgroundColor: 'var(--color-surface)',
+        borderRadius: 'var(--radius-xl)',
+        padding: 'clamp(12px, 3vw, 24px)',
+        boxShadow: 'var(--elevation-2)',
+        border: '1px solid var(--color-outline)',
+      }}>
+        <div style={{ 
+          display: 'flex', 
+          justifyContent: 'space-between', 
+          alignItems: 'center',
+          marginBottom: '16px',
+        }}>
+          <div style={{
+            width: '140px',
+            height: '28px',
+            backgroundColor: 'var(--color-surface-variant)',
+            borderRadius: 'var(--radius-sm)',
+            animation: 'pulse 1.5s ease-in-out infinite',
+          }} />
+          <div style={{
+            width: '60px',
+            height: '20px',
+            backgroundColor: 'var(--color-surface-variant)',
+            borderRadius: 'var(--radius-sm)',
+            animation: 'pulse 1.5s ease-in-out infinite',
+          }} />
+        </div>
+        <div style={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
+          <div 
+            className="scrollable-container"
+            style={{ 
+              display: 'inline-flex',
+              gap: 'clamp(12px, 2vw, 16px)',
+              overflowX: 'auto',
+              overflowY: 'hidden',
+              padding: 'clamp(6px, 1vw, 12px) clamp(8px, 1.5vw, 12px)',
+              maxWidth: '100%',
+            }}
+          >
+            {Array.from({ length: 3 }).map((_, index) => (
+              <div
+                key={index}
+                style={{
+                  display: 'block',
+                  background: 'var(--color-surface)',
+                  borderRadius: 'var(--radius-lg)',
+                  padding: 'clamp(16px, 4vw, 20px)',
+                  boxShadow: 'var(--elevation-1)',
+                  border: '1px solid var(--color-outline)',
+                  position: 'relative',
+                  minWidth: 'min(280px, 100%)',
+                  maxWidth: 'min(280px, 100%)',
+                  flexShrink: 0,
+                  animation: 'pulse 1.5s ease-in-out infinite',
+                }}
+              >
+                <div style={{
+                  position: 'absolute',
+                  top: '16px',
+                  right: '16px',
+                  width: '36px',
+                  height: '36px',
+                  borderRadius: 'var(--radius-md)',
+                  backgroundColor: 'var(--color-surface-variant)',
+                  animation: 'pulse 1.5s ease-in-out infinite',
+                }} />
+                <div style={{
+                  width: '180px',
+                  height: '24px',
+                  backgroundColor: 'var(--color-surface-variant)',
+                  borderRadius: 'var(--radius-sm)',
+                  marginBottom: '12px',
+                  marginRight: '50px',
+                  animation: 'pulse 1.5s ease-in-out infinite',
+                }} />
+                <div style={{
+                  display: 'flex',
+                  gap: '16px',
+                  marginTop: '12px',
+                  paddingTop: '12px',
+                  borderTop: '1px solid var(--color-outline-variant)',
+                }}>
+                  <div style={{
+                    width: '60px',
+                    height: '16px',
+                    backgroundColor: 'var(--color-surface-variant)',
+                    borderRadius: 'var(--radius-sm)',
+                    animation: 'pulse 1.5s ease-in-out infinite',
+                  }} />
+                  <div style={{
+                    width: '60px',
+                    height: '16px',
+                    backgroundColor: 'var(--color-surface-variant)',
+                    borderRadius: 'var(--radius-sm)',
+                    animation: 'pulse 1.5s ease-in-out infinite',
+                  }} />
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+        <style dangerouslySetInnerHTML={{ __html: `
+          @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+          }
+        `}} />
+      </div>
+    </div>
+  ),
+});
 
 export const metadata: Metadata = {
   title: 'Қуръон бо Тафсири Осонбаён',
@@ -68,18 +488,40 @@ export default async function HomePage() {
       <div 
         className="hero-section"
         style={{
-          background: `linear-gradient(180deg, var(--color-primary) 0%, var(--color-primary-variant) 100%)`,
-          backgroundImage: `url('/alquran.svg')`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          backgroundRepeat: 'no-repeat',
           color: 'var(--color-on-primary)',
           padding: 'clamp(24px, 5vw, 40px) clamp(4px, 1vw, 8px) clamp(16px, 4vw, 24px)',
           boxShadow: 'var(--elevation-2)',
           marginBottom: '40px',
           position: 'relative',
+          overflow: 'visible',
+          zIndex: 10,
         }}
       >
+        {/* Background Image Container - with overflow hidden to contain image */}
+        <div
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            overflow: 'hidden',
+            zIndex: 0,
+          }}
+        >
+          <img
+            src="/alquran.svg"
+            alt=""
+            fetchPriority="high"
+            style={{
+              width: '100%',
+              height: '100%',
+              objectFit: 'cover',
+              objectPosition: 'center',
+            }}
+            aria-hidden="true"
+          />
+        </div>
         {/* Overlay to ensure text readability */}
         <div 
           className="hero-overlay"
@@ -90,8 +532,8 @@ export default async function HomePage() {
             right: 0,
             bottom: 0,
             background: 'linear-gradient(180deg, var(--color-primary) 0%, var(--color-primary-variant) 100%)',
-            opacity: 0.85,
-            zIndex: 0,
+            opacity: 0.75,
+            zIndex: 1,
           }} 
         />
         <div style={{
@@ -99,7 +541,7 @@ export default async function HomePage() {
           margin: '0 auto',
           textAlign: 'center',
           position: 'relative',
-          zIndex: 100,
+          zIndex: 10000,
         }}>
           <h1 style={{
             fontSize: 'clamp(24px, 5vw, 36px)',
@@ -127,6 +569,7 @@ export default async function HomePage() {
         style={{ 
           width: '100%',
           position: 'relative',
+          zIndex: 1,
         }}
       >
         <div style={{ 
@@ -134,7 +577,7 @@ export default async function HomePage() {
           maxWidth: '1200px',
           margin: '0 auto',
           position: 'relative',
-          zIndex: 2,
+          zIndex: 1,
         }}>
         {/* Featured Surahs Section */}
         <div style={{ marginBottom: 'clamp(20px, 4vw, 32px)' }}>

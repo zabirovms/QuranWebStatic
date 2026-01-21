@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { ImageData } from '@/lib/services/image-api-service';
+import { throttle } from '@/lib/utils/throttle';
 
 interface GalleryZardevorLayoutProps {
   images: ImageData[];
@@ -21,8 +22,10 @@ export default function GalleryZardevorLayout({
       setIsMobile(window.innerWidth <= 768);
     };
     checkMobile();
-    window.addEventListener('resize', checkMobile);
-    return () => window.removeEventListener('resize', checkMobile);
+    // Throttle resize handler to reduce TBT (Phase 2, Section 3.3)
+    const throttledCheckMobile = throttle(checkMobile, 150);
+    window.addEventListener('resize', throttledCheckMobile, { passive: true });
+    return () => window.removeEventListener('resize', throttledCheckMobile);
   }, []);
 
   if (images.length === 0) return null;

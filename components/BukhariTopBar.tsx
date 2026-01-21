@@ -8,6 +8,7 @@ import { useTopBar } from '@/lib/contexts/TopBarContext';
 import BukhariSidebar from './BukhariSidebar';
 import BukhariSearch from './BukhariSearch';
 import { useSidebarHover } from './MagicCurveSidebar';
+import { throttle } from '@/lib/utils/throttle';
 
 interface BukhariTopBarProps {
   currentBookNumber?: number;
@@ -37,8 +38,10 @@ export default function BukhariTopBar({
       setIsMobile(window.innerWidth < 768);
     };
     checkMobile();
-    window.addEventListener('resize', checkMobile);
-    return () => window.removeEventListener('resize', checkMobile);
+    // Throttle resize handler to reduce TBT (Phase 2, Section 3.3)
+    const throttledCheckMobile = throttle(checkMobile, 150);
+    window.addEventListener('resize', throttledCheckMobile, { passive: true });
+    return () => window.removeEventListener('resize', throttledCheckMobile);
   }, []);
 
   return (

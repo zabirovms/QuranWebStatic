@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Surah } from '@/lib/types';
@@ -8,6 +8,7 @@ import { BookmarkService, Bookmark } from '@/lib/services/bookmark-service';
 import { useTopBar } from '@/lib/contexts/TopBarContext';
 import { useSidebarHover } from '@/components/MagicCurveSidebar';
 import LoadingSpinner from '@/components/LoadingSpinner';
+import { throttle } from '@/lib/utils/throttle';
 
 type Tab = 'surah' | 'juz' | 'page' | 'bookmarks';
 
@@ -65,8 +66,10 @@ export default function QuranPageClient({ surahs, juzList, pageList }: QuranPage
       setIsMobile(window.innerWidth <= 768);
     };
     checkMobile();
-    window.addEventListener('resize', checkMobile);
-    return () => window.removeEventListener('resize', checkMobile);
+    // Throttle resize handler to reduce TBT (Phase 2, Section 3.3)
+    const throttledCheckMobile = throttle(checkMobile, 150);
+    window.addEventListener('resize', throttledCheckMobile, { passive: true });
+    return () => window.removeEventListener('resize', throttledCheckMobile);
   }, []);
 
   const removeBookmark = (uniqueKey: string) => {
@@ -75,12 +78,21 @@ export default function QuranPageClient({ surahs, juzList, pageList }: QuranPage
     setBookmarks(bookmarkService.getAllBookmarks());
   };
 
-  const sortedSurahs = isAscending
-    ? [...surahs].sort((a, b) => a.number - b.number)
-    : [...surahs].sort((a, b) => b.number - a.number);
+  // Memoize sorting to avoid re-sorting on every render (Phase 2, Section 3.2)
+  // This reduces client-side processing, especially for large lists
+  const sortedSurahs = useMemo(() => {
+    return isAscending
+      ? [...surahs].sort((a, b) => a.number - b.number)
+      : [...surahs].sort((a, b) => b.number - a.number);
+  }, [surahs, isAscending]);
 
-  const sortedJuz = isAscending ? juzList : [...juzList].reverse();
-  const sortedPages = isAscending ? pageList : [...pageList].reverse();
+  const sortedJuz = useMemo(() => {
+    return isAscending ? juzList : [...juzList].reverse();
+  }, [juzList, isAscending]);
+
+  const sortedPages = useMemo(() => {
+    return isAscending ? pageList : [...pageList].reverse();
+  }, [pageList, isAscending]);
 
   return (
     <div

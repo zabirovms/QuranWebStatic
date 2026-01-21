@@ -5,6 +5,7 @@ import Footer from '@/components/Footer'
 import ThemeInitializer from '@/components/ThemeInitializer'
 import MiniAudioPlayer from '@/components/MiniAudioPlayer'
 import ServiceWorkerInitializer from '@/components/ServiceWorkerInitializer'
+import OrganizationSchema from '@/components/OrganizationSchema'
 import { TopBarProvider } from '@/lib/contexts/TopBarContext'
 import MainContentWrapper from '@/components/MainContentWrapper'
 
@@ -17,7 +18,7 @@ export const viewport: Viewport = {
 
 export const metadata: Metadata = {
   title: 'Қуръони Карим - Тафсири Осонбаён бо забони тоҷикӣ',
-  description: 'Хондани Қуръони Карим бо тарҷумаи тоҷикӣ ва тафсири осонбаён. Рӯйхати ҳамаи 114 сураҳои Қуръони Карим. Тиловати оят ба оят ва кулли сура тавассути 150+ қориҳои машҳури ҷаҳон.',
+  description: 'Қуръони Карим бо тарҷума ва тафсири осонбаён дар забони тоҷикӣ. Хондани 114 сура, тиловати аудиоӣ бо 150+ қориҳои машҳур, дуоҳо, тафсир, тасбеҳ ва маводҳои дигари динӣ.',
   metadataBase: new URL('https://www.quran.tj'),
   icons: {
     icon: [
@@ -44,6 +45,7 @@ export default function RootLayout({
   return (
     <html lang="tg">
       <body style={{ margin: 0, padding: 0, display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+        <OrganizationSchema />
         <ThemeInitializer />
         <ServiceWorkerInitializer />
         <TopBarProvider>

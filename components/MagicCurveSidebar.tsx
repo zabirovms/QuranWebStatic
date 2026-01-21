@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import styles from './MagicCurveSidebar.module.css';
 import LocalIcon from './LocalIcon';
+import { throttle } from '@/lib/utils/throttle';
 
 // Global state for sidebar hover
 let sidebarHoverState = false;
@@ -72,8 +73,10 @@ export default function MagicCurveSidebar({
       setIsMobile(window.innerWidth <= 768);
     };
     checkMobile();
-    window.addEventListener('resize', checkMobile);
-    return () => window.removeEventListener('resize', checkMobile);
+    // Throttle resize handler to reduce TBT (Phase 2, Section 3.3)
+    const throttledCheckMobile = throttle(checkMobile, 150);
+    window.addEventListener('resize', throttledCheckMobile, { passive: true });
+    return () => window.removeEventListener('resize', throttledCheckMobile);
   }, []);
 
   useEffect(() => {

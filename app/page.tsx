@@ -1,12 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { getAllDuas } from '@/lib/data/dua-data';
-import { getAllTasbeehs } from '@/lib/data/tasbeeh-data';
-import { getAllQuotedVerses } from '@/lib/data/quoted-verse-data';
-import { getAllAsmaulHusna } from '@/lib/data/asmaul-husna-data';
-import { getProphetSummaries } from '@/lib/data/prophet-data';
-import { getAllLiveStreams } from '@/lib/data/live-stream-data';
-import { getAllSurahs } from '@/lib/data/surah-data';
+import { getHomeFeaturedContent } from '@/lib/data/home-featured';
 import FeaturedSurahCard from '@/components/FeaturedSurahCard';
 import FeaturedProphetCard from '@/components/FeaturedProphetCard';
 import SearchPlaceholder from '@/components/SearchPlaceholder';
@@ -52,26 +46,15 @@ const featuredSurahs = [
 ];
 
 export default async function HomePage() {
-  const duas = await getAllDuas();
-  const tasbeehs = await getAllTasbeehs();
-  const quotedVerses = await getAllQuotedVerses();
-  const asmaulHusna = await getAllAsmaulHusna();
-  const prophets = await getProphetSummaries();
-  const liveStreams = await getAllLiveStreams();
-  const allSurahs = await getAllSurahs();
-  
-  const displayDuas = duas.length > 0 ? duas.slice(0, 5) : [];
-  const displayTasbeehs = tasbeehs.length > 0 ? tasbeehs.slice(0, 5) : [];
-  const displayQuotedVerses = quotedVerses.length > 0 ? quotedVerses.slice(0, 5) : [];
-  const displayAsmaulHusna = asmaulHusna.length > 0 ? asmaulHusna.slice(0, 10) : [];
-  
-  // Featured prophets: Muhammad, Ibrahim, Musa, Isa, Nuh, Yusuf, Dawood, Sulayman
-  const featuredProphetNames = [
-    'Муҳаммад', 'Иброҳим', 'Мусо', 'Исо', 'Нӯҳ', 'Юсуф', 'Довуд', 'Сулаймон',
-  ];
-  const featuredProphets = prophets.filter((p) => {
-    return featuredProphetNames.some((name) => p.name.includes(name));
-  }).slice(0, 8);
+  const {
+    displayDuas,
+    displayTasbeehs,
+    displayQuotedVerses,
+    displayAsmaulHusna,
+    featuredProphets,
+    liveStreams,
+    allSurahs,
+  } = await getHomeFeaturedContent();
 
   return (
     <div 

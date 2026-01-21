@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { useState } from 'react';
 
 interface FeaturedProphetCardProps {
@@ -64,7 +65,7 @@ export default function FeaturedProphetCard({ prophet }: FeaturedProphetCardProp
   return (
     <Link
       href={`/prophets?prophet=${encodeURIComponent(prophet.name)}`}
-      className="card card-elevation-2 surah-card"
+      className="card card-elevation-2 surah-card prophet-card-hoverable"
       style={{
         display: 'block',
         minWidth: 'clamp(140px, 20vw, 160px)',
@@ -77,17 +78,13 @@ export default function FeaturedProphetCard({ prophet }: FeaturedProphetCardProp
         padding: 0,
         overflow: 'hidden',
         boxShadow: 'var(--elevation-1)',
-        transition: 'all 0.2s ease',
         position: 'relative',
       }}
       onMouseEnter={(e) => {
-        e.currentTarget.style.transform = 'translateY(-4px)';
-        e.currentTarget.style.boxShadow = 'var(--elevation-4)';
+        // Only update border color on hover (can't be done with CSS alone due to dynamic color)
         e.currentTarget.style.borderColor = prophetColor;
       }}
       onMouseLeave={(e) => {
-        e.currentTarget.style.transform = 'translateY(0)';
-        e.currentTarget.style.boxShadow = 'var(--elevation-1)';
         e.currentTarget.style.borderColor = borderColor;
       }}
     >
@@ -100,10 +97,12 @@ export default function FeaturedProphetCard({ prophet }: FeaturedProphetCardProp
         alignItems: 'center',
       }}>
         {!imageError ? (
-          <img
+          <Image
             src={svgPath}
             alt={prophet.name}
             className="surah-name-svg"
+            width={160}
+            height={120}
             style={{
               width: 'clamp(140px, 20vw, 160px)',
               height: 'clamp(100px, 15vw, 120px)',

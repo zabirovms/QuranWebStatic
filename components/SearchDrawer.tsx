@@ -245,6 +245,7 @@ export default function SearchDrawer({ isOpen, onClose, initialQuery = '' }: Sea
           </h2>
           <button
             onClick={onClose}
+            aria-label="Пӯшидани ҷустуҷӯ"
             style={{
               width: '40px',
               height: '40px',
@@ -257,7 +258,6 @@ export default function SearchDrawer({ isOpen, onClose, initialQuery = '' }: Sea
               justifyContent: 'center',
               borderRadius: '4px',
             }}
-            title="Пӯшидан"
           >
             <CloseIcon size={24} color="var(--color-text-primary)" />
           </button>
@@ -313,6 +313,7 @@ export default function SearchDrawer({ isOpen, onClose, initialQuery = '' }: Sea
               {query && !isLoading && (
                 <button
                   onClick={handleClear}
+                  aria-label="Поксозии ҷустуҷӯ"
                   style={{
                     position: 'absolute',
                     right: '16px',
@@ -328,7 +329,6 @@ export default function SearchDrawer({ isOpen, onClose, initialQuery = '' }: Sea
                     alignItems: 'center',
                     justifyContent: 'center',
                   }}
-                  title="Тоза кардан"
                 >
                   <ClearIcon size={20} color="var(--color-text-secondary)" />
                 </button>
@@ -401,7 +401,7 @@ export default function SearchDrawer({ isOpen, onClose, initialQuery = '' }: Sea
                 padding: '64px 16px',
                 minHeight: 'calc(100vh - 300px)',
               }}>
-                <div style={{ opacity: 0.5, marginBottom: '16px' }}>
+                <div style={{ marginBottom: '16px' }}>
                   <SearchIcon size={64} color="var(--color-text-secondary)" />
                 </div>
                 <div style={{
@@ -416,7 +416,6 @@ export default function SearchDrawer({ isOpen, onClose, initialQuery = '' }: Sea
                 <div style={{
                   fontSize: 'var(--font-size-base)',
                   color: 'var(--color-text-secondary)',
-                  opacity: 0.5,
                 }}>
                   Дар ҳамаи забонҳо ҷустуҷӯ кунед
                 </div>
@@ -512,7 +511,7 @@ export default function SearchDrawer({ isOpen, onClose, initialQuery = '' }: Sea
                 padding: '64px 16px',
                 minHeight: 'calc(100vh - 300px)',
               }}>
-                <div style={{ opacity: 0.5, marginBottom: '16px' }}>
+                <div style={{ marginBottom: '16px' }}>
                   <SearchIcon size={64} color="var(--color-text-secondary)" />
                 </div>
                 <div style={{
@@ -527,7 +526,6 @@ export default function SearchDrawer({ isOpen, onClose, initialQuery = '' }: Sea
                 <div style={{
                   fontSize: 'var(--font-size-base)',
                   color: 'var(--color-text-secondary)',
-                  opacity: 0.5,
                 }}>
                   Ҷустуҷӯи дигарро санҷед
                 </div>

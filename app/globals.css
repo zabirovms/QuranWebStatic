@@ -1284,3 +1284,87 @@ body:focus-within {
 [data-theme="dark"] .hero-overlay {
   opacity: 0.95 !important;
 }
+
+/* ============================================
+   Card Hover Effects (CSS-only, no JS)
+   ============================================ */
+
+/* Generic hoverable card - lifts up on hover */
+.hoverable-card {
+  transition: transform var(--transition-base), box-shadow var(--transition-base), border-color var(--transition-base);
+  will-change: transform;
+}
+
+.hoverable-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--elevation-4);
+  border-color: var(--color-primary);
+}
+
+/* Surah card hover effect - with dynamic border color support */
+.surah-card-hoverable {
+  transition: transform var(--transition-base), box-shadow var(--transition-base), border-color var(--transition-base);
+  will-change: transform;
+}
+
+.surah-card-hoverable:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--elevation-4);
+}
+
+/* Prophet card hover effect - with dynamic border color support */
+.prophet-card-hoverable {
+  transition: transform var(--transition-base), box-shadow var(--transition-base), border-color var(--transition-base);
+  will-change: transform;
+}
+
+.prophet-card-hoverable:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--elevation-4);
+}
+
+/* Quran page surah list card hover effect */
+.quran-surah-card {
+  transition: transform var(--transition-base), box-shadow var(--transition-base), border-color var(--transition-base), background-color var(--transition-base);
+  will-change: transform;
+}
+
+.quran-surah-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--elevation-4);
+  border-color: var(--color-primary);
+  background-color: var(--color-surface-variant);
+}
+
+/* Button hover effect - background color change */
+.button-hoverable {
+  transition: background-color var(--transition-base);
+}
+
+.button-hoverable:hover {
+  background-color: var(--color-surface-variant);
+}
+
+/* Section link hover effect - opacity change */
+.section-link {
+  transition: opacity var(--transition-base);
+}
+
+.section-link:hover {
+  opacity: 0.8;
+}
+
+/* Touch device - disable hover effects */
+@media (hover: none) and (pointer: coarse) {
+  .hoverable-card:hover,
+  .surah-card-hoverable:hover,
+  .prophet-card-hoverable:hover,
+  .quran-surah-card:hover {
+    transform: translateY(0);
+    box-shadow: var(--elevation-1);
+  }
+  
+  .button-hoverable:hover {
+    background-color: transparent;
+  }
+}

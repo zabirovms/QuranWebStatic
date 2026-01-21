@@ -20,7 +20,7 @@ export default function HoverableCard({
   return (
     <Link
       href={href}
-      className={className}
+      className={`hoverable-card ${className}`}
       style={{
         display: 'flex',
         flexDirection: 'column',
@@ -35,18 +35,7 @@ export default function HoverableCard({
         overflowY: 'auto',
         maxHeight: 'clamp(160px, 25vw, 200px)',
         boxShadow: 'var(--elevation-1)',
-        transition: 'all 0.2s ease',
         position: 'relative',
-      }}
-      onMouseEnter={(e) => {
-        e.currentTarget.style.transform = 'translateY(-4px)';
-        e.currentTarget.style.boxShadow = 'var(--elevation-4)';
-        e.currentTarget.style.borderColor = 'var(--color-primary)';
-      }}
-      onMouseLeave={(e) => {
-        e.currentTarget.style.transform = 'translateY(0)';
-        e.currentTarget.style.boxShadow = 'var(--elevation-1)';
-        e.currentTarget.style.borderColor = 'var(--color-outline)';
       }}
     >
       {children}

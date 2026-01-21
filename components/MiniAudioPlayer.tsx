@@ -262,7 +262,8 @@ export default function MiniAudioPlayer() {
                 e.stopPropagation();
                 setShowSpeedDialog(true);
               }}
-                style={{
+              aria-label="Тағйири суръати пахш"
+              style={{
                 width: '28px',
                 height: '28px',
                 padding: 0,
@@ -272,8 +273,7 @@ export default function MiniAudioPlayer() {
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                }}
-              title="Суръати пахш"
+              }}
             >
             <div
               style={{
@@ -289,28 +289,7 @@ export default function MiniAudioPlayer() {
             {/* Repeat */}
             <button
               onClick={handleToggleRepeat}
-            style={{
-                width: '28px',
-                height: '28px',
-                padding: 0,
-                border: 'none',
-                backgroundColor: 'transparent',
-                cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              }}
-              title={isRepeating ? 'Такрор хомӯш' : 'Такрор кардан'}
-            >
-              <RepeatIcon
-                size={18}
-                color={isRepeating ? 'var(--color-primary)' : 'var(--color-text-secondary)'}
-              />
-            </button>
-
-            {/* Previous */}
-            <button
-              onClick={handlePrevious}
+              aria-label={isRepeating ? 'Хомӯш кардани такрор' : 'Фаъол кардани такрор'}
               style={{
                 width: '28px',
                 height: '28px',
@@ -322,7 +301,28 @@ export default function MiniAudioPlayer() {
                 alignItems: 'center',
                 justifyContent: 'center',
               }}
-              title="Сураи қаблӣ"
+            >
+              <RepeatIcon
+                size={18}
+                color={isRepeating ? 'var(--color-primary)' : 'var(--color-text-secondary)'}
+              />
+            </button>
+
+            {/* Previous */}
+            <button
+              onClick={handlePrevious}
+              aria-label="Сураи қаблӣ"
+              style={{
+                width: '28px',
+                height: '28px',
+                padding: 0,
+                border: 'none',
+                backgroundColor: 'transparent',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
             >
               <SkipPreviousIcon size={18} color="var(--color-text-secondary)" />
             </button>

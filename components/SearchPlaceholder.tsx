@@ -409,6 +409,7 @@ export default function SearchPlaceholder() {
         {query && (
           <button
             onClick={handleClear}
+            aria-label="Поксозии ҷустуҷӯ"
             style={{
               border: 'none',
               background: 'transparent',

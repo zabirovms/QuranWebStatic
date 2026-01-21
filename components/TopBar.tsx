@@ -114,6 +114,7 @@ export default function TopBar() {
         {isMobile && (
           <button
             onClick={() => setIsMenuOpen(!isMenuOpen)}
+            aria-label="Кушодани меню"
             style={{
               width: '40px',
               height: '40px',
@@ -127,7 +128,6 @@ export default function TopBar() {
               borderRadius: '4px',
               flexShrink: 0,
             }}
-            title="Меню"
           >
             {isMenuOpen ? (
               <CloseIcon size={24} color="var(--color-text-primary)" />
@@ -175,6 +175,8 @@ export default function TopBar() {
           <img
             src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png"
             alt="Get it on Google Play"
+            width={120}
+            height={46}
             style={{
               height: '100%',
               width: 'auto',
@@ -191,6 +193,7 @@ export default function TopBar() {
         {/* Search Button */}
         <button
           onClick={() => setIsSearchOpen(true)}
+          aria-label="Кушодани ҷустуҷӯ"
           style={{
             width: '40px',
             height: '40px',
@@ -204,7 +207,6 @@ export default function TopBar() {
             borderRadius: '4px',
             flexShrink: 0,
           }}
-          title="Ҷустуҷӯ"
         >
           <SearchIcon size={24} color="var(--color-text-primary)" />
         </button>
@@ -212,6 +214,7 @@ export default function TopBar() {
         {/* Navigation Button */}
         <button
           onClick={() => setIsNavigationOpen(true)}
+          aria-label="Кушодани навигатсия"
           style={{
             width: '40px',
             height: '40px',
@@ -225,7 +228,6 @@ export default function TopBar() {
             borderRadius: '4px',
             flexShrink: 0,
           }}
-          title="Навигатсия"
         >
           <NavigationIcon size={24} color="var(--color-text-primary)" />
         </button>
@@ -233,6 +235,7 @@ export default function TopBar() {
         {/* Info/Settings Button */}
         <button
           onClick={() => setIsSettingsOpen(true)}
+          aria-label="Кушодани танзимот"
           style={{
             width: '40px',
             height: '40px',
@@ -246,7 +249,6 @@ export default function TopBar() {
             borderRadius: '4px',
             flexShrink: 0,
           }}
-          title="Танзимот"
         >
           <PaletteIcon size={24} color="var(--color-text-primary)" />
         </button>

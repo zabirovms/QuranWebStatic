@@ -96,6 +96,7 @@ export default function MobileAppDownloadDialog() {
         {/* Close button */}
         <button
           onClick={handleClose}
+          aria-label="Пӯшидани равзана"
           style={{
             position: 'absolute',
             top: isMobile ? '8px' : '16px',
@@ -132,6 +133,8 @@ export default function MobileAppDownloadDialog() {
             <img 
               src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png"
               alt="Get it on Google Play"
+              width={isMobile ? 100 : 120}
+              height={isMobile ? 38 : 46}
               style={{
                 width: '100%',
                 height: '100%',

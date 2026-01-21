@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 
 export interface YouTubeVideo {
@@ -180,8 +180,45 @@ export default function YouTubeVideosSection() {
   const [videos, setVideos] = useState<YouTubeVideo[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [isVisible, setIsVisible] = useState(false);
+  const containerRef = useRef<HTMLDivElement | null>(null);
+
+  // Lazy-load using IntersectionObserver so we only fetch when section is in view
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    if (isVisible) return;
+
+    const element = containerRef.current;
+    if (!element) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const entry = entries[0];
+        if (entry.isIntersecting) {
+          setIsVisible(true);
+          observer.disconnect();
+        }
+      },
+      {
+        root: null,
+        rootMargin: '200px 0px', // start a bit before visible
+        threshold: 0.1,
+      }
+    );
+
+    observer.observe(element);
+
+    return () => {
+      observer.disconnect();
+    };
+  }, [isVisible]);
 
   useEffect(() => {
+    if (!isVisible) {
+      // Until visible, keep skeleton state without firing network calls
+      return;
+    }
+
     // Load cached videos immediately
     const cached = getCachedVideos();
     if (cached && cached.length > 0) {
@@ -207,7 +244,7 @@ export default function YouTubeVideosSection() {
         }
         setIsLoading(false);
       });
-  }, []);
+  }, [isVisible]);
 
   const handleRefresh = () => {
     setIsLoading(true);
@@ -229,7 +266,7 @@ export default function YouTubeVideosSection() {
   };
 
   return (
-    <div style={{ textAlign: 'center' }}>
+    <div ref={containerRef} style={{ textAlign: 'center' }}>
       <div style={{ 
         display: 'flex', 
         justifyContent: 'space-between', 

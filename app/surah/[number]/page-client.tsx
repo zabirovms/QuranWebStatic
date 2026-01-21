@@ -557,6 +557,8 @@ function SurahPageContent({ params, initialSurah, initialVerses }: SurahPageClie
               alt={surah.nameArabic}
               width={200}
               height={50}
+              priority
+              sizes="(max-width: 768px) 70vw, 400px"
               className="surah-name-svg"
               style={{
                 objectFit: 'contain',
@@ -701,6 +703,8 @@ function SurahPageContent({ params, initialSurah, initialVerses }: SurahPageClie
                 alt="بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ"
                 width={200}
                 height={80}
+                priority
+                sizes="(max-width: 768px) 70vw, 400px"
                 className="surah-name-svg"
                 style={{ objectFit: 'contain' }}
               />

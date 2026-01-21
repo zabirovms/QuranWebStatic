@@ -4,6 +4,7 @@ import TopBar from '@/components/TopBar'
 import Footer from '@/components/Footer'
 import ThemeInitializer from '@/components/ThemeInitializer'
 import MiniAudioPlayer from '@/components/MiniAudioPlayer'
+import ServiceWorkerInitializer from '@/components/ServiceWorkerInitializer'
 import { TopBarProvider } from '@/lib/contexts/TopBarContext'
 import MainContentWrapper from '@/components/MainContentWrapper'
 
@@ -44,13 +45,14 @@ export default function RootLayout({
     <html lang="tg">
       <body style={{ margin: 0, padding: 0, display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
         <ThemeInitializer />
+        <ServiceWorkerInitializer />
         <TopBarProvider>
-        <TopBar />
+          <TopBar />
           <MainContentWrapper>
-          {children}
-        </MainContentWrapper>
-        <Footer />
-        <MiniAudioPlayer />
+            {children}
+          </MainContentWrapper>
+          <Footer />
+          <MiniAudioPlayer />
         </TopBarProvider>
       </body>
     </html>

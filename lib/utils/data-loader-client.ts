@@ -9,7 +9,10 @@ export async function loadCompressedJson<T = any>(filePath: string): Promise<T> 
     // Remove 'data/' prefix if present since we're fetching from public/data
     const cleanPath = filePath.startsWith('data/') ? filePath.substring(5) : filePath;
     const url = `/data/${cleanPath}`;
-    console.log(`[DataLoader] Fetching compressed JSON from: ${url}`);
+    if (process.env.NODE_ENV === 'development') {
+      // eslint-disable-next-line no-console
+      console.log(`[DataLoader] Fetching compressed JSON from: ${url}`);
+    }
     
     const response = await fetch(url, {
       method: 'GET',
@@ -18,46 +21,81 @@ export async function loadCompressedJson<T = any>(filePath: string): Promise<T> 
       },
     });
     
-    console.log(`[DataLoader] Response status: ${response.status} ${response.statusText}`);
+    if (process.env.NODE_ENV === 'development') {
+      // eslint-disable-next-line no-console
+      console.log(`[DataLoader] Response status: ${response.status} ${response.statusText}`);
+    }
     
     if (!response.ok) {
       const errorText = await response.text().catch(() => response.statusText);
-      console.error(`[DataLoader] Failed to fetch ${url}:`, {
-        status: response.status,
-        statusText: response.statusText,
-        errorText: errorText.substring(0, 200),
-      });
+      if (process.env.NODE_ENV === 'development') {
+        // eslint-disable-next-line no-console
+        console.error(`[DataLoader] Failed to fetch ${url}:`, {
+          status: response.status,
+          statusText: response.statusText,
+          errorText: errorText.substring(0, 200),
+        });
+      }
       throw new Error(`Failed to fetch ${filePath}: ${response.status} ${response.statusText}. URL: ${url}`);
     }
     
-    console.log(`[DataLoader] Successfully fetched ${url}, size: ${response.headers.get('content-length') || 'unknown'} bytes`);
+    if (process.env.NODE_ENV === 'development') {
+      // eslint-disable-next-line no-console
+      console.log(`[DataLoader] Successfully fetched ${url}, size: ${response.headers.get('content-length') || 'unknown'} bytes`);
+    }
     const arrayBuffer = await response.arrayBuffer();
     const uint8Array = new Uint8Array(arrayBuffer);
-    console.log(`[DataLoader] ArrayBuffer size: ${arrayBuffer.byteLength} bytes`);
+    if (process.env.NODE_ENV === 'development') {
+      // eslint-disable-next-line no-console
+      console.log(`[DataLoader] ArrayBuffer size: ${arrayBuffer.byteLength} bytes`);
+    }
     
     // Decompress using pako
-    console.log(`[DataLoader] Decompressing with pako...`);
+    if (process.env.NODE_ENV === 'development') {
+      // eslint-disable-next-line no-console
+      console.log('[DataLoader] Decompressing with pako...');
+    }
     let decompressedBytes: Uint8Array;
     try {
       decompressedBytes = pako.ungzip(uint8Array);
-      console.log(`[DataLoader] Decompressed size: ${decompressedBytes.length} bytes`);
+      if (process.env.NODE_ENV === 'development') {
+        // eslint-disable-next-line no-console
+        console.log(`[DataLoader] Decompressed size: ${decompressedBytes.length} bytes`);
+      }
     } catch (decompressError) {
-      console.error(`[DataLoader] Decompression failed:`, decompressError);
+      if (process.env.NODE_ENV === 'development') {
+        // eslint-disable-next-line no-console
+        console.error('[DataLoader] Decompression failed:', decompressError);
+      }
       throw new Error(`Failed to decompress ${filePath}: ${decompressError instanceof Error ? decompressError.message : String(decompressError)}`);
     }
     
     const jsonString = new TextDecoder('utf-8').decode(decompressedBytes);
-    console.log(`[DataLoader] Decoded JSON string length: ${jsonString.length} characters`);
+    if (process.env.NODE_ENV === 'development') {
+      // eslint-disable-next-line no-console
+      console.log(`[DataLoader] Decoded JSON string length: ${jsonString.length} characters`);
+    }
     
-    console.log(`[DataLoader] Parsing JSON...`);
+    if (process.env.NODE_ENV === 'development') {
+      // eslint-disable-next-line no-console
+      console.log('[DataLoader] Parsing JSON...');
+    }
     const parsed = JSON.parse(jsonString) as T;
-    console.log(`[DataLoader] Successfully parsed ${url}`);
+    if (process.env.NODE_ENV === 'development') {
+      // eslint-disable-next-line no-console
+      console.log(`[DataLoader] Successfully parsed ${url}`);
+    }
     return parsed;
   } catch (error) {
-    console.error(`[DataLoader] Failed to load compressed JSON from ${filePath}:`, error);
-    if (error instanceof Error) {
-      console.error('[DataLoader] Error message:', error.message);
-      console.error('[DataLoader] Error stack:', error.stack);
+    if (process.env.NODE_ENV === 'development') {
+      // eslint-disable-next-line no-console
+      console.error(`[DataLoader] Failed to load compressed JSON from ${filePath}:`, error);
+      if (error instanceof Error) {
+        // eslint-disable-next-line no-console
+        console.error('[DataLoader] Error message:', error.message);
+        // eslint-disable-next-line no-console
+        console.error('[DataLoader] Error stack:', error.stack);
+      }
     }
     throw error;
   }

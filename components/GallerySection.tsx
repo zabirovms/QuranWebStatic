@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useRef } from 'react';
 import Link from 'next/link';
 import { ImageApiService, ImageData } from '@/lib/services/image-api-service';
 
@@ -8,6 +8,8 @@ export default function GallerySection() {
   const [images, setImages] = useState<ImageData[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [isVisible, setIsVisible] = useState(false);
+  const containerRef = useRef<HTMLDivElement | null>(null);
 
   const imageApiService = useMemo(() => new ImageApiService(), []);
 
@@ -20,7 +22,42 @@ export default function GallerySection() {
     return shuffled;
   };
 
+  // Observe visibility to lazy-load when section scrolls into view
   useEffect(() => {
+    if (typeof window === 'undefined') return;
+    if (isVisible) return;
+
+    const element = containerRef.current;
+    if (!element) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const entry = entries[0];
+        if (entry.isIntersecting) {
+          setIsVisible(true);
+          observer.disconnect();
+        }
+      },
+      {
+        root: null,
+        rootMargin: '200px 0px',
+        threshold: 0.1,
+      }
+    );
+
+    observer.observe(element);
+
+    return () => {
+      observer.disconnect();
+    };
+  }, [isVisible]);
+
+  useEffect(() => {
+    if (!isVisible) {
+      // Until visible, don't fire network calls
+      return;
+    }
+
     let isMounted = true;
 
     const loadImages = async () => {
@@ -66,11 +103,11 @@ export default function GallerySection() {
       isMounted = false;
       clearTimeout(timer);
     };
-  }, [imageApiService]);
+  }, [imageApiService, isVisible]);
 
   if (isLoading) {
     return (
-      <div style={{
+      <div ref={containerRef} style={{
         height: '310px',
         display: 'flex',
         alignItems: 'center',

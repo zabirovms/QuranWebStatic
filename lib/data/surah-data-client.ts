@@ -29,12 +29,21 @@ export async function getAllSurahs(): Promise<Surah[]> {
     return cachedSurahs;
   }
   try {
-    console.log('Loading surahs from alquran_cloud_complete_quran.json.gz...');
+    if (process.env.NODE_ENV === 'development') {
+      // eslint-disable-next-line no-console
+      console.log('Loading surahs from alquran_cloud_complete_quran.json.gz...');
+    }
     const data = await loadCompressedJson<AlQuranCloudData>('alquran_cloud_complete_quran.json.gz');
-    console.log('Surahs data loaded, processing...');
+    if (process.env.NODE_ENV === 'development') {
+      // eslint-disable-next-line no-console
+      console.log('Surahs data loaded, processing...');
+    }
     
     if (!data?.data?.surahs || !Array.isArray(data.data.surahs)) {
-      console.error('Invalid surahs data format:', data);
+      if (process.env.NODE_ENV === 'development') {
+        // eslint-disable-next-line no-console
+        console.error('Invalid surahs data format:', data);
+      }
       throw new Error('Invalid data format');
     }
     
@@ -59,12 +68,19 @@ export async function getAllSurahs(): Promise<Surah[]> {
       };
     });
     cachedSurahs = surahs;
-    console.log('Surahs processed, returning', surahs.length, 'surahs');
+    if (process.env.NODE_ENV === 'development') {
+      // eslint-disable-next-line no-console
+      console.log('Surahs processed, returning', surahs.length, 'surahs');
+    }
     return surahs;
   } catch (error) {
-    console.error('Error loading surahs:', error);
-    if (error instanceof Error) {
-      console.error('Error message:', error.message);
+    if (process.env.NODE_ENV === 'development') {
+      // eslint-disable-next-line no-console
+      console.error('Error loading surahs:', error);
+      if (error instanceof Error) {
+        // eslint-disable-next-line no-console
+        console.error('Error message:', error.message);
+      }
     }
     throw error; // Re-throw to let the component handle it
   }

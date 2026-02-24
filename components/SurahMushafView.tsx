@@ -8,6 +8,7 @@ import { getAlignmentForVerse, getWordStartTime, hasAlignmentData } from '@/lib/
 import { getMushafPages, MushafPageLine } from '@/lib/data/mushaf-layout-client';
 import { getQpcV4Index } from '@/lib/data/qpc-v4-client';
 import { buildWordAudioUrl } from '@/lib/data/word-by-word-data-client';
+import LoadingSpinner from '@/components/LoadingSpinner';
 
 interface SurahMushafViewProps {
   surahNumber: number;
@@ -221,8 +222,16 @@ export default function SurahMushafView({
 
   if (!lines || !idToGlyph || !idToLocation) {
     return (
-      <div style={{ padding: '1rem', textAlign: 'center' }}>
-        Боргирии саҳифаи мусҳаф...
+      <div
+        style={{
+          minHeight: '240px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          backgroundColor: 'var(--color-background)',
+        }}
+      >
+        <LoadingSpinner size="large" />
       </div>
     );
   }
@@ -230,8 +239,16 @@ export default function SurahMushafView({
   const fontsReadyForLines = requiredPages.size > 0 && [...requiredPages].every((p) => fontsReady.has(p));
   if (!fontsReadyForLines) {
     return (
-      <div style={{ padding: '1rem', textAlign: 'center' }}>
-        Loading mushaf font…
+      <div
+        style={{
+          minHeight: '240px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          backgroundColor: 'var(--color-background)',
+        }}
+      >
+        <LoadingSpinner size="large" />
       </div>
     );
   }

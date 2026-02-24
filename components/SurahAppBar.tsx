@@ -16,6 +16,9 @@ interface SurahAppBarProps {
   currentJuz?: number;
   currentPage?: number;
   progress?: number; // 0 to 1
+  // Optional: current view mode + toggle (translation vs mushaf)
+  viewMode?: 'translation' | 'mushaf';
+  onToggleViewMode?: () => void;
 }
 
 export default function SurahAppBar({ 
@@ -26,6 +29,8 @@ export default function SurahAppBar({
   currentJuz,
   currentPage,
   progress = 0,
+  viewMode = 'translation',
+  onToggleViewMode,
 }: SurahAppBarProps) {
   const router = useRouter();
   const { isVisible: isTopBarVisible } = useTopBar();
@@ -37,8 +42,24 @@ export default function SurahAppBar({
     }
     return true; // Default to mobile on SSR to prevent flash/shift
   });
+  const [canAttachResizeListener, setCanAttachResizeListener] = useState(false);
 
   useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const schedule = (cb: () => void) => {
+      if ('requestIdleCallback' in window) {
+        (window as any).requestIdleCallback(cb);
+      } else {
+        setTimeout(cb, 200);
+      }
+    };
+    schedule(() => setCanAttachResizeListener(true));
+  }, []);
+
+  useEffect(() => {
+    if (!canAttachResizeListener) {
+      return;
+    }
     const checkMobile = () => {
       setIsMobile(window.innerWidth <= 768);
     };
@@ -47,7 +68,7 @@ export default function SurahAppBar({
     const throttledCheckMobile = throttle(checkMobile, 150);
     window.addEventListener('resize', throttledCheckMobile, { passive: true });
     return () => window.removeEventListener('resize', throttledCheckMobile);
-  }, []);
+  }, [canAttachResizeListener]);
 
   const handleSettings = () => {
     if (onSettingsClick) {
@@ -64,7 +85,7 @@ export default function SurahAppBar({
   };
 
   return (
-    <div 
+    <div
       className="app-bar"
       style={{
         top: isTopBarVisible ? '56px' : '0px',
@@ -74,60 +95,192 @@ export default function SurahAppBar({
         zIndex: 1019,
       }}
     >
-      <div className="app-bar-content">
-        <div style={{ flex: 1, minWidth: 0 }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <span style={{
+      <div
+        className="app-bar-content"
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          gap: 'var(--spacing-md)',
+          width: '100%',
+          overflow: 'hidden',
+        }}
+      >
+        {/* Left: Surah number + name (always single row, truncating if needed) */}
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: 8,
+            flex: '1 1 auto',
+            minWidth: 0,
+            overflow: 'hidden',
+          }}
+        >
+          <span
+            style={{
+              minWidth: 28,
+              height: 28,
+              borderRadius: 999,
+              border: '1px solid var(--color-outline)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
               fontSize: 'var(--font-size-sm)',
               color: 'var(--color-text-secondary)',
               fontWeight: 'var(--font-weight-medium)',
-            }}>
-              {surah.number}
-            </span>
-            <h1 className="app-bar-title" style={{ 
+              paddingInline: 8,
+              backgroundColor: 'var(--color-surface-variant)',
+              flexShrink: 0,
+            }}
+          >
+            {surah.number}
+          </span>
+          <h1
+            className="app-bar-title"
+            style={{
               margin: 0,
-              fontSize: 'var(--font-size-base)',
+              fontSize: 'var(--font-size-sm)', // same visual size as number badge
               fontWeight: 'var(--font-weight-semibold)',
               overflow: 'hidden',
               textOverflow: 'ellipsis',
               whiteSpace: 'nowrap',
-            }}>
-              {surah.nameTajik}
-            </h1>
-          </div>
+              minWidth: 0,
+            }}
+          >
+            {surah.nameTajik}
+          </h1>
         </div>
 
-        <div style={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: 'var(--spacing-md)',
-        }}>
-          {/* Juz and Page Info */}
+        {/* Right: meta info + controls (stay on one line, no wrapping) */}
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'flex-end',
+            gap: 'var(--spacing-sm)',
+            flex: '0 0 auto',
+            minWidth: 0,
+            overflow: 'hidden',
+          }}
+        >
+          {/* Juz and Page Info – always visible but compact on small screens */}
           {(currentJuz || currentPage) && (
-            <div style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: 'var(--spacing-sm)',
-              fontSize: 'var(--font-size-sm)',
-              color: 'var(--color-text-primary)',
-            }}>
-              {currentJuz && (
-                <span>Ҷуз {currentJuz}</span>
-              )}
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 'var(--spacing-xs)',
+                fontSize: isMobile
+                  ? 'var(--font-size-xs)'
+                  : 'var(--font-size-sm)',
+                color: 'var(--color-text-primary)',
+                whiteSpace: 'nowrap',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                maxWidth: isMobile ? 140 : 220,
+              }}
+            >
+              {currentJuz && <span>Ҷуз {currentJuz}</span>}
               {currentJuz && currentPage && (
                 <span style={{ color: 'var(--color-text-secondary)' }}>•</span>
               )}
-              {currentPage && (
-                <span>Саҳифа {currentPage}</span>
-              )}
+              {currentPage && <span>Саҳифа {currentPage}</span>}
             </div>
           )}
 
-          <div style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: 'var(--spacing-xs)',
-          }}>
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 'var(--spacing-xs)',
+              flexShrink: 0,
+            }}
+          >
+            {/* View mode toggle (translation vs mushaf) */}
+            {onToggleViewMode && (
+              <button
+                onClick={onToggleViewMode}
+                className="btn"
+                title={
+                  viewMode === 'mushaf'
+                    ? 'Ҳолати тарҷума'
+                    : 'Ҳолати мусҳаф (танҳо арабӣ)'
+                }
+                style={{
+                  padding: 0,
+                  border: 'none',
+                  backgroundColor: 'transparent',
+                  minWidth: isMobile ? 'auto' : 'auto',
+                  height: 'auto',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+              >
+                <div
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    minWidth: isMobile ? '96px' : '110px',
+                    height: isMobile ? '28px' : '30px',
+                    borderRadius: '999px',
+                    padding: '2px',
+                    backgroundColor: 'var(--color-surface)',
+                    border: '1px solid var(--color-outline)',
+                    gap: '4px',
+                    flexShrink: 0,
+                  }}
+                >
+                  <span
+                    style={{
+                      flex: 1,
+                      textAlign: 'center',
+                      borderRadius: '999px',
+                      paddingInline: '8px',
+                      paddingBlock: '2px',
+                      fontSize: isMobile ? 'var(--font-size-xs)' : 'var(--font-size-sm)',
+                      fontWeight: 500,
+                      backgroundColor:
+                        viewMode === 'translation'
+                          ? 'var(--color-primary)'
+                          : 'transparent',
+                      color:
+                        viewMode === 'translation'
+                          ? 'var(--color-on-primary, #fff)'
+                          : 'var(--color-text-secondary)',
+                      transition: 'background-color 0.18s ease, color 0.18s ease',
+                    }}
+                  >
+                    Тарҷума
+                  </span>
+                  <span
+                    style={{
+                      flex: 1,
+                      textAlign: 'center',
+                      borderRadius: '999px',
+                      paddingInline: '8px',
+                      paddingBlock: '2px',
+                      fontSize: isMobile ? 'var(--font-size-xs)' : 'var(--font-size-sm)',
+                      fontWeight: 500,
+                      backgroundColor:
+                        viewMode === 'mushaf'
+                          ? 'var(--color-primary)'
+                          : 'transparent',
+                      color:
+                        viewMode === 'mushaf'
+                          ? 'var(--color-on-primary, #fff)'
+                          : 'var(--color-text-secondary)',
+                      transition: 'background-color 0.18s ease, color 0.18s ease',
+                    }}
+                  >
+                    Мусҳаф
+                  </span>
+                </div>
+              </button>
+            )}
+
             <button
               onClick={handleBookmarks}
               className="btn btn-icon"

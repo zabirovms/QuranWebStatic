@@ -1,20 +1,33 @@
-import type { Metadata, Viewport } from 'next'
-import './globals.css'
-import TopBar from '@/components/TopBar'
-import Footer from '@/components/Footer'
-import ThemeInitializer from '@/components/ThemeInitializer'
-import MiniAudioPlayer from '@/components/MiniAudioPlayer'
-import ServiceWorkerInitializer from '@/components/ServiceWorkerInitializer'
-import OrganizationSchema from '@/components/OrganizationSchema'
-import { TopBarProvider } from '@/lib/contexts/TopBarContext'
-import MainContentWrapper from '@/components/MainContentWrapper'
+import type { Metadata, Viewport } from 'next';
+import dynamic from 'next/dynamic';
+import './globals.css';
+import TopBar from '@/components/TopBar';
+import Footer from '@/components/Footer';
+import OrganizationSchema from '@/components/OrganizationSchema';
+import { TopBarProvider } from '@/lib/contexts/TopBarContext';
+import MainContentWrapper from '@/components/MainContentWrapper';
+
+const ThemeInitializer = dynamic(() => import('@/components/ThemeInitializer'), {
+  ssr: false,
+});
+
+const MiniAudioPlayer = dynamic(() => import('@/components/MiniAudioPlayer'), {
+  ssr: false,
+});
+
+const ServiceWorkerInitializer = dynamic(
+  () => import('@/components/ServiceWorkerInitializer'),
+  {
+    ssr: false,
+  }
+);
 
 export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
   maximumScale: 5,
   userScalable: true,
-}
+};
 
 export const metadata: Metadata = {
   title: 'Қуръони Карим - Тафсири Осонбаён бо забони тоҷикӣ',
@@ -35,29 +48,35 @@ export const metadata: Metadata = {
     ],
   },
   manifest: '/site.webmanifest',
-}
+};
 
 export default function RootLayout({
   children,
 }: {
-  children: React.ReactNode
+  children: React.ReactNode;
 }) {
   return (
     <html lang="tg">
-      <body style={{ margin: 0, padding: 0, display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+      <body
+        style={{
+          margin: 0,
+          padding: 0,
+          display: 'flex',
+          flexDirection: 'column',
+          minHeight: '100vh',
+        }}
+      >
         <OrganizationSchema />
         <ThemeInitializer />
         <ServiceWorkerInitializer />
         <TopBarProvider>
           <TopBar />
-          <MainContentWrapper>
-            {children}
-          </MainContentWrapper>
+          <MainContentWrapper>{children}</MainContentWrapper>
           <Footer />
           <MiniAudioPlayer />
         </TopBarProvider>
       </body>
     </html>
-  )
+  );
 }
 

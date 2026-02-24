@@ -1,6 +1,6 @@
 /**
  * Client-side word-by-word data loader
- * Loads and caches qpc-hafs-word-by-word.json.gz for word-by-word functionality
+ * Loads and caches uthmani-wbw.json.gz for word-by-word functionality
  */
 
 import { loadCompressedJson } from '@/lib/utils/data-loader-client';
@@ -33,7 +33,7 @@ export async function loadWordByWordData(): Promise<WordByWordData> {
   }
 
   isLoading = true;
-  loadPromise = loadCompressedJson<WordByWordData>('qpc-hafs-word-by-word.json.gz')
+  loadPromise = loadCompressedJson<WordByWordData>('uthmani-wbw.json.gz')
     .then((data) => {
       wordDataCache = data;
       isLoading = false;

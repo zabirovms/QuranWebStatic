@@ -22,6 +22,7 @@ interface VerseItemProps {
   isWordByWordMode?: boolean;
   translationLanguage?: string;
   onPlayAudio?: () => void;
+  showTafsir?: boolean;
 }
 
 type TranslationLanguage = 'tajik' | 'tj2' | 'tj3' | 'farsi' | 'russian';
@@ -39,6 +40,7 @@ export default function VerseItem({
   showOnlyArabic: propShowOnlyArabic,
   isWordByWordMode: propIsWordByWordMode,
   translationLanguage: propTranslationLanguage,
+  showTafsir: propShowTafsir,
   onPlayAudio,
 }: VerseItemProps) {
   const settingsService = SettingsService.getInstance();
@@ -54,6 +56,7 @@ export default function VerseItem({
     : settings.showTranslation && !settings.showOnlyArabic && !settings.wordByWordMode;
   const arabicOnly = propShowOnlyArabic !== undefined ? propShowOnlyArabic : settings.showOnlyArabic;
   const isWordByWordMode = propIsWordByWordMode !== undefined ? propIsWordByWordMode : settings.wordByWordMode;
+  const showTafsirGlobal = propShowTafsir !== undefined ? propShowTafsir : settings.showTafsir;
   
   const translationLang = propTranslationLanguage || settings.translationLanguage;
   const selectedTranslation: TranslationLanguage = 
@@ -63,7 +66,7 @@ export default function VerseItem({
     translationLang === 'russian' ? 'russian' :
     'tajik';
   
-  const [isTafsirOpen, setIsTafsirOpen] = useState(false);
+  const [isTafsirOpen, setIsTafsirOpen] = useState(() => !!showTafsirGlobal);
   const [isBookmarked, setIsBookmarked] = useState(false);
   const [copied, setCopied] = useState(false);
   const verseRef = useRef<HTMLDivElement>(null);
@@ -81,6 +84,11 @@ export default function VerseItem({
       });
     }
   }, [scrollIntoView]);
+
+  // Sync per-verse tafsir open state with global \"Намоиши тафсир\" toggle
+  useEffect(() => {
+    setIsTafsirOpen(!!showTafsirGlobal);
+  }, [showTafsirGlobal]);
 
   const availableTranslations: { key: TranslationLanguage; label: string }[] = [];
   if (verse.tajikText) availableTranslations.push({ key: 'tajik', label: 'Абдул Муҳаммад Оятӣ' });
@@ -251,12 +259,12 @@ export default function VerseItem({
     >
           {/* Arabic Text */}
           <div
-            className="arabic-text"
+            className="arabic-text quran-arabic-text"
             style={{
               direction: 'rtl',
               textAlign: 'right',
               unicodeBidi: 'bidi-override',
-              fontSize: 'var(--font-size-2xl)',
+              fontSize: 'var(--quran-arabic-size)',
               lineHeight: '1.4',
               marginBottom: 'var(--spacing-sm)',
               fontFamily: 'Amiri, serif',
@@ -272,12 +280,14 @@ export default function VerseItem({
 
           {/* Transliteration */}
           {!arabicOnly && showTransliteration && verse.transliteration && (
-            <div style={{
-              marginBottom: 'var(--spacing-sm)',
-              fontSize: 'var(--font-size-base)',
-              color: 'var(--color-text-secondary)',
-              fontStyle: 'italic',
-            }}>
+            <div 
+              className="quran-transliteration-text"
+              style={{
+                marginBottom: 'var(--spacing-sm)',
+                fontSize: 'var(--quran-transliteration-size)',
+                color: 'var(--color-text-secondary)',
+                fontStyle: 'italic',
+              }}>
               {verse.transliteration}
             </div>
           )}
@@ -285,10 +295,11 @@ export default function VerseItem({
           {/* Translation */}
           {!arabicOnly && showTranslation && getTranslationText() && (
             <div
+              className="quran-translation-text"
               style={{
                 direction: 'ltr',
                 textAlign: 'left',
-                fontSize: 'var(--font-size-md)',
+                fontSize: 'var(--quran-translation-size)',
                 lineHeight: '1.6',
                 color: 'var(--color-text-primary)',
                 marginBottom: 'var(--spacing-sm)',
@@ -309,11 +320,13 @@ export default function VerseItem({
               borderRadius: '8px',
               borderLeft: '3px solid var(--color-primary)',
             }}>
-              <div style={{
-                fontSize: 'var(--font-size-base)',
-                lineHeight: '1.6',
-                color: 'var(--color-text-primary)',
-              }}>
+              <div 
+                className="quran-tafsir-text"
+                style={{
+                  fontSize: 'var(--quran-tafsir-size)',
+                  lineHeight: '1.6',
+                  color: 'var(--color-text-primary)',
+                }}>
                 {verse.tafsir}
               </div>
             </div>

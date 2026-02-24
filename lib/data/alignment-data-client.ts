@@ -3,7 +3,7 @@
  * Loads word-by-word timestamp alignment data for reciters
  */
 
-import { loadJson } from '@/lib/utils/data-loader-client';
+import { loadCompressedJson, loadJson } from '@/lib/utils/data-loader-client';
 
 /**
  * Alignment segment: [word_start_index, word_end_index, start_msec, end_msec]
@@ -29,22 +29,22 @@ export interface VerseAlignment {
 }
 
 /**
- * Map reciter IDs to alignment filenames
+ * Map reciter IDs to alignment base filenames (without extension)
  */
 const RECITER_ALIGNMENT_MAP: Record<string, string> = {
-  'ar.alafasy': 'Alafasy_128kbps.json',
-  'ar.abdurrahmaansudais': 'Abdurrahmaan_As-Sudais_192kbps.json',
-  'ar.shaatree': 'Abu_Bakr_Ash-Shaatree_128kbps.json',
-  'ar.hanirifai': 'Hani_Rifai_192kbps.json',
-  'ar.husary': 'Husary_64kbps.json',
-  'ar.husarymujawwad': 'Husary_Muallim_128kbps.json',
-  'ar.minshawimujawwad': 'Minshawy_Mujawwad_192kbps.json',
-  'ar.minshawi': 'Minshawy_Murattal_128kbps.json',
-  'ar.saoodshuraym': 'Saood_ash-Shuraym_128kbps.json',
+  'ar.alafasy': 'Alafasy_128kbps',
+  'ar.abdurrahmaansudais': 'Abdurrahmaan_As-Sudais_192kbps',
+  'ar.shaatree': 'Abu_Bakr_Ash-Shaatree_128kbps',
+  'ar.hanirifai': 'Hani_Rifai_192kbps',
+  'ar.husary': 'Husary_64kbps',
+  'ar.husarymujawwad': 'Husary_Muallim_128kbps',
+  'ar.minshawimujawwad': 'Minshawy_Mujawwad_192kbps',
+  'ar.minshawi': 'Minshawy_Murattal_128kbps',
+  'ar.saoodshuraym': 'Saood_ash-Shuraym_128kbps',
   // Additional mappings if needed
-  'ar.abdulbasitmurattal': 'Abdul_Basit_Murattal_64kbps.json',
-  'ar.abdulbasitmujawwad': 'Abdul_Basit_Mujawwad_128kbps.json',
-  'ar.mohammadaltablaway': 'Mohammad_al_Tablaway_128kbps.json',
+  'ar.abdulbasitmurattal': 'Abdul_Basit_Murattal_64kbps',
+  'ar.abdulbasitmujawwad': 'Abdul_Basit_Mujawwad_128kbps',
+  'ar.mohammadaltablaway': 'Mohammad_al_Tablaway_128kbps',
 };
 
 /**
@@ -71,8 +71,8 @@ function getAlignmentFilename(reciterId: string): string | null {
  * Load alignment data for a reciter
  */
 export async function loadAlignmentData(reciterId: string): Promise<VerseAlignment[]> {
-  const filename = getAlignmentFilename(reciterId);
-  if (!filename) {
+  const baseName = getAlignmentFilename(reciterId);
+  if (!baseName) {
     throw new Error(`No alignment data available for reciter: ${reciterId}`);
   }
 
@@ -83,17 +83,28 @@ export async function loadAlignmentData(reciterId: string): Promise<VerseAlignme
   }
 
   try {
-    // Load from public/data/reciters-wbw-timestamps/
-    const dataPath = `reciters-wbw-timestamps/${filename}`;
-    const data = await loadJson<VerseAlignment[]>(dataPath);
+    // Prefer gzipped files from public/data/reciters-wbw-timestamps/
+    const compressedPath = `reciters-wbw-timestamps/${baseName}.json.gz`;
+    const data = await loadCompressedJson<VerseAlignment[]>(compressedPath);
     
     // Cache the data
     alignmentCache.set(cacheKey, data);
-    
     return data;
-  } catch (error) {
-    console.error(`Failed to load alignment data for ${reciterId}:`, error);
-    throw error;
+  } catch (compressedError) {
+    // Fallback to uncompressed JSON if gzipped file is not available
+    try {
+      const jsonPath = `reciters-wbw-timestamps/${baseName}.json`;
+      const data = await loadJson<VerseAlignment[]>(jsonPath);
+
+      alignmentCache.set(cacheKey, data);
+      return data;
+    } catch (jsonError) {
+      console.error(`Failed to load alignment data for ${reciterId}:`, {
+        compressedError,
+        jsonError,
+      });
+      throw jsonError;
+    }
   }
 }
 

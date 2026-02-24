@@ -7,7 +7,7 @@ const alignmentPath = path.join(process.cwd(), 'Alafasy_128kbps.json');
 const alignmentData = JSON.parse(fs.readFileSync(alignmentPath, 'utf-8'));
 
 // Load word-by-word data (compressed)
-const wordDataPath = path.join(process.cwd(), 'public', 'data', 'qpc-hafs-word-by-word.json.gz');
+const wordDataPath = path.join(process.cwd(), 'public', 'data', 'uthmani-wbw.json.gz');
 const compressedData = fs.readFileSync(wordDataPath);
 const decompressedData = zlib.gunzipSync(compressedData);
 const wordData = JSON.parse(decompressedData.toString('utf-8'));
@@ -41,7 +41,7 @@ if (alignmentEntry) {
     return !isVerseNumber;
   });
   
-  console.log(`  Words from qpc-hafs: ${actualWords.length}`);
+  console.log(`  Words from word-by-word file: ${actualWords.length}`);
   console.log(`  Word numbers: ${actualWords.map(w => w.word).join(', ')}`);
   console.log(`  Match: ${alignmentEntry.segments.length === actualWords.length ? 'YES ✓' : 'NO ✗'}`);
   
@@ -76,7 +76,7 @@ if (alignmentEntry2) {
   });
   
   console.log(`  Alignment segments: ${alignmentEntry2.segments.length}`);
-  console.log(`  Words from qpc-hafs: ${actualWords2.length}`);
+  console.log(`  Words from word-by-word file: ${actualWords2.length}`);
   console.log(`  Match: ${alignmentEntry2.segments.length === actualWords2.length ? 'YES ✓' : 'NO ✗'}`);
 }
 

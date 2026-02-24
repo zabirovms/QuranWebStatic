@@ -62,9 +62,11 @@ export class SettingsService {
 
   private constructor() {
     this.settings = this.loadSettings();
-    // Apply theme on initialization
+    // Apply theme and font size on initialization
     if (typeof document !== 'undefined') {
       this.applyTheme(this.settings.theme);
+      this.applyFontSize(this.settings.fontSize);
+      this.applyFontFamily(this.settings.fontFamily);
     }
   }
 

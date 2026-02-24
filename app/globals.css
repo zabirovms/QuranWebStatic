@@ -31,6 +31,9 @@
   --spacing-2xl: 32px;
   --spacing-3xl: 48px;
   
+  /* Base Font Size - Can be overridden by user settings */
+  --base-font-size: 16px;
+  
   /* Typography Scale */
   --font-size-xs: 10px;      /* 10sp */
   --font-size-sm: 12px;       /* 12sp */
@@ -41,6 +44,12 @@
   --font-size-2xl: 24px;      /* 24sp */
   --font-size-3xl: 32px;      /* 32sp */
   --font-size-4xl: 48px;      /* 48sp */
+  
+  /* Quran Text Sizes - Scale relative to --base-font-size */
+  --quran-arabic-size: calc(var(--base-font-size) * 1.5);      /* Arabic text: 1.5x base */
+  --quran-translation-size: calc(var(--base-font-size) * 1);   /* Translation: 1x base */
+  --quran-transliteration-size: calc(var(--base-font-size) * 0.875); /* Transliteration: 0.875x base */
+  --quran-tafsir-size: calc(var(--base-font-size) * 1);        /* Tafsir: 1x base */
   
   /* Font Weights */
   --font-weight-normal: 400;
@@ -474,6 +483,63 @@ a {
   font-family: 'Amiri', 'Noto Naskh Arabic', 'Arabic Typesetting', serif;
   direction: rtl;
   text-align: right;
+}
+
+/* Quran-specific text sizing - uses scaled variables */
+.quran-arabic-text {
+  font-size: var(--quran-arabic-size);
+}
+
+/* Mushaf V4 Tajweed font for page 1 (prototype).
+   The project already ships woff2/p1.woff2 (QCF4001_COLOR). */
+@font-face {
+  font-family: 'p1-v4';
+  src: url('/woff2/p1.woff2') format('woff2');
+  font-display: swap;
+}
+
+.quran-translation-text {
+  font-size: var(--quran-translation-size);
+}
+
+.quran-transliteration-text {
+  font-size: var(--quran-transliteration-size);
+}
+
+.quran-tafsir-text {
+  font-size: var(--quran-tafsir-size);
+}
+
+/* Font Size Slider Styling */
+.quran-font-size-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--color-primary);
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  transition: transform 0.1s ease;
+}
+
+.quran-font-size-slider::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--color-primary);
+  cursor: pointer;
+  border: none;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  transition: transform 0.1s ease;
+}
+
+.quran-font-size-slider:active::-webkit-slider-thumb {
+  transform: scale(1.1);
+}
+
+.quran-font-size-slider:active::-moz-range-thumb {
+  transform: scale(1.1);
 }
 
 /* Tajik/English text - LTR */
@@ -1076,6 +1142,11 @@ body:focus-within {
   /* Better spacing on mobile */
   h1 {
     font-size: clamp(24px, 6vw, 32px) !important;
+  }
+
+  /* Surah app bar title should stay small on mobile */
+  .app-bar-title {
+    font-size: var(--font-size-sm) !important;
   }
   
   h2 {

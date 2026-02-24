@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>KFGQPC V4 layout (15 lines) — Page 1</title>
+  <style>
+    @font-face {
+      font-family: 'p1-v4';
+      src: url('woff2/p1.woff2') format('woff2');
+      font-display: swap;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      padding: 1rem;
+      font-family: system-ui, sans-serif;
+      background: #faf9f6;
+      color: #1a1a1a;
+    }
+    .intro {
+      max-width: 42rem;
+      margin: 0 auto 1rem;
+      font-size: 0.9rem;
+    }
+    .mushaf-page {
+      max-width: 42rem;
+      margin: 0 auto;
+      padding: 1.5rem;
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 1px 3px rgba(0,0,0,.08);
+    }
+    .mushaf-page h2 {
+      font-size: 1rem;
+      font-weight: 600;
+      color: #555;
+      margin: 0 0 1rem;
+      text-align: center;
+    }
+    .mushaf-line {
+      font-family: 'p1-v4', serif;
+      font-size: clamp(1.25rem, 4vw, 1.75rem);
+      line-height: 2.2;
+      direction: rtl;
+      text-align: right;
+      margin-bottom: 0.5rem;
+    }
+    .mushaf-line.centered {
+      text-align: center;
+      display: flex;
+      justify-content: center;
+    }
+    .mushaf-line.surah-name {
+      font-family: system-ui, 'Traditional Arabic', serif;
+      font-size: 1.1em;
+      color: #333;
+    }
+    .mushaf-line .word { display: inline; }
+    .mushaf-line .word + .word { margin-right: 0.2em; }
+  </style>
+</head>
+<body>
+  <div class="intro">
+    <h1>KFGQPC V4 layout (1441H print)</h1>
+    <p>Page 1 from <code>qpc-v4-tajweed-15-lines.db</code> + <code>qpc-v4.json</code>. Layout: 604 pages, 15 lines/page (page 1 has 8 lines). Font: <code>woff2/p1.woff2</code> (remap +0x500).</p>
+  </div>
+  <div class="mushaf-page">
+    <h2>Page 1 — سورة الفاتحة</h2>
+    <div id="page-lines"></div>
+  </div>
+  <script>
+    // --- Layout: from qpc-v4-tajweed-15-lines.db (KFGQPC V4, 15 lines per page) ---
+    const PAGE1_LINES = [
+      { line_number: 1, line_type: 'surah_name', is_centered: true, first_word_id: null, last_word_id: null, surah_number: 1 },
+      { line_number: 2, line_type: 'ayah',  is_centered: true, first_word_id: 1,  last_word_id: 5,  surah_number: null },
+      { line_number: 3, line_type: 'ayah',  is_centered: true, first_word_id: 6,  last_word_id: 10, surah_number: null },
+      { line_number: 4, line_type: 'ayah',  is_centered: true, first_word_id: 11, last_word_id: 17, surah_number: null },
+      { line_number: 5, line_type: 'ayah',  is_centered: true, first_word_id: 18, last_word_id: 23, surah_number: null },
+      { line_number: 6, line_type: 'ayah',  is_centered: true, first_word_id: 24, last_word_id: 29, surah_number: null },
+      { line_number: 7, line_type: 'ayah',  is_centered: true, first_word_id: 30, last_word_id: 33, surah_number: null },
+      { line_number: 8, line_type: 'ayah',  is_centered: true, first_word_id: 34, last_word_id: 36, surah_number: null }
+    ];
+
+    const SURAH_NAMES = { 1: 'الفاتحة' };
+
+    // --- Words: from qpc-v4.json (Al-Fatiha 1:1–1:7), word_id 1..36 ---
+    const fatiha = {
+      '1:1': ['\uF741', '\uF742', '\uF743', '\uF744', '\uF745'],
+      '1:2': ['\uF746', '\uF747', '\uF748', '\uF749', '\uF74A'],
+      '1:3': ['\uF74B', '\uF74C', '\uF74D'],
+      '1:4': ['\uF74E', '\uF74F', '\uF750', '\uF751'],
+      '1:5': ['\uF752', '\uF753', '\uF754', '\uF755', '\uF756'],
+      '1:6': ['\uF757', '\uF758', '\uF759', '\uF75A'],
+      '1:7': ['\uF75B', '\uF75C', '\uF75D', '\uF75E', '\uF75F', '\uF760', '\uF761', '\uF762', '\uF763', '\uF764', '\uF765']
+    };
+    const fatihaFlat = [].concat(
+      fatiha['1:1'], fatiha['1:2'], fatiha['1:3'], fatiha['1:4'],
+      fatiha['1:5'], fatiha['1:6'], fatiha['1:7']
+    );
+    const wordsByWordId = fatihaFlat.slice(0, 36);
+
+    const QPC_TO_FONT_OFFSET = 0x500;
+    function toFontCodepoint(qpcChar) {
+      return String.fromCodePoint(qpcChar.codePointAt(0) + QPC_TO_FONT_OFFSET);
+    }
+
+    function getWords(firstWordId, lastWordId) {
+      return wordsByWordId
+        .slice(firstWordId - 1, lastWordId)
+        .map(toFontCodepoint);
+    }
+
+    function renderPage() {
+      const container = document.getElementById('page-lines');
+      container.innerHTML = '';
+
+      PAGE1_LINES.forEach(line => {
+        const div = document.createElement('div');
+        div.className = 'mushaf-line' + (line.is_centered ? ' centered' : '');
+        if (line.line_type === 'surah_name') {
+          div.classList.add('surah-name');
+          div.textContent = 'سورۃ ' + (SURAH_NAMES[line.surah_number] || '');
+        } else if (line.line_type === 'ayah') {
+          const glyphs = getWords(line.first_word_id, line.last_word_id);
+          glyphs.forEach((g, i) => {
+            const span = document.createElement('span');
+            span.className = 'word';
+            span.innerHTML = g;
+            div.appendChild(span);
+            if (i < glyphs.length - 1) div.appendChild(document.createTextNode(' '));
+          });
+        }
+        container.appendChild(div);
+      });
+    }
+
+    renderPage();
+  </script>
+</body>
+</html>

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { SettingsService } from '@/lib/services/settings-service';
 import { CloseIcon, TranslateIcon, RecordVoiceOverIcon, TextFieldsIcon, FormatListBulletedIcon } from './Icons';
 import TranslationDropdown from './TranslationDropdown';
@@ -18,6 +18,7 @@ export interface SurahDisplaySettings {
   showTranslation: boolean;
   showOnlyArabic: boolean;
   isWordByWordMode: boolean;
+  showTafsir: boolean;
   showVerseActions: boolean;
   plainCardsMode: boolean;
   translationLanguage: string;
@@ -35,12 +36,14 @@ export default function SurahDisplaySettings({
     showTranslation: settingsService.getSettings().showTranslation,
     showOnlyArabic: settingsService.getSettings().showOnlyArabic,
     isWordByWordMode: settingsService.getSettings().wordByWordMode,
+    showTafsir: settingsService.getSettings().showTafsir,
     showVerseActions: true, // Always true - actions visible by default, toggle removed from settings
     plainCardsMode: true, // Always true - default/main mode
     translationLanguage: settingsService.getSettings().translationLanguage,
     audioEdition: settingsService.getSettings().audioEdition,
   });
   const [reciterName, setReciterName] = useState<string>('Қорӣ');
+  const [fontSize, setFontSize] = useState<number>(16);
 
   // Load settings from service when drawer opens
   useEffect(() => {
@@ -51,11 +54,13 @@ export default function SurahDisplaySettings({
         showTranslation: currentSettings.showTranslation,
         showOnlyArabic: currentSettings.showOnlyArabic,
         isWordByWordMode: currentSettings.wordByWordMode,
+        showTafsir: currentSettings.showTafsir,
         showVerseActions: true, // Always true - actions visible by default, toggle removed from settings
         plainCardsMode: true, // Always true - default/main mode
         translationLanguage: currentSettings.translationLanguage,
         audioEdition: currentSettings.audioEdition,
       });
+      setFontSize(currentSettings.fontSize);
       
       // Load reciter name
       loadReciterName(currentSettings.audioEdition);
@@ -90,13 +95,6 @@ export default function SurahDisplaySettings({
       settingsService.setShowTransliteration(true);
       settingsService.setShowOnlyArabic(false);
       settingsService.setWordByWordMode(false);
-    } else if (key === 'showTranslation' && value) {
-      newSettings.showOnlyArabic = false;
-      newSettings.isWordByWordMode = false;
-      // Save to service
-      settingsService.setShowTranslation(true);
-      settingsService.setShowOnlyArabic(false);
-      settingsService.setWordByWordMode(false);
     } else if (key === 'showOnlyArabic' && value) {
       newSettings.showTransliteration = false;
       newSettings.showTranslation = false;
@@ -123,6 +121,8 @@ export default function SurahDisplaySettings({
       newSettings.showTranslation = true;
       settingsService.setShowTransliteration(true);
       settingsService.setShowTranslation(true);
+    } else if (key === 'showTafsir') {
+      settingsService.setShowTafsir(value);
     }
     
     setSettings(newSettings);
@@ -328,22 +328,12 @@ export default function SurahDisplaySettings({
 
           <div style={{ height: 'var(--spacing-md)' }} />
 
-        {/* Show Translation */}
+        {/* Show Tafsir */}
         <SwitchTile
           icon={<TranslateIcon size={24} color="var(--color-primary)" />}
-          title="Намоиши тарҷума"
-          value={settings.showTranslation && !settings.showOnlyArabic && !settings.isWordByWordMode}
-          onChange={(value) => handleToggle('showTranslation', value)}
-        />
-
-          <div style={{ height: 'var(--spacing-md)' }} />
-
-        {/* Show Only Arabic */}
-        <SwitchTile
-          icon={<TextFieldsIcon size={24} color="var(--color-primary)" />}
-          title="Намоиши танҳо матни арабӣ"
-          value={settings.showOnlyArabic}
-          onChange={(value) => handleToggle('showOnlyArabic', value)}
+          title="Намоиши тафсир"
+          value={settings.showTafsir}
+          onChange={(value) => handleToggle('showTafsir', value)}
         />
 
           <div style={{ height: 'var(--spacing-md)' }} />
@@ -354,6 +344,36 @@ export default function SurahDisplaySettings({
           title="Ҳолати калима ба калима"
           value={settings.isWordByWordMode}
           onChange={(value) => handleToggle('isWordByWordMode', value)}
+        />
+
+          <div style={{ 
+            height: '1px', 
+            backgroundColor: 'var(--color-outline)', 
+            margin: 'var(--spacing-xl) 0',
+          }} />
+
+          {/* Section: Text Size */}
+          <div style={{
+            fontSize: 'var(--font-size-sm)',
+            fontWeight: 'var(--font-weight-semibold)',
+            color: 'var(--color-text-secondary)',
+            textTransform: 'uppercase',
+            letterSpacing: '0.5px',
+            marginBottom: 'var(--spacing-md)',
+            paddingLeft: 'var(--spacing-xs)',
+          }}>
+            Андозаи матн
+          </div>
+
+        {/* Font Size Slider */}
+        <FontSizeSliderTile
+          icon={<TextFieldsIcon size={24} color="var(--color-primary)" />}
+          title="Андозаи матни Қуръон"
+          value={fontSize}
+          onChange={(value) => {
+            setFontSize(value);
+            settingsService.setFontSize(value);
+          }}
         />
 
         </div>
@@ -520,6 +540,123 @@ function SwitchTile({ icon, title, subtitle, value, onChange }: {
           }} />
         </span>
       </label>
+    </div>
+  );
+}
+
+function FontSizeSliderTile({ icon, title, value, onChange }: {
+  icon: React.ReactNode;
+  title: string;
+  value: number;
+  onChange: (value: number) => void;
+}) {
+  const minSize = 12;
+  const maxSize = 24;
+  const step = 1;
+  const percentage = ((value - minSize) / (maxSize - minSize)) * 100;
+  const sliderRef = React.useRef<HTMLInputElement>(null);
+
+  const updateSliderBackground = (newValue: number) => {
+    if (sliderRef.current) {
+      const newPercentage = ((newValue - minSize) / (maxSize - minSize)) * 100;
+      sliderRef.current.style.background = `linear-gradient(to right, var(--color-primary) 0%, var(--color-primary) ${newPercentage}%, var(--color-outline) ${newPercentage}%, var(--color-outline) 100%)`;
+    }
+  };
+
+  React.useEffect(() => {
+    updateSliderBackground(value);
+  }, [value]);
+
+  return (
+    <div
+      style={{
+        padding: 'var(--spacing-md)',
+        borderRadius: 'var(--radius-lg)',
+        backgroundColor: 'var(--color-surface-variant)',
+        border: '1px solid var(--color-outline)',
+        transition: 'all 0.2s ease',
+      }}
+    >
+      <div style={{ 
+        display: 'flex',
+        alignItems: 'center',
+        marginBottom: 'var(--spacing-md)',
+      }}>
+        <div style={{ 
+          marginRight: 'var(--spacing-md)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}>
+          {icon}
+        </div>
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <div style={{ 
+            fontSize: 'var(--font-size-base)', 
+            fontWeight: 'var(--font-weight-semibold)',
+            color: 'var(--color-text-primary)',
+            marginBottom: '4px',
+          }}>
+            {title}
+          </div>
+          <div style={{ 
+            fontSize: 'var(--font-size-sm)', 
+            color: 'var(--color-text-secondary)',
+          }}>
+            {value}px
+          </div>
+        </div>
+      </div>
+      <div style={{
+        display: 'flex',
+        alignItems: 'center',
+        gap: 'var(--spacing-sm)',
+      }}>
+        <span style={{
+          fontSize: 'var(--font-size-sm)',
+          color: 'var(--color-text-secondary)',
+          minWidth: '32px',
+          textAlign: 'center',
+        }}>
+          {minSize}
+        </span>
+        <input
+          ref={sliderRef}
+          type="range"
+          min={minSize}
+          max={maxSize}
+          step={step}
+          value={value}
+          onChange={(e) => {
+            const newValue = parseInt(e.target.value);
+            onChange(newValue);
+            updateSliderBackground(newValue);
+          }}
+          onInput={(e) => {
+            const newValue = parseInt((e.target as HTMLInputElement).value);
+            updateSliderBackground(newValue);
+          }}
+          style={{
+            flex: 1,
+            height: '6px',
+            borderRadius: '3px',
+            background: `linear-gradient(to right, var(--color-primary) 0%, var(--color-primary) ${percentage}%, var(--color-outline) ${percentage}%, var(--color-outline) 100%)`,
+            outline: 'none',
+            WebkitAppearance: 'none',
+            appearance: 'none',
+            cursor: 'pointer',
+          }}
+          className="quran-font-size-slider"
+        />
+        <span style={{
+          fontSize: 'var(--font-size-sm)',
+          color: 'var(--color-text-secondary)',
+          minWidth: '32px',
+          textAlign: 'center',
+        }}>
+          {maxSize}
+        </span>
+      </div>
     </div>
   );
 }

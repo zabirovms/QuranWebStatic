@@ -23,104 +23,13 @@ export default function Footer() {
           maxWidth: '1200px',
           margin: '0 auto',
         }}>
-          {/* Main Footer Content */}
+          {/* Main Footer Content - navigation and key links only */}
           <div style={{
             display: 'grid',
             gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
             gap: 'var(--spacing-2xl)',
             marginBottom: 'var(--spacing-2xl)',
           }}>
-            {/* Special Thanks Section */}
-            <div>
-              <h3 style={{
-                fontSize: 'var(--font-size-lg)',
-                fontWeight: 'var(--font-weight-bold)',
-                color: 'var(--color-text-primary)',
-                marginBottom: 'var(--spacing-md)',
-              }}>
-                Ташаккури махсус
-              </h3>
-              <div style={{
-                display: 'flex',
-                flexDirection: 'column',
-                gap: 'var(--spacing-sm)',
-              }}>
-                <FooterLink
-                  icon={<LocalIcon name="cloud" style={{ width: '18px', height: '18px', color: '#2196F3' }} />}
-                  text="AlQuran Cloud"
-                  url="https://alquran.cloud/"
-                />
-                <FooterLink
-                  icon={<LocalIcon name="language" style={{ width: '18px', height: '18px', color: '#4CAF50' }} />}
-                  text="Tanzil.net"
-                  url="https://tanzil.net/"
-                />
-                <FooterLink
-                  icon={<LocalIcon name="musical-notes" style={{ width: '18px', height: '18px', color: '#FF9800' }} />}
-                  text="CDN Islamic Network"
-                  url="https://alquran.cloud/cdn"
-                />
-                <FooterLink
-                  icon={<LocalIcon name="person" style={{ width: '18px', height: '18px', color: '#0088CC' }} />}
-                  text="Акмал Мансуров"
-                  url="https://t.me/Qurantajik"
-                />
-                <FooterLink
-                  icon={<LocalIcon name="person" style={{ width: '18px', height: '18px', color: '#009688' }} />}
-                  text="Абуаломуддин"
-                  url={null}
-                />
-                <FooterLink
-                  icon={<LocalIcon name="library" style={{ width: '18px', height: '18px', color: '#9C27B0' }} />}
-                  text="Quranic Universal Library"
-                  url="https://qul.tarteel.ai/"
-                />
-              </div>
-            </div>
-
-            {/* Social Links Section */}
-            <div>
-              <h3 style={{
-                fontSize: 'var(--font-size-lg)',
-                fontWeight: 'var(--font-weight-bold)',
-                color: 'var(--color-text-primary)',
-                marginBottom: 'var(--spacing-md)',
-              }}>
-                Мо дар:
-              </h3>
-              <div style={{
-                display: 'flex',
-                flexDirection: 'column',
-                gap: 'var(--spacing-sm)',
-              }}>
-                <FooterLink
-                  icon={<LocalIcon name="logo-instagram" style={{ width: '18px', height: '18px', color: '#E4405F' }} />}
-                  text="Instagram"
-                  url="https://www.instagram.com/quran.tj.official"
-                />
-                <FooterLink
-                  icon={<LocalIcon name="logo-facebook" style={{ width: '18px', height: '18px', color: '#1877F2' }} />}
-                  text="Facebook"
-                  url={null}
-                />
-                <FooterLink
-                  icon={<LocalIcon name="logo-youtube" style={{ width: '18px', height: '18px', color: '#FF0000' }} />}
-                  text="YouTube"
-                  url="https://www.youtube.com/@balkhiverse"
-                />
-                <FooterLink
-                  icon={<LocalIcon name="logo-android" style={{ width: '18px', height: '18px' }} />}
-                  text="Барномаи мобилӣ"
-                  url="https://play.google.com/store/apps/details?id=com.quran.tj.quranapp"
-                />
-                <FooterLink
-                  icon={<LocalIcon name="mail" style={{ width: '18px', height: '18px', color: 'var(--color-primary)' }} />}
-                  text="info@quran.tj"
-                  url="mailto:info@quran.tj?subject=Тамос%20бо%20барномаи%20Қуръон"
-                />
-              </div>
-            </div>
-
             {/* Quick Links Section */}
             <div>
               <h3 style={{
@@ -209,6 +118,109 @@ export default function Footer() {
             }}>
               Маводҳо дар ин барнома аз манбаъҳои гуногун ҷамъоварӣ шудаанд, аз ҷумла: матни Қуръон, тарҷумаҳо, қироатҳои аудиоӣ ва тафсир.
             </p>
+            {/* Legal/credit info and social links moved to very bottom as small-print */}
+            <div
+              style={{
+                marginTop: 'var(--spacing-md)',
+                fontSize: 'var(--font-size-xs)',
+                color: 'var(--color-text-secondary)',
+                lineHeight: '1.6',
+              }}
+            >
+              <div style={{ marginBottom: 'var(--spacing-xs)' }}>
+                Ташаккури махсус ба: 
+                {' '}
+                <a
+                  href="https://alquran.cloud/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{ color: 'inherit', textDecoration: 'underline' }}
+                >
+                  AlQuran Cloud
+                </a>
+                {', '}
+                <a
+                  href="https://tanzil.net/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{ color: 'inherit', textDecoration: 'underline' }}
+                >
+                  Tanzil.net
+                </a>
+                {', '}
+                <a
+                  href="https://alquran.cloud/cdn"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{ color: 'inherit', textDecoration: 'underline' }}
+                >
+                  CDN Islamic Network
+                </a>
+                {', '}
+                <a
+                  href="https://t.me/Qurantajik"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{ color: 'inherit', textDecoration: 'underline' }}
+                >
+                  Акмал Мансуров
+                </a>
+                {', '}
+                Абуаломуддин
+                {', '}
+                <a
+                  href="https://qul.tarteel.ai/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{ color: 'inherit', textDecoration: 'underline' }}
+                >
+                  Quranic Universal Library
+                </a>
+                .
+              </div>
+              <div>
+                Мо дар:
+                {' '}
+                <a
+                  href="https://www.instagram.com/quran.tj.official"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{ color: 'inherit', textDecoration: 'underline' }}
+                >
+                  Instagram
+                </a>
+                {', '}
+                Facebook
+                {', '}
+                <a
+                  href="https://www.youtube.com/@balkhiverse"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{ color: 'inherit', textDecoration: 'underline' }}
+                >
+                  YouTube
+                </a>
+                {', '}
+                <a
+                  href="https://play.google.com/store/apps/details?id=com.quran.tj.quranapp"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{ color: 'inherit', textDecoration: 'underline' }}
+                >
+                  барномаи мобилӣ
+                </a>
+                {' '}
+                ва
+                {' '}
+                <a
+                  href="mailto:info@quran.tj?subject=Тамос%20бо%20барномаи%20Қуръон"
+                  style={{ color: 'inherit', textDecoration: 'underline' }}
+                >
+                  info@quran.tj
+                </a>
+                .
+              </div>
+            </div>
           </div>
         </div>
       </footer>

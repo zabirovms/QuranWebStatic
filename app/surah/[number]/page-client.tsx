@@ -10,6 +10,7 @@ import { getVersesBySurahClient } from '@/lib/data/verse-data-client';
 import { Surah, Verse } from '@/lib/types';
 import SurahAppBar from '@/components/SurahAppBar';
 import VerseItem from '@/components/VerseItem';
+import SurahMushafView from '@/components/SurahMushafView';
 import SurahDisplaySettings, { SurahDisplaySettings as SurahDisplaySettingsType } from '@/components/SurahDisplaySettings';
 import BookmarksDrawer from '@/components/BookmarksDrawer';
 import { BookmarkService } from '@/lib/services/bookmark-service';
@@ -56,10 +57,23 @@ function SurahPageContent({ params, initialSurah, initialVerses }: SurahPageClie
     showTranslation: initialSettings.showTranslation,
     showOnlyArabic: initialSettings.showOnlyArabic,
     isWordByWordMode: initialSettings.wordByWordMode,
+    showTafsir: initialSettings.showTafsir,
     showVerseActions: true, // Always true - actions visible by default, toggle removed from settings
     plainCardsMode: true, // Always true - default/main mode
     translationLanguage: initialSettings.translationLanguage,
     audioEdition: initialSettings.audioEdition,
+  });
+  const [viewMode, setViewMode] = useState<'translation' | 'mushaf'>(() => {
+    if (typeof window === 'undefined') return 'translation';
+    try {
+      const stored = window.sessionStorage.getItem('surah_view_mode');
+      if (stored === 'translation' || stored === 'mushaf') {
+        return stored;
+      }
+    } catch {
+      // ignore and fall back to default
+    }
+    return 'translation';
   });
   const containerRef = useRef<HTMLDivElement>(null);
   const touchStartX = useRef<number | null>(null);
@@ -71,9 +85,33 @@ function SurahPageContent({ params, initialSurah, initialVerses }: SurahPageClie
   const lastAutoScrolledVerseRef = useRef<number | null>(null);
   const unsubscribeRef = useRef<(() => void) | null>(null);
   const timeoutIdsRef = useRef<ReturnType<typeof setTimeout>[]>([]);
+  // Gate heavier effects so they run after initial paint/idle
+  const [readyForHeavyEffects, setReadyForHeavyEffects] = useState(false);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const schedule = (cb: () => void) => {
+      if ('requestIdleCallback' in window) {
+        (window as any).requestIdleCallback(cb);
+      } else {
+        setTimeout(cb, 200);
+      }
+    };
+    schedule(() => setReadyForHeavyEffects(true));
+  }, []);
   
   // Get initial verse from URL params (reactive to searchParams changes)
   const [initialVerse, setInitialVerse] = useState<number | null>(null);
+
+  // Persist view mode for this browser tab / session
+  useEffect(() => {
+    try {
+      if (typeof window === 'undefined') return;
+      window.sessionStorage.setItem('surah_view_mode', viewMode);
+    } catch (e) {
+      console.warn('Failed to save view mode to sessionStorage:', e);
+    }
+  }, [viewMode]);
   
   // Update initialVerse when searchParams change
   useEffect(() => {
@@ -160,6 +198,10 @@ function SurahPageContent({ params, initialSurah, initialVerses }: SurahPageClie
     loadData();
   }, [surahNumber, initialVerse, initialSurah, initialVerses]);
 
+  const handleToggleViewMode = () => {
+    setViewMode((prev) => (prev === 'translation' ? 'mushaf' : 'translation'));
+  };
+
   // Swipe gestures for navigation
   const handleTouchStart = (e: React.TouchEvent) => {
     touchStartX.current = e.touches[0].clientX;
@@ -199,6 +241,9 @@ function SurahPageContent({ params, initialSurah, initialVerses }: SurahPageClie
 
   // Scroll to verse when initialVerse changes (matching Flutter behavior)
   useEffect(() => {
+    if (!readyForHeavyEffects) {
+      return;
+    }
     // Only scroll if initialVerse changed or is newly set
     const shouldScroll = initialVerse && 
                          initialVerse !== prevInitialVerseRef.current &&
@@ -218,7 +263,12 @@ function SurahPageContent({ params, initialSurah, initialVerses }: SurahPageClie
         // Check if component is still mounted
         if (prevSurahNumberRef.current !== surahNumber) return;
         
-        const verseElement = document.getElementById(`verse-${initialVerse}`);
+        const verseElement =
+          viewMode === 'translation'
+            ? document.getElementById(`verse-${initialVerse}`)
+            : (document.querySelector(
+                `[data-verse-number="${initialVerse}"]`
+              ) as HTMLElement | null);
         if (verseElement && verseElement.parentNode) {
           // Get the exact position of the verse element
           const elementRect = verseElement.getBoundingClientRect();
@@ -298,10 +348,14 @@ function SurahPageContent({ params, initialSurah, initialVerses }: SurahPageClie
       // Reset ref when verse is cleared
       prevInitialVerseRef.current = null;
     }
-  }, [initialVerse, verses.length, isLoading, surah, surahNumber]);
+  }, [initialVerse, verses.length, isLoading, surah, surahNumber, readyForHeavyEffects]);
 
   // Subscribe to audio service state changes
   useEffect(() => {
+    if (!readyForHeavyEffects) {
+      return;
+    }
+
     const unsubscribe = audioService.subscribe((state) => {
       setPlaybackState(state);
       
@@ -326,7 +380,12 @@ function SurahPageContent({ params, initialSurah, initialVerses }: SurahPageClie
             // Check if component is still mounted by verifying surahNumber matches
             if (prevSurahNumberRef.current !== surahNumber) return;
             
-            const verseElement = document.getElementById(`verse-${verseNumber}`);
+            const verseElement =
+              viewMode === 'translation'
+                ? document.getElementById(`verse-${verseNumber}`)
+                : (document.querySelector(
+                    `[data-verse-number="${verseNumber}"]`
+                  ) as HTMLElement | null);
             if (verseElement && verseElement.parentNode) {
               const elementRect = verseElement.getBoundingClientRect();
               
@@ -337,7 +396,12 @@ function SurahPageContent({ params, initialSurah, initialVerses }: SurahPageClie
                   // Check if component is still mounted
                   if (prevSurahNumberRef.current !== surahNumber) return;
                   
-                  const retryElement = document.getElementById(`verse-${verseNumber}`);
+                  const retryElement =
+                    viewMode === 'translation'
+                      ? document.getElementById(`verse-${verseNumber}`)
+                      : (document.querySelector(
+                          `[data-verse-number="${verseNumber}"]`
+                        ) as HTMLElement | null);
                   if (retryElement && retryElement.parentNode) {
                     const retryRect = retryElement.getBoundingClientRect();
                     if (retryRect.height > 0) {
@@ -406,10 +470,14 @@ function SurahPageContent({ params, initialSurah, initialVerses }: SurahPageClie
       timeoutIdsRef.current.forEach(id => clearTimeout(id));
       timeoutIdsRef.current = [];
     };
-  }, [surahNumber, verses.length]);
+  }, [surahNumber, verses.length, readyForHeavyEffects]);
 
   // Track scroll position to update juz, page, and progress
   useEffect(() => {
+    if (!readyForHeavyEffects) {
+      return;
+    }
+
     const handleScroll = () => {
       if (verses.length === 0) return;
 
@@ -451,7 +519,7 @@ function SurahPageContent({ params, initialSurah, initialVerses }: SurahPageClie
     return () => {
       window.removeEventListener('scroll', handleScroll);
     };
-  }, [verses]);
+  }, [verses, readyForHeavyEffects]);
 
   if (isLoading) {
     return (
@@ -487,6 +555,8 @@ function SurahPageContent({ params, initialSurah, initialVerses }: SurahPageClie
         <SurahAppBar 
           surah={fallbackSurah}
           hasAnyBookmarks={hasAnyBookmarks}
+          viewMode={viewMode}
+          onToggleViewMode={handleToggleViewMode}
         />
         <ErrorDisplay
           message={loadError || 'Сура ёфт нашуд'}
@@ -509,32 +579,34 @@ function SurahPageContent({ params, initialSurah, initialVerses }: SurahPageClie
         surahName={surahName}
       />
       <div 
-      ref={containerRef}
-      style={{ 
-        minHeight: '100vh',
-        backgroundColor: 'var(--color-background)',
-      }}
-      onTouchStart={handleTouchStart}
-      onTouchMove={handleTouchMove}
-      onTouchEnd={handleTouchEnd}
-    >
-      <SurahAppBar 
-        surah={surah}
-        hasAnyBookmarks={hasAnyBookmarks}
-        onSettingsClick={() => setShowSettingsDialog(true)}
-        onBookmarksClick={() => setShowBookmarksDrawer(true)}
-        currentJuz={currentJuz}
-        currentPage={currentPage}
-        progress={scrollProgress}
-      />
+        ref={containerRef}
+        style={{ 
+          minHeight: '100vh',
+          backgroundColor: 'var(--color-background)',
+        }}
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
+      >
+        <SurahAppBar 
+          surah={surah}
+          hasAnyBookmarks={hasAnyBookmarks}
+          onSettingsClick={() => setShowSettingsDialog(true)}
+          onBookmarksClick={() => setShowBookmarksDrawer(true)}
+          currentJuz={currentJuz}
+          currentPage={currentPage}
+          progress={scrollProgress}
+          viewMode={viewMode}
+          onToggleViewMode={handleToggleViewMode}
+        />
       
-      <main style={{ 
-        padding: 'var(--spacing-lg) 4px',
-        paddingTop: isTopBarVisible ? 'calc(112px + var(--spacing-lg) - 12px)' : 'calc(56px + var(--spacing-lg) - 12px)',
-        transition: 'padding-top 0.4s ease-out',
-        maxWidth: '900px', 
-        margin: '0 auto' 
-      }}>
+        <main style={{ 
+          padding: 'var(--spacing-lg) 4px',
+          paddingTop: isTopBarVisible ? 'calc(112px + var(--spacing-lg) - 12px)' : 'calc(56px + var(--spacing-lg) - 12px)',
+          transition: 'padding-top 0.4s ease-out',
+          maxWidth: '900px', 
+          margin: '0 auto' 
+        }}>
         {/* Surah Header */}
         <div style={{
           marginBottom: 'var(--spacing-xl)',
@@ -712,48 +784,78 @@ function SurahPageContent({ params, initialSurah, initialVerses }: SurahPageClie
           </div>
         )}
 
-        {/* Verses */}
+        {/* Verses / Mushaf */}
         <div>
-          {verses.map((verse) => (
-            <div 
-              key={verse.verseNumber} 
-              id={`verse-${verse.verseNumber}`}
-              data-verse-number={verse.verseNumber}
-            >
-              <VerseItem
-                verse={verse}
-                surahNumber={surahNumber}
-                highlight={highlightedVerse === verse.verseNumber}
-                scrollIntoView={false}
-                isPlaying={playbackState?.currentSurahNumber === surahNumber && 
-                          playbackState?.currentVerseNumber === verse.verseNumber && 
-                          playbackState?.isPlaying || false}
-                showExtraActions={surahSettings.showVerseActions}
-                plainCardsMode={surahSettings.plainCardsMode}
-                showTransliteration={surahSettings.showTransliteration}
-                showTranslation={surahSettings.showTranslation}
-                showOnlyArabic={surahSettings.showOnlyArabic}
-                isWordByWordMode={surahSettings.isWordByWordMode}
-                translationLanguage={surahSettings.translationLanguage}
-                onPlayAudio={async () => {
-                  const edition = surahSettings.audioEdition || 'ar.alafasy';
-                  const isPlayingThisVerse = playbackState?.currentSurahNumber === surahNumber && 
-                                            playbackState?.currentVerseNumber === verse.verseNumber && 
-                                            playbackState?.isPlaying;
-                  if (isPlayingThisVerse) {
-                    await audioService.pause();
-                  } else {
-                    try {
-                      await audioService.playVerse(surahNumber, verse.verseNumber, edition);
-                    } catch (error) {
-                      console.error('Error playing verse:', error);
-                      alert(`Хатоги дар пахш кардан: ${error instanceof Error ? error.message : 'Хатогӣ'}`);
-                    }
+          {viewMode === 'translation' ? (
+            verses.map((verse) => (
+              <div 
+                key={verse.verseNumber} 
+                id={`verse-${verse.verseNumber}`}
+                data-verse-number={verse.verseNumber}
+              >
+                <VerseItem
+                  verse={verse}
+                  surahNumber={surahNumber}
+                  highlight={highlightedVerse === verse.verseNumber}
+                  scrollIntoView={false}
+                  isPlaying={
+                    !!(
+                      playbackState?.currentSurahNumber === surahNumber &&
+                      playbackState?.currentVerseNumber === verse.verseNumber &&
+                      playbackState?.isPlaying
+                    )
                   }
-                }}
-              />
-            </div>
-          ))}
+                  showExtraActions={surahSettings.showVerseActions}
+                  plainCardsMode={surahSettings.plainCardsMode}
+                  showTransliteration={surahSettings.showTransliteration}
+                  showTranslation={surahSettings.showTranslation}
+                  showOnlyArabic={surahSettings.showOnlyArabic}
+                  isWordByWordMode={surahSettings.isWordByWordMode}
+                  translationLanguage={surahSettings.translationLanguage}
+              showTafsir={surahSettings.showTafsir}
+                  onPlayAudio={async () => {
+                    const edition = surahSettings.audioEdition || 'ar.alafasy';
+                    const isPlayingThisVerse =
+                      playbackState?.currentSurahNumber === surahNumber && 
+                      playbackState?.currentVerseNumber === verse.verseNumber && 
+                      playbackState?.isPlaying;
+                    if (isPlayingThisVerse) {
+                      await audioService.pause();
+                    } else {
+                      try {
+                        await audioService.playVerse(surahNumber, verse.verseNumber, edition);
+                      } catch (error) {
+                        console.error('Error playing verse:', error);
+                        alert(`Хатоги дар пахш кардан: ${error instanceof Error ? error.message : 'Хатогӣ'}`);
+                      }
+                    }
+                  }}
+                />
+              </div>
+            ))
+          ) : (
+            <SurahMushafView
+              surahNumber={surahNumber}
+              playbackState={playbackState}
+              onPlayVerse={async (verseNumber) => {
+                const edition = surahSettings.audioEdition || 'ar.alafasy';
+                const isPlayingThisVerse =
+                  playbackState?.currentSurahNumber === surahNumber && 
+                  playbackState?.currentVerseNumber === verseNumber && 
+                  playbackState?.isPlaying;
+                if (isPlayingThisVerse) {
+                  await audioService.pause();
+                } else {
+                  try {
+                    await audioService.playVerse(surahNumber, verseNumber, edition);
+                  } catch (error) {
+                    console.error('Error playing verse from mushaf:', error);
+                    alert(`Хатоги дар пахш кардан: ${error instanceof Error ? error.message : 'Хатогӣ'}`);
+                  }
+                }
+              }}
+            />
+          )}
         </div>
       </main>
 

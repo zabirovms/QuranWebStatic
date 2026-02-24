@@ -4,7 +4,11 @@ import dynamic from 'next/dynamic';
 import { getHomeFeaturedContent } from '@/lib/data/home-featured';
 import FeaturedSurahCard from '@/components/FeaturedSurahCard';
 import FeaturedProphetCard from '@/components/FeaturedProphetCard';
-import SearchPlaceholder from '@/components/SearchPlaceholder';
+import SearchPlaceholderStatic from '@/components/SearchPlaceholderStatic';
+const SearchPlaceholder = dynamic(() => import('@/components/SearchPlaceholder'), {
+  ssr: false,
+  loading: () => <SearchPlaceholderStatic />,
+});
 import HeroCTAButton from '@/components/HeroCTAButton';
 import SectionLink from '@/components/SectionLink';
 import HoverableCard from '@/components/HoverableCard';
@@ -558,6 +562,7 @@ export default async function HomePage() {
             maxWidth: '600px',
             margin: '0 auto clamp(12px, 2vw, 16px)',
           }}>
+            {/* Static shell is rendered on the server; full search behavior hydrates on client */}
             <SearchPlaceholder />
           </div>
           <HeroCTAButton />

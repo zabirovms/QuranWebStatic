@@ -59,6 +59,7 @@ export default function DedicatedVersePage({
     showTranslation: initialSettings.showTranslation,
     showOnlyArabic: initialSettings.showOnlyArabic,
     isWordByWordMode: initialSettings.wordByWordMode,
+    showTafsir: initialSettings.showTafsir,
     showVerseActions: true,
     plainCardsMode: true,
     translationLanguage: initialSettings.translationLanguage,
@@ -196,6 +197,7 @@ export default function DedicatedVersePage({
             showTranslation={surahSettings.showTranslation}
             showOnlyArabic={surahSettings.showOnlyArabic}
             translationLanguage={surahSettings.translationLanguage}
+            showTafsir={surahSettings.showTafsir}
           />
         </div>
 
@@ -275,9 +277,9 @@ export default function DedicatedVersePage({
           setSurahSettings(newSettings);
           // Update global settings
           settingsService.setShowTransliteration(newSettings.showTransliteration);
-          settingsService.setShowTranslation(newSettings.showTranslation);
           settingsService.setShowOnlyArabic(newSettings.showOnlyArabic);
           settingsService.setWordByWordMode(newSettings.isWordByWordMode);
+          settingsService.setShowTafsir(newSettings.showTafsir);
           settingsService.setTranslationLanguage(newSettings.translationLanguage);
           if (newSettings.audioEdition) {
             settingsService.setAudioEdition(newSettings.audioEdition);

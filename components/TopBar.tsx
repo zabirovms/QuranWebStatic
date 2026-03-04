@@ -116,7 +116,7 @@ export default function TopBar() {
         {/* Hamburger Menu Button - Only visible on mobile, toggles sidebar */}
         {isMobile && (
           <button
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
+            onClick={() => requestAnimationFrame(() => setIsMenuOpen((prev) => !prev))}
             aria-label="Кушодани меню"
             style={{
               width: '40px',
@@ -180,6 +180,7 @@ export default function TopBar() {
             alt="Get it on Google Play"
             width={120}
             height={46}
+            loading="lazy"
             style={{
               height: '100%',
               width: 'auto',
@@ -195,7 +196,7 @@ export default function TopBar() {
 
         {/* Search Button */}
         <button
-          onClick={() => setIsSearchOpen(true)}
+          onClick={() => requestAnimationFrame(() => setIsSearchOpen(true))}
           aria-label="Кушодани ҷустуҷӯ"
           style={{
             width: '40px',
@@ -216,7 +217,7 @@ export default function TopBar() {
 
         {/* Navigation Button */}
         <button
-          onClick={() => setIsNavigationOpen(true)}
+          onClick={() => requestAnimationFrame(() => setIsNavigationOpen(true))}
           aria-label="Кушодани навигатсия"
           style={{
             width: '40px',
@@ -237,7 +238,7 @@ export default function TopBar() {
 
         {/* Info/Settings Button */}
         <button
-          onClick={() => setIsSettingsOpen(true)}
+          onClick={() => requestAnimationFrame(() => setIsSettingsOpen(true))}
           aria-label="Кушодани танзимот"
           style={{
             width: '40px',
@@ -265,23 +266,27 @@ export default function TopBar() {
         onClose={() => setIsMenuOpen(false)}
       />
 
-      {/* Settings Drawer */}
-      <SettingsDrawer
-        isOpen={isSettingsOpen}
-        onClose={() => setIsSettingsOpen(false)}
-      />
+      {/* Lazy-mount drawers only when opened (reduces initial load and re-renders) */}
+      {isSettingsOpen && (
+        <SettingsDrawer
+          isOpen
+          onClose={() => setIsSettingsOpen(false)}
+        />
+      )}
 
-      {/* Search Drawer */}
-      <SearchDrawer
-        isOpen={isSearchOpen}
-        onClose={() => setIsSearchOpen(false)}
-      />
+      {isSearchOpen && (
+        <SearchDrawer
+          isOpen
+          onClose={() => setIsSearchOpen(false)}
+        />
+      )}
 
-      {/* Navigation Drawer */}
-      <NavigationDrawer
-        isOpen={isNavigationOpen}
-        onClose={() => setIsNavigationOpen(false)}
-      />
+      {isNavigationOpen && (
+        <NavigationDrawer
+          isOpen
+          onClose={() => setIsNavigationOpen(false)}
+        />
+      )}
     </>
   );
 }

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
@@ -65,6 +65,27 @@ export default function DedicatedVersePage({
     translationLanguage: initialSettings.translationLanguage,
     audioEdition: initialSettings.audioEdition,
   });
+
+  // Sync surah settings when translation changes from SettingsService (e.g. dropdown in VerseItem)
+  useEffect(() => {
+    const unsubscribe = settingsService.subscribe(() => {
+      const next = settingsService.getSettings();
+      setSurahSettings((prev) => ({
+        ...prev,
+        translationLanguage: next.translationLanguage,
+        showTransliteration: next.showTransliteration,
+        showTranslation: next.showTranslation,
+        showOnlyArabic: next.showOnlyArabic,
+        showTafsir: next.showTafsir,
+        isWordByWordMode: next.wordByWordMode,
+        audioEdition: next.audioEdition,
+      }));
+    });
+    return unsubscribe;
+  }, [settingsService]);
+
+  const handleOpenSettings = useCallback(() => setShowSettingsDialog(true), []);
+  const handleOpenBookmarks = useCallback(() => setShowBookmarksDrawer(true), []);
 
   useEffect(() => {
     // Only load if we don't have initial data
@@ -165,11 +186,11 @@ export default function DedicatedVersePage({
       minHeight: '100vh',
       backgroundColor: 'var(--color-background)',
     }}>
-      <SurahAppBar 
+      <SurahAppBar
         surah={surah}
         hasAnyBookmarks={hasAnyBookmarks}
-        onSettingsClick={() => setShowSettingsDialog(true)}
-        onBookmarksClick={() => setShowBookmarksDrawer(true)}
+        onSettingsClick={handleOpenSettings}
+        onBookmarksClick={handleOpenBookmarks}
         currentJuz={verse?.juz}
         currentPage={verse?.page}
         progress={progress}

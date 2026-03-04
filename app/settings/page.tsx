@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { SettingsService, AppSettings } from '@/lib/services/settings-service';
-import { ArrowBackIcon, PaletteIcon, NotificationsActiveOutlinedIcon, InfoIcon, FavoriteIcon, PrivacyTipIcon, ArrowForwardIosIcon, CloudIcon, LanguageIcon, AudiotrackIcon, PersonIcon, LibraryBooksIcon, InstagramIcon, FacebookIcon, YouTubeIcon, EmailIcon, CheckCircleIcon } from '@/components/Icons';
+import { ArrowBackIcon, PaletteIcon, NotificationsActiveOutlinedIcon, InfoIcon, FavoriteIcon, ArrowForwardIosIcon, CloudIcon, LanguageIcon, AudiotrackIcon, PersonIcon, LibraryBooksIcon, InstagramIcon, FacebookIcon, YouTubeIcon, EmailIcon, CheckCircleIcon } from '@/components/Icons';
 import { useTopBar } from '@/lib/contexts/TopBarContext';
 
 const APP_VERSION = '1.1.4';
@@ -16,9 +16,6 @@ export default function SettingsPage() {
   const [showNotificationsSheet, setShowNotificationsSheet] = useState(false);
   const [showThemeDialog, setShowThemeDialog] = useState(false);
   const [showAboutDialog, setShowAboutDialog] = useState(false);
-  const [showPrivacyDialog, setShowPrivacyDialog] = useState(false);
-  const [showShareRateDialog, setShowShareRateDialog] = useState(false);
-
   useEffect(() => {
     setSettings(settingsService.getSettings());
   }, []);
@@ -100,7 +97,7 @@ export default function SettingsPage() {
             icon={<PaletteIcon size={24} color="var(--color-primary)" />}
             title="Намуди зоҳирӣ"
             subtitle={getThemeName(settings.theme)}
-            onTap={() => setShowThemeDialog(true)}
+            onTap={() => requestAnimationFrame(() => setShowThemeDialog(true))}
           />
         </SectionCard>
         <div style={{ height: '4px' }} />
@@ -112,7 +109,7 @@ export default function SettingsPage() {
             icon={<NotificationsActiveOutlinedIcon size={24} color="var(--color-primary)" />}
             title="Идоракунии огоҳиномаҳo"
             subtitle={notificationSubtitle}
-            onTap={() => setShowNotificationsSheet(true)}
+            onTap={() => requestAnimationFrame(() => setShowNotificationsSheet(true))}
           />
         </SectionCard>
         <div style={{ height: '4px' }} />
@@ -124,14 +121,7 @@ export default function SettingsPage() {
             icon={<InfoIcon size={24} color="var(--color-primary)" />}
             title="Дар бораи барнома"
             subtitle={`Версия ${APP_VERSION}`}
-            onTap={() => setShowAboutDialog(true)}
-          />
-          <div style={{ height: '12px' }} />
-          <SettingTile
-            icon={<FavoriteIcon size={24} color="#FF0000" />}
-            title="Барномаро дастгирӣ кунед"
-            subtitle="Барномаро мубодила кунед ё баҳо диҳед"
-            onTap={() => setShowShareRateDialog(true)}
+            onTap={() => requestAnimationFrame(() => setShowAboutDialog(true))}
           />
           <div style={{ height: '12px' }} />
           <SettingTile
@@ -139,13 +129,6 @@ export default function SettingsPage() {
             title="Барномаи мобилӣ"
             subtitle="Боргирӣ аз Play Store"
             onTap={() => window.open('https://play.google.com/store/apps/details?id=com.quran.tj.quranapp', '_blank', 'noopener,noreferrer')}
-          />
-          <div style={{ height: '12px' }} />
-          <SettingTile
-            icon={<PrivacyTipIcon size={24} color="var(--color-primary)" />}
-            title="Сиёсати махфият"
-            subtitle="Ҳифзи маълумоти шумо"
-            onTap={() => setShowPrivacyDialog(true)}
           />
         </SectionCard>
         <div style={{ height: '4px' }} />
@@ -289,20 +272,6 @@ export default function SettingsPage() {
       {showAboutDialog && (
         <AboutDialog
           onClose={() => setShowAboutDialog(false)}
-        />
-      )}
-
-      {/* Privacy Dialog */}
-      {showPrivacyDialog && (
-        <PrivacyDialog
-          onClose={() => setShowPrivacyDialog(false)}
-        />
-      )}
-
-      {/* Share Rate Dialog */}
-      {showShareRateDialog && (
-        <ShareRateDialog
-          onClose={() => setShowShareRateDialog(false)}
         />
       )}
 
@@ -757,207 +726,6 @@ function AboutDialog({ onClose }: { onClose: () => void }) {
         >
           Пӯшидан
         </button>
-      </div>
-    </div>
-  );
-}
-
-// Privacy Dialog Component
-function PrivacyDialog({ onClose }: { onClose: () => void }) {
-  return (
-    <div
-      style={{
-        position: 'fixed',
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        backgroundColor: 'rgba(0, 0, 0, 0.5)',
-        zIndex: 1000,
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        padding: '16px',
-      }}
-      onClick={onClose}
-    >
-      <div
-        style={{
-          backgroundColor: 'var(--color-surface)',
-          borderRadius: '20px',
-          padding: '24px',
-          maxWidth: '500px',
-          width: '100%',
-          maxHeight: '80vh',
-          overflowY: 'auto',
-        }}
-        onClick={(e) => e.stopPropagation()}
-      >
-        <div style={{
-          fontSize: 'var(--font-size-lg)',
-          fontWeight: 'var(--font-weight-bold)',
-          marginBottom: '16px',
-        }}>
-          Сиёсати махфият
-        </div>
-        <div style={{
-          fontSize: 'var(--font-size-md)',
-          color: 'var(--color-text-primary)',
-          lineHeight: '1.6',
-        }}>
-          {/* Add privacy policy content */}
-          <div style={{ marginBottom: '12px' }}>
-            <div style={{ fontWeight: 'var(--font-weight-bold)', marginBottom: '4px' }}>
-              Санаи эътибор:
-            </div>
-            <div>17 октябри 2025</div>
-          </div>
-          {/* Add more privacy content as needed */}
-        </div>
-        <button
-          onClick={onClose}
-          style={{
-            width: '100%',
-            padding: '12px',
-            backgroundColor: 'var(--color-primary)',
-            color: 'var(--color-on-primary)',
-            border: 'none',
-            borderRadius: '8px',
-            fontSize: 'var(--font-size-md)',
-            fontWeight: 'var(--font-weight-medium)',
-            cursor: 'pointer',
-            marginTop: '16px',
-          }}
-        >
-          Пӯшидан
-        </button>
-      </div>
-    </div>
-  );
-}
-
-// Share Rate Dialog Component
-function ShareRateDialog({ onClose }: { onClose: () => void }) {
-  const handleShare = async () => {
-    const appName = 'Қуръон бо Тафсири Осонбаён';
-    const appDescription = 'Барномаи комил барои хондани Қуръон бо тафсири осонбаён';
-    const shareText = `${appName}\n${appDescription}`;
-
-    if (navigator.share) {
-      try {
-        await navigator.share({
-          title: appName,
-          text: shareText,
-        });
-      } catch (error) {
-        // User cancelled or error occurred
-      }
-    } else {
-      // Fallback: copy to clipboard
-      await navigator.clipboard.writeText(shareText);
-      alert('Матн нусхабардорӣ карда шуд');
-    }
-  };
-
-  return (
-    <div
-      data-nosnippet
-      style={{
-        position: 'fixed',
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        backgroundColor: 'rgba(0, 0, 0, 0.5)',
-        zIndex: 1000,
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        padding: '16px',
-      }}
-      onClick={onClose}
-    >
-      <div
-        style={{
-          backgroundColor: 'var(--color-surface)',
-          borderRadius: '20px',
-          padding: '24px',
-          maxWidth: '400px',
-          width: '100%',
-        }}
-        onClick={(e) => e.stopPropagation()}
-      >
-        <div style={{
-          display: 'flex',
-          justifyContent: 'center',
-          marginBottom: '20px',
-        }}>
-          <div style={{
-            width: '64px',
-            height: '64px',
-            borderRadius: '50%',
-            backgroundColor: 'var(--color-primary-container)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}>
-            <FavoriteIcon size={48} color="var(--color-primary)" />
-          </div>
-        </div>
-        <div style={{
-          fontSize: 'var(--font-size-lg)',
-          fontWeight: 'var(--font-weight-bold)',
-          textAlign: 'center',
-          marginBottom: '12px',
-        }}>
-          Барномаро дастгирӣ кунед
-        </div>
-        <div style={{
-          fontSize: 'var(--font-size-md)',
-          color: 'var(--color-text-secondary)',
-          textAlign: 'center',
-          lineHeight: '1.5',
-          marginBottom: '24px',
-        }}>
-          Агар барнома ба шумо писанд омад, лутфан онро бо дӯстон ва наздикон мубодила кунед ё дар Play Store баҳо диҳед. Аллоҳ аз шумо розӣ бошад!
-        </div>
-        <div style={{
-          display: 'flex',
-          gap: '12px',
-        }}>
-          <button
-            onClick={handleShare}
-            style={{
-              flex: 1,
-              padding: '12px',
-              backgroundColor: 'transparent',
-              color: 'var(--color-primary)',
-              border: '1px solid var(--color-primary)',
-              borderRadius: '12px',
-              fontSize: 'var(--font-size-md)',
-              fontWeight: 'var(--font-weight-medium)',
-              cursor: 'pointer',
-            }}
-          >
-            Мубодила
-          </button>
-          <button
-            onClick={onClose}
-            style={{
-              flex: 1,
-              padding: '12px',
-              backgroundColor: 'var(--color-primary)',
-              color: 'var(--color-on-primary)',
-              border: 'none',
-              borderRadius: '12px',
-              fontSize: 'var(--font-size-md)',
-              fontWeight: 'var(--font-weight-medium)',
-              cursor: 'pointer',
-            }}
-          >
-            Пӯшидан
-          </button>
-        </div>
       </div>
     </div>
   );

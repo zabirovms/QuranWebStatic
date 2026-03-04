@@ -131,21 +131,26 @@ export default function SurahMushafView({
     })();
   }, [lines]);
 
+  // Refs to avoid setState when value unchanged (reduces re-renders during playback)
+  const lastPlayingWordRef = useRef<PlayingWord | null>(null);
+  const lastHighlightedWordRef = useRef<PlayingWord | null>(null);
+
+  const playingWordEqual = (a: PlayingWord | null, b: PlayingWord | null) =>
+    a === b || (a != null && b != null && a.ayah === b.ayah && a.word === b.word);
+
   // Subscribe to word audio + main audio service for word highlighting
   useEffect(() => {
     let mounted = true;
 
     const unsubscribeWordAudio = wordAudioService.subscribe((state) => {
       if (!mounted) return;
-      if (state.currentSurah === surahNumber && state.currentVerse === state.currentVerse) {
-        if (state.currentWord != null) {
-          setPlayingWord({ ayah: state.currentVerse!, word: state.currentWord });
-        } else {
-          setPlayingWord(null);
-        }
-      } else {
-        setPlayingWord(null);
-      }
+      const next =
+        state.currentSurah === surahNumber && state.currentVerse != null && state.currentWord != null
+          ? { ayah: state.currentVerse, word: state.currentWord }
+          : null;
+      if (playingWordEqual(lastPlayingWordRef.current, next)) return;
+      lastPlayingWordRef.current = next;
+      setPlayingWord(next);
     });
 
     const audio = getAudioService();
@@ -157,14 +162,13 @@ export default function SurahMushafView({
         state.currentSurahNumber === surahNumber &&
         state.currentVerseNumber != null;
 
-      if (isVersePlaying && state.currentWordNumber != null) {
-        setHighlightedWord({
-          ayah: state.currentVerseNumber!,
-          word: state.currentWordNumber,
-        });
-      } else {
-        setHighlightedWord(null);
-      }
+      const next =
+        isVersePlaying && state.currentWordNumber != null
+          ? { ayah: state.currentVerseNumber!, word: state.currentWordNumber }
+          : null;
+      if (playingWordEqual(lastHighlightedWordRef.current, next)) return;
+      lastHighlightedWordRef.current = next;
+      setHighlightedWord(next);
     });
 
     return () => {

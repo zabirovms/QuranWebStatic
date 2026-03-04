@@ -1,14 +1,9 @@
 'use client';
 
-import { useState } from 'react';
 import Link from 'next/link';
 import LocalIcon from './LocalIcon';
 
-
 export default function Footer() {
-  const [showPrivacyDialog, setShowPrivacyDialog] = useState(false);
-  const [showShareRateDialog, setShowShareRateDialog] = useState(false);
-
   return (
     <>
       <footer 
@@ -224,16 +219,6 @@ export default function Footer() {
           </div>
         </div>
       </footer>
-
-      {/* Privacy Dialog */}
-      {showPrivacyDialog && (
-        <PrivacyDialog onClose={() => setShowPrivacyDialog(false)} />
-      )}
-
-      {/* Share Rate Dialog */}
-      {showShareRateDialog && (
-        <ShareRateDialog onClose={() => setShowShareRateDialog(false)} />
-      )}
     </>
   );
 }
@@ -256,10 +241,20 @@ function FooterLink({
   const handleClick = (e: React.MouseEvent) => {
     if (onClick) {
       e.preventDefault();
-      onClick();
+      if (typeof requestAnimationFrame !== 'undefined') {
+        requestAnimationFrame(() => onClick());
+      } else {
+        onClick();
+      }
     } else if (isExternalLink) {
       e.preventDefault();
-      window.open(url, '_blank', 'noopener,noreferrer');
+      // Defer open so tap handler returns quickly (better INP)
+      const targetUrl = url;
+      if (typeof requestAnimationFrame !== 'undefined') {
+        requestAnimationFrame(() => window.open(targetUrl, '_blank', 'noopener,noreferrer'));
+      } else {
+        window.open(targetUrl, '_blank', 'noopener,noreferrer');
+      }
     }
     // For internal links, let Next.js Link handle navigation
   };
@@ -319,205 +314,6 @@ function FooterLink({
       }}
     >
       {content}
-    </div>
-  );
-}
-
-// Privacy Dialog Component
-function PrivacyDialog({ onClose }: { onClose: () => void }) {
-  return (
-    <div
-      style={{
-        position: 'fixed',
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        backgroundColor: 'rgba(0, 0, 0, 0.5)',
-        zIndex: 2000,
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        padding: '16px',
-      }}
-      onClick={onClose}
-    >
-      <div
-        style={{
-          backgroundColor: 'var(--color-surface)',
-          borderRadius: '20px',
-          padding: '24px',
-          maxWidth: '500px',
-          width: '100%',
-          maxHeight: '80vh',
-          overflowY: 'auto',
-        }}
-        onClick={(e) => e.stopPropagation()}
-      >
-        <div style={{
-          fontSize: 'var(--font-size-lg)',
-          fontWeight: 'var(--font-weight-bold)',
-          marginBottom: '16px',
-        }}>
-          Сиёсати махфият
-        </div>
-        <div style={{
-          fontSize: 'var(--font-size-md)',
-          color: 'var(--color-text-primary)',
-          lineHeight: '1.6',
-        }}>
-          <div style={{ marginBottom: '12px' }}>
-            <div style={{ fontWeight: 'var(--font-weight-bold)', marginBottom: '4px' }}>
-              Санаи эътибор:
-            </div>
-            <div>17 октябри 2025</div>
-          </div>
-        </div>
-        <button
-          onClick={onClose}
-          style={{
-            width: '100%',
-            padding: '12px',
-            backgroundColor: 'var(--color-primary)',
-            color: 'var(--color-on-primary)',
-            border: 'none',
-            borderRadius: '8px',
-            fontSize: 'var(--font-size-md)',
-            fontWeight: 'var(--font-weight-medium)',
-            cursor: 'pointer',
-            marginTop: '16px',
-          }}
-        >
-          Пӯшидан
-        </button>
-      </div>
-    </div>
-  );
-}
-
-// Share Rate Dialog Component
-function ShareRateDialog({ onClose }: { onClose: () => void }) {
-  const handleShare = async () => {
-    const appName = 'Қуръон бо Тафсири Осонбаён';
-    const appDescription = 'Барномаи комил барои хондани Қуръон бо тафсири осонбаён';
-    const shareText = `${appName}\n${appDescription}`;
-
-    if (navigator.share) {
-      try {
-        await navigator.share({
-          title: appName,
-          text: shareText,
-        });
-      } catch (error) {
-        // User cancelled or error occurred
-      }
-    } else {
-      // Fallback: copy to clipboard
-      await navigator.clipboard.writeText(shareText);
-      alert('Матн нусхабардорӣ карда шуд');
-    }
-  };
-
-  return (
-    <div
-      data-nosnippet
-      style={{
-        position: 'fixed',
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        backgroundColor: 'rgba(0, 0, 0, 0.5)',
-        zIndex: 2000,
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        padding: '16px',
-      }}
-      onClick={onClose}
-    >
-      <div
-        style={{
-          backgroundColor: 'var(--color-surface)',
-          borderRadius: '20px',
-          padding: '24px',
-          maxWidth: '400px',
-          width: '100%',
-        }}
-        onClick={(e) => e.stopPropagation()}
-      >
-        <div style={{
-          display: 'flex',
-          justifyContent: 'center',
-          marginBottom: '20px',
-        }}>
-          <div style={{
-            width: '64px',
-            height: '64px',
-            borderRadius: '50%',
-            backgroundColor: 'var(--color-primary-container)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}>
-            <LocalIcon name="heart" style={{ width: '48px', height: '48px', color: 'var(--color-primary)' }} />
-          </div>
-        </div>
-        <div style={{
-          fontSize: 'var(--font-size-lg)',
-          fontWeight: 'var(--font-weight-bold)',
-          textAlign: 'center',
-          marginBottom: '12px',
-        }}>
-          Барномаро дастгирӣ кунед
-        </div>
-        <div style={{
-          fontSize: 'var(--font-size-md)',
-          color: 'var(--color-text-secondary)',
-          textAlign: 'center',
-          lineHeight: '1.5',
-          marginBottom: '24px',
-        }}>
-          Агар барнома ба шумо писанд омад, лутфан онро бо дӯстон ва наздикон мубодила кунед ё дар Play Store баҳо диҳед. Аллоҳ аз шумо розӣ бошад!
-        </div>
-        <div style={{
-          display: 'flex',
-          gap: '12px',
-        }}>
-          <button
-            onClick={handleShare}
-            style={{
-              flex: 1,
-              padding: '12px',
-              backgroundColor: 'transparent',
-              color: 'var(--color-primary)',
-              border: '1px solid var(--color-primary)',
-              borderRadius: '12px',
-              fontSize: 'var(--font-size-md)',
-              fontWeight: 'var(--font-weight-medium)',
-              cursor: 'pointer',
-            }}
-          >
-            Мубодила
-          </button>
-          <button
-            onClick={onClose}
-            style={{
-              flex: 1,
-              padding: '12px',
-              backgroundColor: 'var(--color-primary)',
-              color: 'var(--color-on-primary)',
-              border: 'none',
-              borderRadius: '12px',
-              fontSize: 'var(--font-size-md)',
-              fontWeight: 'var(--font-weight-medium)',
-              cursor: 'pointer',
-            }}
-          >
-            Пӯшидан
-          </button>
-        </div>
-      </div>
     </div>
   );
 }

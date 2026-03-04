@@ -56,9 +56,12 @@ const defaultSettings: AppSettings = {
   dailyVerseTime: '19:00',
 };
 
+type SettingsListener = () => void;
+
 export class SettingsService {
   private static instance: SettingsService;
   private settings: AppSettings;
+  private listeners = new Set<SettingsListener>();
 
   private constructor() {
     this.settings = this.loadSettings();
@@ -160,6 +163,26 @@ export class SettingsService {
   setTranslationLanguage(language: string): void {
     this.settings.translationLanguage = language;
     this.saveSettings();
+    this.notifyListeners();
+  }
+
+  /**
+   * Subscribe to settings changes (e.g. translation language).
+   * Returns an unsubscribe function.
+   */
+  subscribe(listener: SettingsListener): () => void {
+    this.listeners.add(listener);
+    return () => this.listeners.delete(listener);
+  }
+
+  private notifyListeners(): void {
+    this.listeners.forEach((fn) => {
+      try {
+        fn();
+      } catch (e) {
+        console.warn('Settings listener error:', e);
+      }
+    });
   }
 
   setFontSize(fontSize: number): void {

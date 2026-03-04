@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, memo } from 'react';
 import { useRouter } from 'next/navigation';
 import { BookmarkIcon, SettingsIcon } from './Icons';
 import { useTopBar } from '@/lib/contexts/TopBarContext';
@@ -21,7 +21,7 @@ interface SurahAppBarProps {
   onToggleViewMode?: () => void;
 }
 
-export default function SurahAppBar({ 
+function SurahAppBar({ 
   surah,
   hasAnyBookmarks = false,
   onSettingsClick,
@@ -71,15 +71,26 @@ export default function SurahAppBar({
   }, [canAttachResizeListener]);
 
   const handleSettings = () => {
-    if (onSettingsClick) {
-      onSettingsClick();
+    if (typeof requestAnimationFrame !== 'undefined') {
+      requestAnimationFrame(() => {
+        if (onSettingsClick) {
+          onSettingsClick();
+        } else {
+          router.push('/settings');
+        }
+      });
     } else {
-      router.push('/settings');
+      if (onSettingsClick) onSettingsClick();
+      else router.push('/settings');
     }
   };
 
   const handleBookmarks = () => {
-    if (onBookmarksClick) {
+    if (typeof requestAnimationFrame !== 'undefined') {
+      requestAnimationFrame(() => {
+        if (onBookmarksClick) onBookmarksClick();
+      });
+    } else if (onBookmarksClick) {
       onBookmarksClick();
     }
   };
@@ -324,3 +335,5 @@ export default function SurahAppBar({
     </div>
   );
 }
+
+export default memo(SurahAppBar);

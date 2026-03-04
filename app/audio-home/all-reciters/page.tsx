@@ -10,7 +10,6 @@ import ErrorDisplay from '@/components/ErrorDisplay';
 import Image from 'next/image';
 import { ArrowBackIcon, PersonIcon } from '@/components/Icons';
 import { useTopBar } from '@/lib/contexts/TopBarContext';
-import BottomNavigation from '@/components/BottomNavigation';
 
 export default function AllRecitersPage() {
   const router = useRouter();
@@ -165,8 +164,6 @@ export default function AllRecitersPage() {
           );
         })}
       </main>
-
-      <BottomNavigation />
     </div>
   );
 }

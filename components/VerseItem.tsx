@@ -116,8 +116,8 @@ export default function VerseItem({
 
   const handleTranslationSelected = (translation: string) => {
     settingsService.setTranslationLanguage(translation);
-    // Force re-render by updating state
-    window.location.reload();
+    // Parent (surah page) subscribes to SettingsService and updates translationLanguage state,
+    // so all VerseItems re-render with the new translation—no full page reload (better INP).
   };
 
   // Convert verse number to Arabic-Indic numerals

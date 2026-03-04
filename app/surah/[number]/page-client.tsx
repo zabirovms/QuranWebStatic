@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef, Suspense } from 'react';
+import { useState, useEffect, useRef, Suspense, useCallback } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useTopBar } from '@/lib/contexts/TopBarContext';
 import { notFound } from 'next/navigation';
@@ -23,6 +23,7 @@ import { PlayArrowIcon, PauseIcon } from '@/components/Icons';
 import CanonicalHead from '@/components/CanonicalHead';
 import StructuredData from '@/components/StructuredData';
 import { getSurahName } from '@/lib/utils/surah-names';
+import { throttle } from '@/lib/utils/throttle';
 
 interface SurahPageClientProps {
   params: {
@@ -85,6 +86,8 @@ function SurahPageContent({ params, initialSurah, initialVerses }: SurahPageClie
   const lastAutoScrolledVerseRef = useRef<number | null>(null);
   const unsubscribeRef = useRef<(() => void) | null>(null);
   const timeoutIdsRef = useRef<ReturnType<typeof setTimeout>[]>([]);
+  // Refs to avoid setState when juz/page/progress unchanged (fewer app bar re-renders)
+  const lastJuzPageProgressRef = useRef<{ juz?: number; page?: number; progress: number }>({ progress: 0 });
   // Gate heavier effects so they run after initial paint/idle
   const [readyForHeavyEffects, setReadyForHeavyEffects] = useState(false);
 
@@ -112,6 +115,24 @@ function SurahPageContent({ params, initialSurah, initialVerses }: SurahPageClie
       console.warn('Failed to save view mode to sessionStorage:', e);
     }
   }, [viewMode]);
+
+  // Sync surah settings when translation (or other settings) change from SettingsService (e.g. dropdown in VerseItem)
+  useEffect(() => {
+    const unsubscribe = settingsService.subscribe(() => {
+      const next = settingsService.getSettings();
+      setSurahSettings((prev) => ({
+        ...prev,
+        translationLanguage: next.translationLanguage,
+        showTransliteration: next.showTransliteration,
+        showTranslation: next.showTranslation,
+        showOnlyArabic: next.showOnlyArabic,
+        showTafsir: next.showTafsir,
+        isWordByWordMode: next.wordByWordMode,
+        audioEdition: next.audioEdition,
+      }));
+    });
+    return unsubscribe;
+  }, [settingsService]);
   
   // Update initialVerse when searchParams change
   useEffect(() => {
@@ -198,9 +219,12 @@ function SurahPageContent({ params, initialSurah, initialVerses }: SurahPageClie
     loadData();
   }, [surahNumber, initialVerse, initialSurah, initialVerses]);
 
-  const handleToggleViewMode = () => {
+  const handleToggleViewMode = useCallback(() => {
     setViewMode((prev) => (prev === 'translation' ? 'mushaf' : 'translation'));
-  };
+  }, []);
+
+  const handleOpenSettings = useCallback(() => setShowSettingsDialog(true), []);
+  const handleOpenBookmarks = useCallback(() => setShowBookmarksDrawer(true), []);
 
   // Swipe gestures for navigation
   const handleTouchStart = (e: React.TouchEvent) => {
@@ -357,7 +381,16 @@ function SurahPageContent({ params, initialSurah, initialVerses }: SurahPageClie
     }
 
     const unsubscribe = audioService.subscribe((state) => {
-      setPlaybackState(state);
+      // Only trigger re-render when "which verse is playing" or play state changes,
+      // not on every position/currentWordNumber tick (avoids re-rendering all verses)
+      setPlaybackState((prev) => {
+        const keySame =
+          prev?.isPlaying === state.isPlaying &&
+          prev?.currentSurahNumber === state.currentSurahNumber &&
+          prev?.currentVerseNumber === state.currentVerseNumber;
+        if (keySame) return prev;
+        return { ...state };
+      });
       
       // If playing this surah and a specific verse, highlight and scroll to it
       if (state.currentSurahNumber === surahNumber && 
@@ -472,7 +505,7 @@ function SurahPageContent({ params, initialSurah, initialVerses }: SurahPageClie
     };
   }, [surahNumber, verses.length, readyForHeavyEffects]);
 
-  // Track scroll position to update juz, page, and progress
+  // Track scroll position to update juz, page, and progress (throttled + only setState when changed)
   useEffect(() => {
     if (!readyForHeavyEffects) {
       return;
@@ -483,7 +516,7 @@ function SurahPageContent({ params, initialSurah, initialVerses }: SurahPageClie
 
       const scrollPosition = window.scrollY + window.innerHeight / 2;
       const verseElements = document.querySelectorAll('[data-verse-number]');
-      
+
       let currentVerse: Verse | null = null;
       let closestDistance = Infinity;
 
@@ -491,11 +524,11 @@ function SurahPageContent({ params, initialSurah, initialVerses }: SurahPageClie
         const rect = el.getBoundingClientRect();
         const elementCenter = rect.top + window.scrollY + rect.height / 2;
         const distance = Math.abs(scrollPosition - elementCenter);
-        
+
         if (distance < closestDistance) {
           closestDistance = distance;
           const verseNumber = parseInt(el.getAttribute('data-verse-number') || '0');
-          const foundVerse = verses.find(v => v.verseNumber === verseNumber);
+          const foundVerse = verses.find((v) => v.verseNumber === verseNumber);
           if (foundVerse) {
             currentVerse = foundVerse;
           }
@@ -504,20 +537,25 @@ function SurahPageContent({ params, initialSurah, initialVerses }: SurahPageClie
 
       if (currentVerse) {
         const verse: Verse = currentVerse;
-        setCurrentJuz(verse.juz ?? undefined);
-        setCurrentPage(verse.page ?? undefined);
-        
-        // Calculate progress (0 to 1)
+        const nextJuz = verse.juz ?? undefined;
+        const nextPage = verse.page ?? undefined;
         const progress = verse.verseNumber / verses.length;
-        setScrollProgress(progress);
+        const prev = lastJuzPageProgressRef.current;
+        if (prev.juz !== nextJuz || prev.page !== nextPage || prev.progress !== progress) {
+          lastJuzPageProgressRef.current = { juz: nextJuz, page: nextPage, progress };
+          setCurrentJuz(nextJuz);
+          setCurrentPage(nextPage);
+          setScrollProgress(progress);
+        }
       }
     };
 
-    window.addEventListener('scroll', handleScroll, { passive: true });
+    const throttledScroll = throttle(handleScroll, 150);
+    window.addEventListener('scroll', throttledScroll, { passive: true });
     handleScroll(); // Initial call
 
     return () => {
-      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('scroll', throttledScroll);
     };
   }, [verses, readyForHeavyEffects]);
 
@@ -552,7 +590,7 @@ function SurahPageContent({ params, initialSurah, initialVerses }: SurahPageClie
         minHeight: '100vh',
         backgroundColor: 'var(--color-background)',
       }}>
-        <SurahAppBar 
+        <SurahAppBar
           surah={fallbackSurah}
           hasAnyBookmarks={hasAnyBookmarks}
           viewMode={viewMode}
@@ -588,11 +626,11 @@ function SurahPageContent({ params, initialSurah, initialVerses }: SurahPageClie
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
       >
-        <SurahAppBar 
+        <SurahAppBar
           surah={surah}
           hasAnyBookmarks={hasAnyBookmarks}
-          onSettingsClick={() => setShowSettingsDialog(true)}
-          onBookmarksClick={() => setShowBookmarksDrawer(true)}
+          onSettingsClick={handleOpenSettings}
+          onBookmarksClick={handleOpenBookmarks}
           currentJuz={currentJuz}
           currentPage={currentPage}
           progress={scrollProgress}

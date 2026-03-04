@@ -1,9 +1,10 @@
 'use client';
 
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useRef } from 'react';
 import { getWordsForVerse, buildWordAudioUrl } from '@/lib/data/word-by-word-data-client';
 import { wordAudioService } from '@/lib/services/word-audio-service';
 import { getAudioService } from '@/lib/services/audio-service';
+import { SettingsService } from '@/lib/services/settings-service';
 import { getAlignmentForVerse, getWordStartTime, hasAlignmentData } from '@/lib/data/alignment-data-client';
 
 interface ClickableArabicTextProps {
@@ -34,6 +35,10 @@ export default function ClickableArabicText({
   const [isLoading, setIsLoading] = useState(true);
   const [playingWord, setPlayingWord] = useState<number | null>(null);
   const [highlightedWord, setHighlightedWord] = useState<number | null>(null);
+  const lastPlayingWordRef = useRef<number | null>(null);
+  const lastHighlightedWordRef = useRef<number | null>(null);
+  const containerRef = useRef<HTMLSpanElement>(null);
+  const hasPreloadedAlignmentRef = useRef(false);
 
   useEffect(() => {
     let mounted = true;
@@ -58,102 +63,116 @@ export default function ClickableArabicText({
 
     loadWords();
 
+    // Preload alignment when this verse becomes visible so word tap only does seek/play (better INP)
+    let observer: IntersectionObserver | null = null;
+    const el = containerRef.current;
+    if (el && typeof IntersectionObserver !== 'undefined') {
+      observer = new IntersectionObserver(
+        (entries) => {
+          const entry = entries[0];
+          if (!entry?.isIntersecting || !mounted || hasPreloadedAlignmentRef.current) return;
+          hasPreloadedAlignmentRef.current = true;
+          const reciterId = SettingsService.getInstance().getSettings().audioEdition;
+          if (reciterId && hasAlignmentData(reciterId)) {
+            getAlignmentForVerse(reciterId, surahNumber, verseNumber).catch(() => {});
+          }
+        },
+        { rootMargin: '200px', threshold: 0 }
+      );
+      observer.observe(el);
+    }
+
     // Subscribe to word audio state (for clicked words)
     const unsubscribeWordAudio = wordAudioService.subscribe((state) => {
-      if (mounted) {
-        if (
-          state.currentSurah === surahNumber &&
-          state.currentVerse === verseNumber
-        ) {
-          setPlayingWord(state.currentWord);
-        } else {
-          setPlayingWord(null);
-        }
-      }
+      if (!mounted) return;
+      const next =
+        state.currentSurah === surahNumber && state.currentVerse === verseNumber
+          ? state.currentWord
+          : null;
+      if (lastPlayingWordRef.current === next) return;
+      lastPlayingWordRef.current = next;
+      setPlayingWord(next);
     });
 
     // Subscribe to main audio service (for verse playback highlighting)
     const audioService = getAudioService();
     const unsubscribeAudio = audioService.subscribe((state) => {
-      if (mounted) {
-        // Check if verse is playing and matches current verse
-        const isVersePlaying = 
-          state.isPlaying &&
-          state.currentSurahNumber === surahNumber &&
-          state.currentVerseNumber === verseNumber;
-        
-        if (isVersePlaying && state.currentWordNumber !== null) {
-          // Verse is playing - clear clicked word highlight and use playback highlight
-          setPlayingWord(null); // Clear any clicked word highlight
-          setHighlightedWord(state.currentWordNumber);
-        } else {
-          // Verse is not playing - clear playback highlight
-          setHighlightedWord(null);
-        }
+      if (!mounted) return;
+      const isVersePlaying =
+        state.isPlaying &&
+        state.currentSurahNumber === surahNumber &&
+        state.currentVerseNumber === verseNumber;
+      const nextHighlight =
+        isVersePlaying && state.currentWordNumber !== null
+          ? state.currentWordNumber
+          : null;
+      // Only set state when value actually changed (avoids re-renders for non-playing verses)
+      if (lastHighlightedWordRef.current !== nextHighlight) {
+        lastHighlightedWordRef.current = nextHighlight;
+        setHighlightedWord(nextHighlight);
+      }
+      if (isVersePlaying && lastPlayingWordRef.current !== null) {
+        lastPlayingWordRef.current = null;
+        setPlayingWord(null);
       }
     });
 
     return () => {
       mounted = false;
+      observer?.disconnect();
       unsubscribeWordAudio();
       unsubscribeAudio();
     };
   }, [surahNumber, verseNumber]);
 
-  const handleWordClick = async (wordNumber: number) => {
-    const audioService = getAudioService();
-    const currentState = audioService.getState();
-    
-    // Check if verse is currently playing and matches this verse
-    // Note: Full surah playback is not supported for seeking (we don't track current verse)
-    const isVersePlaying = 
-      currentState.isPlaying &&
-      currentState.currentSurahNumber === surahNumber &&
-      currentState.currentVerseNumber === verseNumber;
-    
-    // If verse is playing, seek to the word's position instead of playing individual word audio
-    if (isVersePlaying) {
-      // Clear playback highlight temporarily - it will resume when seeking completes
-      setHighlightedWord(null);
-      
-      try {
-        const reciterId = currentState.currentEdition;
-        
-        // Check if alignment data is available for this reciter
-        if (reciterId && hasAlignmentData(reciterId)) {
-          // Get alignment data for the current verse
-          const alignment = await getAlignmentForVerse(reciterId, surahNumber, verseNumber);
-          
-          if (alignment) {
-            // Get the start time for this word
-            const wordStartTime = getWordStartTime(alignment, wordNumber);
-            
-            if (wordStartTime !== null) {
-              // Seek to the word's start time in the current verse audio
-              // The playback highlight will resume automatically via the audio service subscription
-              audioService.seekTo(wordStartTime);
-              return;
+  const handleWordClick = (wordNumber: number) => {
+    // 1. Immediate feedback so the next paint shows the tapped word as "playing" (better INP)
+    lastPlayingWordRef.current = wordNumber;
+    setPlayingWord(wordNumber);
+    setHighlightedWord(null);
+
+    // 2. Defer all heavy work (alignment load, seek, play) so the browser can paint first
+    const runHeavyWork = async () => {
+      const audioService = getAudioService();
+      const currentState = audioService.getState();
+      const isVersePlaying =
+        currentState.isPlaying &&
+        currentState.currentSurahNumber === surahNumber &&
+        currentState.currentVerseNumber === verseNumber;
+
+      if (isVersePlaying) {
+        try {
+          const reciterId = currentState.currentEdition;
+          if (reciterId && hasAlignmentData(reciterId)) {
+            const alignment = await getAlignmentForVerse(reciterId, surahNumber, verseNumber);
+            if (alignment) {
+              const wordStartTime = getWordStartTime(alignment, wordNumber);
+              if (wordStartTime !== null) {
+                audioService.seekTo(wordStartTime);
+                return;
+              }
             }
           }
+          console.debug('Alignment data not available, falling back to individual word audio');
+        } catch (error) {
+          console.error('Failed to seek to word position:', error);
         }
-        
-        // If alignment data is not available or seeking failed, fall back to individual word audio
-        console.debug('Alignment data not available, falling back to individual word audio');
-      } catch (error) {
-        console.error('Failed to seek to word position:', error);
-        // Fall through to play individual word audio
       }
-    }
-    
-    // If nothing is playing, or seeking failed, play individual word audio
-    // Clear any playback highlight when clicking a word
-    setHighlightedWord(null);
-    
-    try {
-      const audioUrl = buildWordAudioUrl(surahNumber, verseNumber, wordNumber);
-      await wordAudioService.playWord(surahNumber, verseNumber, wordNumber, audioUrl);
-    } catch (error) {
-      console.error('Failed to play word audio:', error);
+
+      try {
+        const audioUrl = buildWordAudioUrl(surahNumber, verseNumber, wordNumber);
+        await wordAudioService.playWord(surahNumber, verseNumber, wordNumber, audioUrl);
+      } catch (error) {
+        console.error('Failed to play word audio:', error);
+      }
+    };
+
+    if (typeof requestAnimationFrame !== 'undefined') {
+      requestAnimationFrame(() => {
+        runHeavyWork();
+      });
+    } else {
+      setTimeout(runHeavyWork, 0);
     }
   };
 
@@ -254,12 +273,13 @@ export default function ClickableArabicText({
   }, [words, arabicText, isLoading, playingWord, highlightedWord, surahNumber, verseNumber]);
 
   return (
-    <span 
-      className={className} 
+    <span
+      ref={containerRef}
+      className={className}
       style={{
         ...style,
         display: 'inline',
-      }} 
+      }}
       lang="ar"
     >
       {renderClickableWords}

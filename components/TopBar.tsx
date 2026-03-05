@@ -159,7 +159,7 @@ export default function TopBar() {
           Quran.tj
         </Link>
 
-        {/* Google Play Badge */}
+        {/* Google Play Badge – self-hosted 120×46 for smaller payload; fallback to Google URL */}
         <a
           href="https://play.google.com/store/apps/details?id=com.quran.tj.quranapp"
           target="_blank"
@@ -176,11 +176,12 @@ export default function TopBar() {
           title="Боргирӣ аз Google Play"
         >
           <img
-            src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png"
+            src="/google-play-badge.png"
             alt="Get it on Google Play"
             width={120}
             height={46}
             loading="lazy"
+            sizes="120px"
             style={{
               height: '100%',
               width: 'auto',
@@ -188,8 +189,10 @@ export default function TopBar() {
               maxWidth: '120px',
             }}
             onError={(e) => {
-              // Fallback if image fails to load
-              e.currentTarget.style.display = 'none';
+              const img = e.currentTarget;
+              if (img.dataset.fallback === 'done') return;
+              img.dataset.fallback = 'done';
+              img.src = 'https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png';
             }}
           />
         </a>

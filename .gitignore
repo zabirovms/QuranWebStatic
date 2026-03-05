@@ -10,6 +10,9 @@
 /.next/
 /out/
 
+# generated for async CSS load (source: app/globals.css)
+/public/globals.css
+
 # production
 /build
 

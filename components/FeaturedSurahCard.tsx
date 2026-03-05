@@ -58,13 +58,7 @@ export default function FeaturedSurahCard({ surah }: FeaturedSurahCardProps) {
         overflow: 'hidden',
         boxShadow: 'var(--elevation-1)',
         position: 'relative',
-      }}
-      onMouseEnter={(e) => {
-        // Only update border color on hover (can't be done with CSS alone due to dynamic color)
-        e.currentTarget.style.borderColor = surahColor;
-      }}
-      onMouseLeave={(e) => {
-        e.currentTarget.style.borderColor = borderColor;
+        ['--card-border-hover' as string]: surahColor,
       }}
     >
       <div style={{

@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from 'next';
 import dynamic from 'next/dynamic';
-import './globals.css';
+import fs from 'fs';
+import path from 'path';
 import TopBar from '@/components/TopBar';
 import Footer from '@/components/Footer';
 import OrganizationSchema from '@/components/OrganizationSchema';
@@ -50,6 +51,11 @@ export const metadata: Metadata = {
   manifest: '/site.webmanifest',
 };
 
+const criticalCss = fs.readFileSync(
+  path.join(process.cwd(), 'app', 'critical.css'),
+  'utf8'
+);
+
 export default function RootLayout({
   children,
 }: {
@@ -59,6 +65,21 @@ export default function RootLayout({
     <html lang="tg">
       <head>
         <link rel="preload" href="/alquran.svg" as="image" />
+        <style dangerouslySetInnerHTML={{ __html: criticalCss }} />
+        <link
+          rel="stylesheet"
+          href="/globals.css"
+          media="print"
+          id="globals-css-async"
+        />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `var g=document.getElementById('globals-css-async');if(g){g.onload=function(){g.media='all'};}`,
+          }}
+        />
+        <noscript>
+          <link rel="stylesheet" href="/globals.css" />
+        </noscript>
       </head>
       <body
         style={{

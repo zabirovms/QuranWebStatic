@@ -79,13 +79,7 @@ export default function FeaturedProphetCard({ prophet }: FeaturedProphetCardProp
         overflow: 'hidden',
         boxShadow: 'var(--elevation-1)',
         position: 'relative',
-      }}
-      onMouseEnter={(e) => {
-        // Only update border color on hover (can't be done with CSS alone due to dynamic color)
-        e.currentTarget.style.borderColor = prophetColor;
-      }}
-      onMouseLeave={(e) => {
-        e.currentTarget.style.borderColor = borderColor;
+        ['--card-border-hover' as string]: prophetColor,
       }}
     >
       <div style={{

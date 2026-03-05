@@ -101,6 +101,8 @@ Animations that change layout or paint (e.g. `top`, `left`, `width`, `height`, `
 | **`components/TranslationDropdown.tsx`** | Defer getBoundingClientRect until after open; avoid repeated layout reads. |
 | **`next.config.js`** | **Done:** Bundle analyzer with `ANALYZE=true`; run `npm run build:analyze` to open report. |
 | **`public/alquran.svg`** | **Done:** Optional script `npm run optimize:svgs` (uses svgo) to minify SVGs in public. |
+| **Google Play badge** | **Done:** Use self-hosted `/google-play-badge.png` (120×46) with fallback to Google URL. Add `public/google-play-badge.png` for smaller payload. |
+| **Critical CSS** | **Done:** `app/critical.css` inlined; full `app/globals.css` copied to `public/globals.css` and loaded async (media="print" → "all"). Run `node scripts/copy-globals-for-async.js` before build (script runs in `npm run build` and `npm run dev`). |
 
 ---
 

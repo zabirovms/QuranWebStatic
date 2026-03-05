@@ -294,37 +294,31 @@ function SurahPageContent({ params, initialSurah, initialVerses }: SurahPageClie
                 `[data-verse-number="${initialVerse}"]`
               ) as HTMLElement | null);
         if (verseElement && verseElement.parentNode) {
-          // Get the exact position of the verse element
+          // Batch layout reads (avoid forced reflow)
           const elementRect = verseElement.getBoundingClientRect();
-          
+          const viewportHeight = window.innerHeight;
+          const pageYOffset = window.pageYOffset;
+
           // Check if element is fully rendered (has height)
           if (elementRect.height === 0 && scrollAttempts < maxAttempts) {
             scrollAttempts++;
-            // Element not fully rendered yet, try again after a short delay
             setTimeout(() => {
-              // Check again before retrying
               if (prevSurahNumberRef.current === surahNumber) {
                 requestAnimationFrame(scrollToVerse);
               }
             }, 50);
             return;
           }
-          
-          // Element is rendered, calculate scroll position
-          const absoluteElementTop = elementRect.top + window.pageYOffset;
-          
-          // Calculate viewport height
-          const viewportHeight = window.innerHeight;
-          
-          // Position verse slightly above center (matching Flutter alignment: 0.2)
-          // alignment: 0.0 = top, 0.5 = center, 1.0 = bottom
-          // Using 0.2 means position at 20% of viewport from top (slightly above center)
+
+          const absoluteElementTop = elementRect.top + pageYOffset;
           const targetPosition = absoluteElementTop - (viewportHeight * 0.2);
-          
-          // Smooth scroll to the calculated position
-          window.scrollTo({
-            top: Math.max(0, targetPosition), // Ensure not negative
-            behavior: 'smooth',
+          // Defer write to next frame so reads and writes are not interleaved
+          requestAnimationFrame(() => {
+            if (prevSurahNumberRef.current !== surahNumber) return;
+            window.scrollTo({
+              top: Math.max(0, targetPosition),
+              behavior: 'smooth',
+            });
           });
         } else if (scrollAttempts < maxAttempts) {
           // Element not found yet, try again
@@ -421,14 +415,12 @@ function SurahPageContent({ params, initialSurah, initialVerses }: SurahPageClie
                   ) as HTMLElement | null);
             if (verseElement && verseElement.parentNode) {
               const elementRect = verseElement.getBoundingClientRect();
-              
-              // Check if element is fully rendered
+              const viewportHeight = window.innerHeight;
+              const pageYOffset = window.pageYOffset;
+
               if (elementRect.height === 0) {
-                // Element not rendered yet, try again
                 const retryTimeoutId = setTimeout(() => {
-                  // Check if component is still mounted
                   if (prevSurahNumberRef.current !== surahNumber) return;
-                  
                   const retryElement =
                     viewMode === 'translation'
                       ? document.getElementById(`verse-${verseNumber}`)
@@ -438,35 +430,29 @@ function SurahPageContent({ params, initialSurah, initialVerses }: SurahPageClie
                   if (retryElement && retryElement.parentNode) {
                     const retryRect = retryElement.getBoundingClientRect();
                     if (retryRect.height > 0) {
-                      const absoluteElementTop = retryRect.top + window.pageYOffset;
-                      const viewportHeight = window.innerHeight;
-                      const targetPosition = absoluteElementTop - (viewportHeight * 0.2);
-                      
-                      window.scrollTo({
-                        top: Math.max(0, targetPosition),
-                        behavior: 'smooth',
+                      const top = retryRect.top + window.pageYOffset;
+                      const targetPosition = top - window.innerHeight * 0.2;
+                      requestAnimationFrame(() => {
+                        window.scrollTo({
+                          top: Math.max(0, targetPosition),
+                          behavior: 'smooth',
+                        });
                       });
                     }
                   }
                 }, 100);
-                
-                // Store timeout ID for cleanup
                 timeoutIdsRef.current.push(retryTimeoutId);
                 return;
               }
-              
-              // Only scroll if element is not visible in viewport
-              const isVisible = elementRect.top >= 0 && 
-                               elementRect.bottom <= window.innerHeight;
-              
+
+              const isVisible = elementRect.top >= 0 && elementRect.bottom <= viewportHeight;
               if (!isVisible) {
-                const absoluteElementTop = elementRect.top + window.pageYOffset;
-                const viewportHeight = window.innerHeight;
-                const targetPosition = absoluteElementTop - (viewportHeight * 0.2);
-                
-                window.scrollTo({
-                  top: Math.max(0, targetPosition),
-                  behavior: 'smooth',
+                const targetPosition = elementRect.top + pageYOffset - viewportHeight * 0.2;
+                requestAnimationFrame(() => {
+                  window.scrollTo({
+                    top: Math.max(0, targetPosition),
+                    behavior: 'smooth',
+                  });
                 });
               }
             }
@@ -513,41 +499,37 @@ function SurahPageContent({ params, initialSurah, initialVerses }: SurahPageClie
 
     const handleScroll = () => {
       if (verses.length === 0) return;
-
-      const scrollPosition = window.scrollY + window.innerHeight / 2;
-      const verseElements = document.querySelectorAll('[data-verse-number]');
-
-      let currentVerse: Verse | null = null;
-      let closestDistance = Infinity;
-
-      verseElements.forEach((el) => {
-        const rect = el.getBoundingClientRect();
-        const elementCenter = rect.top + window.scrollY + rect.height / 2;
-        const distance = Math.abs(scrollPosition - elementCenter);
-
-        if (distance < closestDistance) {
-          closestDistance = distance;
-          const verseNumber = parseInt(el.getAttribute('data-verse-number') || '0');
-          const foundVerse = verses.find((v) => v.verseNumber === verseNumber);
-          if (foundVerse) {
-            currentVerse = foundVerse;
+      // Batch all layout reads in one rAF to avoid forced reflow
+      requestAnimationFrame(() => {
+        const scrollPosition = window.scrollY + window.innerHeight / 2;
+        const verseElements = document.querySelectorAll('[data-verse-number]');
+        let currentVerse: Verse | null = null;
+        let closestDistance = Infinity;
+        verseElements.forEach((el) => {
+          const rect = el.getBoundingClientRect();
+          const elementCenter = rect.top + window.scrollY + rect.height / 2;
+          const distance = Math.abs(scrollPosition - elementCenter);
+          if (distance < closestDistance) {
+            closestDistance = distance;
+            const verseNumber = parseInt(el.getAttribute('data-verse-number') || '0');
+            const foundVerse = verses.find((v) => v.verseNumber === verseNumber);
+            if (foundVerse) currentVerse = foundVerse;
+          }
+        });
+        if (currentVerse) {
+          const verse = currentVerse;
+          const nextJuz = verse.juz ?? undefined;
+          const nextPage = verse.page ?? undefined;
+          const progress = verse.verseNumber / verses.length;
+          const prev = lastJuzPageProgressRef.current;
+          if (prev.juz !== nextJuz || prev.page !== nextPage || prev.progress !== progress) {
+            lastJuzPageProgressRef.current = { juz: nextJuz, page: nextPage, progress };
+            setCurrentJuz(nextJuz);
+            setCurrentPage(nextPage);
+            setScrollProgress(progress);
           }
         }
       });
-
-      if (currentVerse) {
-        const verse: Verse = currentVerse;
-        const nextJuz = verse.juz ?? undefined;
-        const nextPage = verse.page ?? undefined;
-        const progress = verse.verseNumber / verses.length;
-        const prev = lastJuzPageProgressRef.current;
-        if (prev.juz !== nextJuz || prev.page !== nextPage || prev.progress !== progress) {
-          lastJuzPageProgressRef.current = { juz: nextJuz, page: nextPage, progress };
-          setCurrentJuz(nextJuz);
-          setCurrentPage(nextPage);
-          setScrollProgress(progress);
-        }
-      }
     };
 
     const throttledScroll = throttle(handleScroll, 150);

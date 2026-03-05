@@ -1401,6 +1401,7 @@ body:focus-within {
 .surah-card-hoverable:hover {
   transform: translateY(-4px);
   box-shadow: var(--elevation-4);
+  border-color: var(--card-border-hover) !important;
 }
 
 /* Prophet card hover effect - with dynamic border color support */
@@ -1412,6 +1413,7 @@ body:focus-within {
 .prophet-card-hoverable:hover {
   transform: translateY(-4px);
   box-shadow: var(--elevation-4);
+  border-color: var(--card-border-hover) !important;
 }
 
 /* Quran page surah list card hover effect */

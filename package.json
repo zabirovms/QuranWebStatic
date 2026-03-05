@@ -2,10 +2,15 @@
   "name": "quran-web-static",
   "version": "1.0.0",
   "private": true,
+  "browserslist": [
+    "defaults",
+    "not dead",
+    "supports es6-module"
+  ],
   "scripts": {
-    "dev": "npx next dev -H 0.0.0.0",
-    "build": "next build",
-    "build:analyze": "node -e \"process.env.ANALYZE='true'; require('child_process').spawnSync('npx', ['next', 'build'], {stdio:'inherit', shell:true})\"",
+    "dev": "node scripts/copy-globals-for-async.js && npx next dev -H 0.0.0.0",
+    "build": "node scripts/copy-globals-for-async.js && next build",
+    "build:analyze": "node scripts/copy-globals-for-async.js && node -e \"process.env.ANALYZE='true'; require('child_process').spawnSync('npx', ['next', 'build'], {stdio:'inherit', shell:true})\"",
     "start": "next start",
     "generate-sitemap": "node scripts/generate-sitemap.js",
     "lint": "npx next lint",

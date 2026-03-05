@@ -131,26 +131,22 @@ export default function MobileAppDownloadDialog() {
             overflow: 'hidden',
           }}>
             <img 
-              src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png"
+              src="/google-play-badge.png"
               alt="Get it on Google Play"
               width={isMobile ? 100 : 120}
               height={isMobile ? 38 : 46}
+              loading="lazy"
+              sizes={isMobile ? '100px' : '120px'}
               style={{
                 width: '100%',
                 height: '100%',
                 objectFit: 'contain',
               }}
               onError={(e) => {
-                // Fallback to emoji if image fails to load
-                e.currentTarget.style.display = 'none';
-                const parent = e.currentTarget.parentElement;
-                if (parent) {
-                  parent.style.width = isMobile ? '60px' : '80px';
-                  parent.style.height = isMobile ? '60px' : '80px';
-                  parent.style.borderRadius = '20px';
-                  parent.style.backgroundColor = 'var(--color-primary-container)';
-                  parent.innerHTML = `<span style="font-size: ${isMobile ? '36px' : '48px'};">📱</span>`;
-                }
+                const img = e.currentTarget;
+                if (img.dataset.fallback === 'done') return;
+                img.dataset.fallback = 'done';
+                img.src = 'https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png';
               }}
             />
           </div>

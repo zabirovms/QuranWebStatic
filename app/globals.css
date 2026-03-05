@@ -324,6 +324,25 @@
   }
 }
 
+/* Lightweight surah list link – CSS-only hover, composited transitions */
+.surahs-grid-link {
+  display: block;
+  padding: 16px;
+  border: 1px solid var(--color-outline);
+  border-radius: var(--radius-lg);
+  text-decoration: none;
+  color: inherit;
+  background-color: var(--color-surface);
+  box-shadow: var(--elevation-1);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease, background-color 0.2s ease;
+}
+.surahs-grid-link:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--elevation-4);
+  border-color: var(--color-primary);
+  background-color: var(--color-surface-variant);
+}
+
 /* Theme-aware SVG filter for surah names */
 .surah-name-svg {
   filter: var(--surah-svg-filter, none);
@@ -562,7 +581,7 @@ a {
    Component Styles
    ============================================ */
 
-/* AppBar */
+/* AppBar – animate transform (composited) instead of top */
 .app-bar {
   background-color: var(--color-background);
   border-bottom: 1px solid var(--color-outline);
@@ -575,12 +594,13 @@ a {
   height: 56px; /* Material Design AppBar height */
   margin: 0; /* Ensure no gap */
   padding: 0;
-  transition: top 0.3s ease-in-out; /* Smooth transition when TopBar hides/shows */
+  transition: transform 0.3s ease-in-out;
+  transform: translateY(0);
 }
 
-/* AppBar when TopBar is hidden - moves up to take its place */
+/* AppBar when TopBar is hidden – moves up to take its place */
 .app-bar.top-bar-hidden {
-  top: 0;
+  transform: translateY(-56px);
 }
 
 .app-bar-content {
@@ -643,7 +663,7 @@ a {
   border: none;
   border-radius: var(--radius-md);
   cursor: pointer;
-  transition: all var(--transition-base);
+  transition: background-color var(--transition-base), color var(--transition-base), box-shadow var(--transition-base);
   text-decoration: none;
   min-height: 40px; /* Material Design button min height */
 }
@@ -736,7 +756,7 @@ a {
 .surah-card {
   text-decoration: none;
   color: inherit;
-  transition: all var(--transition-base);
+  transition: transform var(--transition-base), box-shadow var(--transition-base), border-color var(--transition-base);
 }
 
 .surah-card:hover {

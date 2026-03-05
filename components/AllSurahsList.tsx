@@ -30,29 +30,7 @@ export default function AllSurahsList({ surahs }: AllSurahsListProps) {
           <Link
             key={surah.number}
             href={`/surah/${surah.number}`}
-            style={{
-              display: 'block',
-              padding: '16px',
-              border: '1px solid var(--color-outline)',
-              borderRadius: 'var(--radius-lg)',
-              textDecoration: 'none',
-              color: 'inherit',
-              backgroundColor: 'var(--color-surface)',
-              boxShadow: 'var(--elevation-1)',
-              transition: 'all 0.2s ease',
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.transform = 'translateY(-4px)';
-              e.currentTarget.style.boxShadow = 'var(--elevation-4)';
-              e.currentTarget.style.borderColor = 'var(--color-primary)';
-              e.currentTarget.style.backgroundColor = 'var(--color-surface-variant)';
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.transform = 'translateY(0)';
-              e.currentTarget.style.boxShadow = 'var(--elevation-1)';
-              e.currentTarget.style.borderColor = 'var(--color-outline)';
-              e.currentTarget.style.backgroundColor = 'var(--color-surface)';
-            }}
+            className="surahs-grid-link"
           >
             <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
               <div style={{

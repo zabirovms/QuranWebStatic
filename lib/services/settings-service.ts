@@ -305,8 +305,6 @@ export class SettingsService {
     
     try {
       document.documentElement.setAttribute('data-theme', theme);
-      // Force a reflow to ensure CSS variables are updated
-      void document.documentElement.offsetHeight;
     } catch (error) {
       console.error('Error applying theme:', error);
     }

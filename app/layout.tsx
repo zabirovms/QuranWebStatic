@@ -57,6 +57,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="tg">
+      <head>
+        <link rel="preload" href="/alquran.svg" as="image" />
+      </head>
       <body
         style={{
           margin: 0,

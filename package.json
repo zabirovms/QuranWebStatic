@@ -5,11 +5,14 @@
   "scripts": {
     "dev": "npx next dev -H 0.0.0.0",
     "build": "next build",
+    "build:analyze": "node -e \"process.env.ANALYZE='true'; require('child_process').spawnSync('npx', ['next', 'build'], {stdio:'inherit', shell:true})\"",
     "start": "next start",
     "generate-sitemap": "node scripts/generate-sitemap.js",
-    "lint": "npx next lint"
+    "lint": "npx next lint",
+    "optimize:svgs": "npx svgo public --recursive --multipass"
   },
   "devDependencies": {
+    "@next/bundle-analyzer": "^16.1.6",
     "@types/node": "^20.11.0",
     "@types/pako": "^2.0.4",
     "@types/react": "^18.2.0",

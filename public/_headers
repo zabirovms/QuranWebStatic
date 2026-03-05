@@ -1,9 +1,17 @@
+# HTML / app shell: short cache so updates are seen quickly
+/
+  Cache-Control: public, max-age=300, stale-while-revalidate=600
+
+# Static assets: long cache (no catch-all Cache-Control so these are the only rules that apply)
 /data/*.json.gz
   Cache-Control: public, max-age=604800, stale-while-revalidate=2592000
   Content-Type: application/json
 
 /images/*
-  Cache-Control: public, max-age=2592000, immutable
+  Cache-Control: public, max-age=31536000, immutable
+
+/surah-names-svg/*
+  Cache-Control: public, max-age=31536000, immutable
 
 /_next/static/*
   Cache-Control: public, max-age=31536000, immutable
@@ -17,6 +25,8 @@
 /*.ico
   Cache-Control: public, max-age=31536000, immutable
 
-/*
-  Cache-Control: public, max-age=300, stale-while-revalidate=600
+/*.js
+  Cache-Control: public, max-age=31536000, immutable
 
+/*.css
+  Cache-Control: public, max-age=31536000, immutable

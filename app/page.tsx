@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import Image from 'next/image';
 import Link from 'next/link';
 import dynamic from 'next/dynamic';
 import { getHomeFeaturedContent } from '@/lib/data/home-featured';
@@ -513,18 +514,17 @@ export default async function HomePage() {
             zIndex: 0,
           }}
         >
-          <img
-            src="/alquran.svg"
-            alt=""
-            fetchPriority="high"
-            style={{
-              width: '100%',
-              height: '100%',
-              objectFit: 'cover',
-              objectPosition: 'center',
-            }}
-            aria-hidden="true"
-          />
+          <div style={{ position: 'relative', width: '100%', height: '100%' }}>
+            <Image
+              src="/alquran.svg"
+              alt=""
+              priority
+              fill
+              style={{ objectFit: 'cover', objectPosition: 'center' }}
+              aria-hidden
+              sizes="100vw"
+            />
+          </div>
         </div>
         {/* Overlay to ensure text readability */}
         <div 

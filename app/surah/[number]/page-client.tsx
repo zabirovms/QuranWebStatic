@@ -517,7 +517,7 @@ function SurahPageContent({ params, initialSurah, initialVerses }: SurahPageClie
           }
         });
         if (currentVerse) {
-          const verse = currentVerse;
+          const verse: Verse = currentVerse;
           const nextJuz = verse.juz ?? undefined;
           const nextPage = verse.page ?? undefined;
           const progress = verse.verseNumber / verses.length;

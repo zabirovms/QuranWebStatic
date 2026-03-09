@@ -23,6 +23,11 @@ const ServiceWorkerInitializer = dynamic(
   }
 );
 
+const MobileAppDownloadDialog = dynamic(
+  () => import('@/components/MobileAppDownloadDialog'),
+  { ssr: false }
+);
+
 export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
@@ -98,6 +103,7 @@ export default function RootLayout({
           <MainContentWrapper>{children}</MainContentWrapper>
           <Footer />
           <MiniAudioPlayer />
+          <MobileAppDownloadDialog />
         </TopBarProvider>
       </body>
     </html>

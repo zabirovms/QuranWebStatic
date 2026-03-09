@@ -85,6 +85,11 @@ export default function Footer() {
                   text="Махзани Маърифат"
                   url="/downloads"
                 />
+                <FooterLink
+                  icon={<LocalIcon name="logo-android" style={{ width: '18px', height: '18px' }} />}
+                  text="Барномаи мобилӣ (Google Play)"
+                  url="https://play.google.com/store/apps/details?id=com.quran.tj.quranapp"
+                />
               </div>
             </div>
           </div>

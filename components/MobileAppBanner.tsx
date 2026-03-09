@@ -48,9 +48,10 @@ export default function MobileAppBanner() {
         position: 'relative',
         marginBottom: '16px',
         padding: '16px',
-        backgroundColor: 'var(--color-primary-container)',
+        backgroundColor: 'var(--color-surface)',
         borderRadius: '12px',
-        border: '1px solid var(--color-primary-low-opacity)',
+        border: '1px solid var(--color-outline)',
+        borderLeft: '4px solid var(--color-primary)',
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
@@ -107,7 +108,7 @@ export default function MobileAppBanner() {
         />
       </div>
 
-      {/* Content */}
+      {/* Content – surface background ensures text-primary/secondary have proper contrast */}
       <div style={{ 
         width: '100%',
         textAlign: 'center',
@@ -123,11 +124,12 @@ export default function MobileAppBanner() {
         <div 
           data-nosnippet
           style={{
-          fontSize: 'var(--font-size-sm)',
-          color: 'var(--color-text-secondary)',
-          lineHeight: '1.4',
-          marginBottom: '12px',
-        }}>
+            fontSize: 'var(--font-size-sm)',
+            color: 'var(--color-text-secondary)',
+            lineHeight: '1.4',
+            marginBottom: '12px',
+          }}
+        >
           Барномаи мобилии моро боргирӣ кунед ва имкониятҳои бештарро истифода баред
         </div>
       </div>

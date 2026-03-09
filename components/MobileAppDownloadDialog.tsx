@@ -6,7 +6,7 @@ import { CloseIcon } from './Icons';
 const PLAY_STORE_URL = 'https://play.google.com/store/apps/details?id=com.quran.tj.quranapp';
 const SESSION_STORAGE_KEY = 'mobile_app_dialog_dismissed_session';
 
-// Detect if user is on mobile device
+// Detect if user is on mobile device (run only on client)
 const isMobileDevice = (): boolean => {
   if (typeof window === 'undefined') return false;
   return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
@@ -18,40 +18,42 @@ const isAndroidDevice = (): boolean => {
   return /Android/i.test(navigator.userAgent);
 };
 
+// Safe sessionStorage read (can throw in private browsing / strict CSP)
+const getSessionDismissed = (): boolean => {
+  try {
+    return sessionStorage.getItem(SESSION_STORAGE_KEY) === 'true';
+  } catch {
+    return false;
+  }
+};
+
 export default function MobileAppDownloadDialog() {
   const [isOpen, setIsOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [isAndroid, setIsAndroid] = useState(false);
 
   useEffect(() => {
-    // Detect device type
-    setIsMobile(isMobileDevice());
-    setIsAndroid(isAndroidDevice());
-  }, []);
+    // Detect device type once on mount
+    const mobile = isMobileDevice();
+    const android = isAndroidDevice();
+    setIsMobile(mobile);
+    setIsAndroid(android);
 
-  useEffect(() => {
-    // Check if user has dismissed the dialog in this session only
-    const dismissedThisSession = sessionStorage.getItem(SESSION_STORAGE_KEY);
-    if (dismissedThisSession === 'true') {
-      return; // Don't show if dismissed in this session
-    }
+    // Don't show if user dismissed this session (safe read)
+    if (getSessionDismissed()) return;
 
-    // Smart detection: Show more prominently on mobile devices
-    // On mobile devices, show faster (1 second) and more prominently
-    // On Android, show even faster (0.5 seconds)
-    const delay = isAndroid ? 500 : isMobile ? 1000 : 3000;
-
-    const timer = setTimeout(() => {
-      setIsOpen(true);
-    }, delay);
-
+    const delay = android ? 500 : mobile ? 1000 : 3000;
+    const timer = setTimeout(() => setIsOpen(true), delay);
     return () => clearTimeout(timer);
-  }, [isMobile, isAndroid]);
+  }, []);
 
   const handleClose = () => {
     setIsOpen(false);
-    // Remember dismissal only for this session
-    sessionStorage.setItem(SESSION_STORAGE_KEY, 'true');
+    try {
+      sessionStorage.setItem(SESSION_STORAGE_KEY, 'true');
+    } catch {
+      // Ignore if sessionStorage is unavailable (private browsing, etc.)
+    }
   };
 
   const handleDownload = () => {

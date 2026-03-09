@@ -41,10 +41,10 @@ export default function GalleryZardevorLayout({
     const responsiveHeight = isMobile ? Math.min(height, 140) : height;
     
     return (
-      <div
+      <figure
         key={image.url}
-        onClick={() => onImageClick(image)}
         style={{
+          margin: 0,
           position: 'relative',
           minHeight: `${responsiveHeight}px`,
           width: '100%',
@@ -58,6 +58,7 @@ export default function GalleryZardevorLayout({
           alignItems: 'center',
           justifyContent: 'center',
         }}
+        onClick={() => onImageClick(image)}
         onMouseEnter={(e) => {
           if (!isMobile) {
             e.currentTarget.style.transform = 'scale(1.02)';
@@ -82,19 +83,41 @@ export default function GalleryZardevorLayout({
           }}
           loading="lazy"
         />
-      </div>
+        {image.name.trim() ? (
+          <figcaption
+            style={{
+              position: 'absolute',
+              left: 0,
+              right: 0,
+              bottom: 0,
+              margin: 0,
+              background: 'linear-gradient(to top, rgba(0, 0, 0, 0.7), transparent)',
+              padding: '8px 10px',
+              pointerEvents: 'none',
+              color: '#fff',
+              fontSize: 'clamp(0.7rem, 1.5vw, 0.8rem)',
+              fontWeight: '600',
+            }}
+          >
+            {image.name}
+          </figcaption>
+        ) : null}
+      </figure>
     );
   };
 
   return (
-    <div style={{
-      padding: 'clamp(8px, 2vw, 16px)',
-      display: 'flex',
-      flexDirection: 'column',
-      gap: 'clamp(8px, 2vw, 16px)',
-      maxWidth: '1400px',
-      margin: '0 auto',
-    }}>
+    <section
+      aria-label="Зардеворҳои исломӣ"
+      style={{
+        padding: 'clamp(8px, 2vw, 16px)',
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 'clamp(8px, 2vw, 16px)',
+        maxWidth: '1400px',
+        margin: '0 auto',
+      }}
+    >
       {pages.map((pageImages, pageIndex) => (
         <div key={pageIndex} style={{ display: 'flex', flexDirection: 'column', gap: 'clamp(8px, 2vw, 16px)' }}>
           {/* Top Block: 1 Big Left, 2 Small Right - responsive */}
@@ -168,6 +191,6 @@ export default function GalleryZardevorLayout({
           Боргирӣ карда истодааст...
         </div>
       )}
-    </div>
+    </section>
   );
 }

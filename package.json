@@ -9,10 +9,11 @@
   ],
   "scripts": {
     "dev": "node scripts/copy-globals-for-async.js && npx next dev -H 0.0.0.0",
-    "build": "node scripts/copy-globals-for-async.js && next build",
+    "build": "node scripts/copy-globals-for-async.js && node scripts/generate-sitemap.js && node scripts/generate-image-sitemap.js && next build",
     "build:analyze": "node scripts/copy-globals-for-async.js && node -e \"process.env.ANALYZE='true'; require('child_process').spawnSync('npx', ['next', 'build'], {stdio:'inherit', shell:true})\"",
     "start": "next start",
     "generate-sitemap": "node scripts/generate-sitemap.js",
+    "generate-image-sitemap": "node scripts/generate-image-sitemap.js",
     "lint": "npx next lint",
     "optimize:svgs": "npx svgo public --recursive --multipass"
   },

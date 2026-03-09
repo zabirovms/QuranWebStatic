@@ -41,10 +41,10 @@ export default function GalleryWithTextLayout({
     const responsiveHeight = isMobile ? Math.min(height, 140) : height;
     
     return (
-      <div
+      <figure
         key={image.url}
-        onClick={() => onImageClick(image)}
         style={{
+          margin: 0,
           position: 'relative',
           minHeight: `${responsiveHeight}px`,
           width: '100%',
@@ -58,6 +58,7 @@ export default function GalleryWithTextLayout({
           alignItems: 'center',
           justifyContent: 'center',
         }}
+        onClick={() => onImageClick(image)}
         onMouseEnter={(e) => {
           if (!isMobile) {
             e.currentTarget.style.transform = 'scale(1.02)';
@@ -82,38 +83,41 @@ export default function GalleryWithTextLayout({
           }}
           loading="lazy"
         />
-        {showName && image.name.trim() && (
-          <div style={{
-            position: 'absolute',
-            left: 0,
-            right: 0,
-            bottom: 0,
-            background: 'linear-gradient(to top, rgba(0, 0, 0, 0.7), transparent)',
-            padding: '12px',
-            pointerEvents: 'none',
-          }}>
-            <div style={{
+        {showName && image.name.trim() ? (
+          <figcaption
+            style={{
+              position: 'absolute',
+              left: 0,
+              right: 0,
+              bottom: 0,
+              margin: 0,
+              background: 'linear-gradient(to top, rgba(0, 0, 0, 0.7), transparent)',
+              padding: '12px',
+              pointerEvents: 'none',
               color: '#fff',
               fontSize: 'clamp(0.75rem, 2vw, 0.875rem)',
               fontWeight: '600',
-            }}>
-              {image.name}
-            </div>
-          </div>
-        )}
-      </div>
+            }}
+          >
+            {image.name}
+          </figcaption>
+        ) : null}
+      </figure>
     );
   };
 
   return (
-    <div style={{
-      padding: 'clamp(8px, 2vw, 16px)',
-      display: 'flex',
-      flexDirection: 'column',
-      gap: 'clamp(8px, 2vw, 16px)',
-      maxWidth: '1400px',
-      margin: '0 auto',
-    }}>
+    <section
+      aria-label="Аксҳо ва тасвирҳои исломӣ"
+      style={{
+        padding: 'clamp(8px, 2vw, 16px)',
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 'clamp(8px, 2vw, 16px)',
+        maxWidth: '1400px',
+        margin: '0 auto',
+      }}
+    >
       {pages.map((pageImages, pageIndex) => (
         <div key={pageIndex} style={{ display: 'flex', flexDirection: 'column', gap: 'clamp(8px, 2vw, 16px)' }}>
           {/* Top Row: 2 columns - responsive */}
@@ -168,6 +172,6 @@ export default function GalleryWithTextLayout({
           Боргирӣ карда истодааст...
         </div>
       )}
-    </div>
+    </section>
   );
 }

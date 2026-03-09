@@ -73,7 +73,7 @@ function StandardGalleryLayout({
   if (images.length === 0) return null;
 
   return (
-    <div style={containerStyle}>
+    <section aria-label="Аксҳо ва тасвирҳои исломӣ" style={containerStyle}>
       <div style={gridStyle}>
         {images.map((image, index) => (
           <ImageThumbnail
@@ -94,7 +94,7 @@ function StandardGalleryLayout({
           Боргирӣ карда истодааст...
         </div>
       )}
-    </div>
+    </section>
   );
 }
 
@@ -114,38 +114,64 @@ const ImageThumbnail = memo(({
     onClick(image, index);
   }, [onClick, image, index]);
 
-  const thumbnailStyle = useMemo(() => ({
+  const thumbnailWrapperStyle = useMemo(() => ({
     position: 'relative' as const,
     aspectRatio: '1',
-    borderRadius: '8px',
     overflow: 'hidden' as const,
     cursor: 'pointer',
     backgroundColor: 'var(--color-surface-variant)',
     transform: isHovered ? 'scale(1.02)' : 'scale(1)',
     boxShadow: isHovered ? '0 4px 12px rgba(0, 0, 0, 0.15)' : 'none',
     transition: 'transform 0.2s ease, box-shadow 0.2s ease',
+    flex: '1',
+    minHeight: 0,
   }), [isHovered]);
 
+  const figureStyle = useMemo(() => ({
+    margin: 0,
+    borderRadius: '8px',
+    overflow: 'hidden' as const,
+    display: 'flex' as const,
+    flexDirection: 'column' as const,
+    backgroundColor: 'var(--color-surface-variant)',
+  }), []);
+
   return (
-    <div
-      onClick={handleClick}
-      style={thumbnailStyle}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-    >
-      <img
-        src={image.url}
-        alt={image.name}
-        style={{
-          width: '100%',
-          height: '100%',
-          objectFit: 'cover',
-          display: 'block',
-        }}
-        loading="lazy"
-        decoding="async"
-      />
-    </div>
+    <figure style={figureStyle}>
+      <div
+        onClick={handleClick}
+        style={thumbnailWrapperStyle}
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
+      >
+        <img
+          src={image.url}
+          alt={image.name}
+          style={{
+            width: '100%',
+            height: '100%',
+            objectFit: 'cover',
+            display: 'block',
+          }}
+          loading="lazy"
+          decoding="async"
+        />
+      </div>
+      {image.name.trim() ? (
+        <figcaption
+          style={{
+            padding: '4px 6px',
+            fontSize: '0.75rem',
+            color: 'var(--color-text-secondary)',
+            whiteSpace: 'nowrap',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+          }}
+        >
+          {image.name}
+        </figcaption>
+      ) : null}
+    </figure>
   );
 });
 

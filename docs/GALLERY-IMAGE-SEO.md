@@ -49,13 +49,12 @@ Your images are on **cdn.quran.tj**; that’s fine. Google can index images on a
 ### 3. **Image sitemap (high impact for current + future images)**
 
 - **Issue:** Only the `/gallery` URL is in the sitemap; images are not listed.
-- **Fix:** At **build time** (e.g. in `scripts/generate-sitemap.js` or a separate script):
-  - Fetch the same lists you use for the gallery (e.g. `https://cdn.quran.tj/pictures/list`, `https://cdn.quran.tj/wallpapers/list`).
-  - Generate an **image sitemap** (e.g. `sitemap-images.xml` or image extension in sitemap) with:
-    - `<image:image>` for each image URL.
-    - Optional `<image:caption>` / `<image:title>` from the same name you use for alt (filename-based or from future metadata).
-  - Reference this sitemap from the main sitemap and/or from `robots.txt`.
-- **Result:** Every current and newly added image (once you rebuild/re-run the script) is explicitly submitted to search engines. For daily uploads, run the sitemap script as part of your daily deploy so new images are included.
+- **Fix:** A **separate** script generates the image sitemap:
+  - Run: `npm run generate-image-sitemap` (or `node scripts/generate-image-sitemap.js`).
+  - It fetches `https://cdn.quran.tj/pictures/list` and `https://cdn.quran.tj/wallpapers/list`, then writes `public/sitemap-images.xml` with:
+    - One `<url>` for `https://www.quran.tj/gallery` and many `<image:image>` entries (CDN URL + caption from filename).
+  - `robots.txt` references both `sitemap.xml` and `sitemap-images.xml`.
+- **Result:** Every current and newly added image is submitted when you re-run the script. For daily uploads, run `npm run generate-image-sitemap` as part of your deploy (e.g. after uploading new images) so new images are included.
 
 ### 4. **Better, consistent image “names” (medium impact)**
 
@@ -64,10 +63,11 @@ Your images are on **cdn.quran.tj**; that’s fine. Google can index images on a
   - **Short term:** Use **descriptive, keyword-rich filenames** for every new image (Tajik + transliteration if useful), e.g. `dua-qunoot-tajik.jpg`, `ramadan-mubarak-2025.jpg`, `ayatul-kursi-arabic.jpg`. Avoid generic names like `image_001.jpg`.
   - **Long term (optional):** If you add a CMS or API for daily uploads, store a **title** and **short description** per image and use those for `alt`, `<figcaption>`, and sitemap `<image:caption>`/`<image:title>`. Until then, the filename is the main lever for SEO.
 
-### 5. **Semantic HTML (medium impact)**
+### 5. **Semantic HTML (medium impact)** ✅ Done
 
-- Use **`<figure>`** and **`<figcaption>`** where it makes sense (e.g. in one main gallery layout) with the image name as caption. This gives crawlers a clear text association and improves accessibility.
-- Ensure the gallery is wrapped in a landmark, e.g. `<main>` (you already have it) and optionally `<section aria-label="...">` for the gallery block.
+- **Implemented:** All three gallery layouts use `<figure>` and `<figcaption>` for each image (caption from `image.name`). The gallery block is wrapped in `<section aria-label="...">` for a clear landmark.
+- **StandardGalleryLayout:** Figure per thumbnail with a small text caption below; section wraps the grid.
+- **GalleryWithTextLayout / GalleryZardevorLayout:** Figure per item with figcaption as the bottom gradient overlay (same visual as before, now semantic).
 
 ### 6. **Per-image pages (optional, larger project)**
 
@@ -86,7 +86,7 @@ Your images are on **cdn.quran.tj**; that’s fine. Google can index images on a
 ## Checklist for daily/new uploads
 
 - [ ] Use **descriptive filenames** (e.g. `topic-keyword-tajik.jpg`).
-- [ ] Re-run **sitemap generation** (including image sitemap) after adding images so new URLs are submitted.
+- [ ] Re-run **image sitemap** after adding images: `npm run generate-image-sitemap`, then redeploy so new URLs are submitted.
 - [ ] If you add metadata (title/description) later, use it for `alt`, captions, and sitemap `<image:caption>`/`<image:title>`.
 
 ---

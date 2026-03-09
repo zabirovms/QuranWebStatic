@@ -22,6 +22,7 @@ Disallow: /bookmarks/
 Disallow: /audio-home/library/
 Disallow: /audio-home/player/
 
-# Sitemap location
+# Sitemap locations
 Sitemap: https://www.quran.tj/sitemap.xml
+Sitemap: https://www.quran.tj/sitemap-images.xml
 

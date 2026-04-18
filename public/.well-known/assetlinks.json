@@ -1,0 +1,16 @@
+[
+  {
+    "relation": [
+      "delegate_permission/common.handle_all_urls",
+      "delegate_permission/common.get_login_creds"
+    ],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.quran.tj.quranapp",
+      "sha256_cert_fingerprints": [
+        "E3:7E:9E:24:B4:E1:6D:AB:07:8E:82:04:59:5E:B0:58:8F:B7:F4:21:36:E9:54:D3:A9:D1:C2:E9:7D:E0:2E:C2",
+        "31:5A:75:DD:9D:26:9F:F6:CB:0D:29:20:93:FA:4B:28:F1:57:14:56:88:72:DE:7C:F5:45:B7:E8:6D:31:5E:E8"
+      ]
+    }
+  }
+]

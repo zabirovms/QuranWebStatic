@@ -255,7 +255,7 @@ export async function getAllVerses(): Promise<Verse[]> {
     return cachedAllVerses;
   }
   try {
-    const jsonData = await loadCompressedJson<{ data: { surahs: AlQuranCloudSurah[] } }>('alquran_cloud_complete_quran.json.gz');
+    const jsonData = await loadCompressedJson<{ data: { surahs: AlQuranCloudSurah[] } }>('quran_metadata.json.gz');
     const surahsData = jsonData.data.surahs;
 
     const verses: Verse[] = [];

@@ -1,0 +1,15 @@
+{
+  "applinks": {
+    "apps": [],
+    "details": [
+      {
+        "appID": "Z7XP3YF4CS.com.quran.tj.quranapp",
+        "paths": [
+          "/privacy",
+          "/privacy-policy",
+          "/*"
+        ]
+      }
+    ]
+  }
+}

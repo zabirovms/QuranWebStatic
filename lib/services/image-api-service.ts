@@ -1,6 +1,9 @@
+import { slugify } from '@/lib/utils/slug';
+
 export interface ImageData {
   url: string;
   name: string;
+  slug: string;
 }
 
 export interface ImageApiResult {
@@ -100,6 +103,7 @@ export class ImageApiService {
         return {
           url,
           name: cleanName,
+          slug: slugify(filename),
         };
       });
 

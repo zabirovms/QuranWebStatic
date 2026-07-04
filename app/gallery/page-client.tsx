@@ -254,19 +254,47 @@ export default function GalleryPageClient({
   );
   const currentHasMore = activeLayout === GalleryLayout.ZARDEVOR ? hasMoreWallpapers : hasMore;
 
+  // Sync browser back/forward buttons with modal open state
+  useEffect(() => {
+    const handlePopState = (e: PopStateEvent) => {
+      if (e.state && e.state.galleryModal) {
+        // If there's modal state, try to find the matching image and reopen it
+        const pathParts = window.location.pathname.split('/');
+        const slug = pathParts[pathParts.length - 1];
+        const match = currentImages.find(img => img.slug === slug);
+        if (match) {
+          setSelectedImage(match);
+        } else {
+          setSelectedImage(null);
+        }
+      } else {
+        setSelectedImage(null);
+      }
+    };
+
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, [currentImages]);
+
   // Memoize image click handler
   const handleImageClick = useCallback((image: ImageData, index: number) => {
     setSelectedImage(image);
+    // Push slug to browser address bar without reload
+    window.history.pushState({ galleryModal: true }, '', `/gallery/${image.slug}`);
   }, []);
 
   // Memoize close handler
   const handleCloseViewer = useCallback(() => {
     setSelectedImage(null);
+    // Restore the URL to main gallery page
+    window.history.pushState(null, '', '/gallery');
   }, []);
 
   // Memoize image change handler
   const handleImageChange = useCallback((image: ImageData) => {
     setSelectedImage(image);
+    // Update slug in address bar on next/previous image toggle
+    window.history.replaceState({ galleryModal: true }, '', `/gallery/${image.slug}`);
   }, []);
 
   return (

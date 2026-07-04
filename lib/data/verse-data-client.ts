@@ -55,13 +55,15 @@ export async function getAllVerses(): Promise<Verse[]> {
   try {
     // Load Arabic text from word-by-word data instead of alquran_cloud_complete_quran.json.gz
     // Still need alquran_cloud for page/juz info and verse numbering
-    const [arabicData, translationsData, tj2Data, tj3Data, farsiData, russianData] = await Promise.all([
-      loadCompressedJson<{ data: { surahs: AlQuranCloudSurah[] } }>('alquran_cloud_complete_quran.json.gz'),
-      loadCompressedJson<TranslationData>('quran_mirror_with_translations.json.gz'),
-      loadCompressedJson<VerseDataByKey>('quran_tj_2_AbuAlomuddin.json.gz'),
-      loadCompressedJson<VerseDataByKey>('quran_tj_3_PioneersTranslationCenter.json.gz'),
-      loadCompressedJson<VerseDataByKey>('quran_farsi_Farsi.json.gz'),
-      loadCompressedJson<VerseDataByKey>('quran_ru.json.gz'),
+    const [arabicData, translationsData, translitData, tafsirData, tj2Data, tj3Data, farsiData, russianData] = await Promise.all([
+      loadCompressedJson<{ data: { surahs: AlQuranCloudSurah[] } }>('quran_metadata.json.gz'),
+      loadCompressedJson<TranslationData>('quran_tj_ayati.json.gz'),
+      loadCompressedJson<TranslationData>('quran_transliteration.json.gz'),
+      loadCompressedJson<TranslationData>('quran_tafsir_osonbayon.json.gz'),
+      loadCompressedJson<VerseDataByKey>('quran_tj_alomuddin.json.gz'),
+      loadCompressedJson<VerseDataByKey>('quran_tj_pioneers.json.gz'),
+      loadCompressedJson<VerseDataByKey>('quran_fa_translation.json.gz'),
+      loadCompressedJson<VerseDataByKey>('quran_ru_kuliev.json.gz'),
     ]);
 
     const allVerses: Verse[] = [];
@@ -87,6 +89,8 @@ export async function getAllVerses(): Promise<Verse[]> {
       const surahArabicTexts = arabicTextsBySurah.get(surahNumber) || new Map();
 
       const translationSurah = translationsData.data?.surahs?.find((s) => s.number === surahNumber);
+      const translitSurah = translitData.data?.surahs?.find((s) => s.number === surahNumber);
+      const tafsirSurah = tafsirData.data?.surahs?.find((s) => s.number === surahNumber);
       const surahKey = surahNumber.toString();
 
       const tj2Verses = tj2Data[surahKey] || [];
@@ -98,6 +102,20 @@ export async function getAllVerses(): Promise<Verse[]> {
       if (translationSurah) {
         translationSurah.ayahs.forEach((ayah) => {
           translationMap.set(ayah.number, ayah);
+        });
+      }
+
+      const translitMap = new Map<number, TranslationAyah>();
+      if (translitSurah) {
+        translitSurah.ayahs.forEach((ayah) => {
+          translitMap.set(ayah.number, ayah);
+        });
+      }
+
+      const tafsirMap = new Map<number, TranslationAyah>();
+      if (tafsirSurah) {
+        tafsirSurah.ayahs.forEach((ayah) => {
+          tafsirMap.set(ayah.number, ayah);
         });
       }
 
@@ -124,6 +142,8 @@ export async function getAllVerses(): Promise<Verse[]> {
       for (const arabicAyah of arabicAyahs) {
         const verseNum = arabicAyah.numberInSurah;
         const translation = translationMap.get(verseNum);
+        const translit = translitMap.get(verseNum);
+        const tafsir = tafsirMap.get(verseNum);
         
         // Get Arabic text from word-by-word data, fallback to empty string
         const arabicText = surahArabicTexts.get(verseNum) || '';
@@ -133,9 +153,9 @@ export async function getAllVerses(): Promise<Verse[]> {
           surahId: surahNumber,
           verseNumber: verseNum,
           arabicText: arabicText,
-          tajikText: translation?.tajik_text || translation?.text || '',
-          transliteration: translation?.transliteration,
-          tafsir: translation?.tafsir,
+          tajikText: translation?.text || translation?.tajik_text || '',
+          transliteration: translit?.text || translit?.transliteration || '',
+          tafsir: tafsir?.text || tafsir?.tafsir || '',
           tj2: tj2Map.get(verseNum),
           tj3: tj3Map.get(verseNum),
           farsi: farsiMap.get(verseNum),

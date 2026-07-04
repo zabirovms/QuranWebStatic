@@ -31,9 +31,9 @@ export async function getAllSurahs(): Promise<Surah[]> {
   try {
     if (process.env.NODE_ENV === 'development') {
       // eslint-disable-next-line no-console
-      console.log('Loading surahs from alquran_cloud_complete_quran.json.gz...');
+      console.log('Loading surahs from quran_metadata.json.gz...');
     }
-    const data = await loadCompressedJson<AlQuranCloudData>('alquran_cloud_complete_quran.json.gz');
+    const data = await loadCompressedJson<AlQuranCloudData>('quran_metadata.json.gz');
     if (process.env.NODE_ENV === 'development') {
       // eslint-disable-next-line no-console
       console.log('Surahs data loaded, processing...');

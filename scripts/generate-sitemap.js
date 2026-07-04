@@ -38,6 +38,7 @@ const staticRoutes = [
   '/learn-words',
   '/bukhari',
   '/vaqti-namoz',
+  '/farzi-ayn',
 ];
 
 // Generate surah routes (1-114) - no trailing slashes
@@ -264,6 +265,67 @@ function generateBukhariChapterRoutes() {
   return routes;
 }
 
+// Generate Farzi Ayn detail routes
+function generateFarziAynRoutes() {
+  try {
+    const filePath = path.join(DATA_DIR, 'farzi-ayn.json.gz');
+    const compressedBuffer = fs.readFileSync(filePath);
+    const decompressedBuffer = gunzipSync(compressedBuffer);
+    const jsonString = decompressedBuffer.toString('utf-8');
+    const sections = JSON.parse(jsonString);
+    const routes = [];
+    
+    if (Array.isArray(sections)) {
+      for (const section of sections) {
+        if (section.id) {
+          routes.push(`/farzi-ayn/${section.id}`);
+        }
+      }
+    }
+    return routes;
+  } catch (error) {
+    console.warn('⚠️  Could not load Farzi Ayn data for sitemap:', error.message);
+    return [];
+  }
+}
+
+// Generate Asmaul Husna dynamic subpage routes
+function generateAsmaulHusnaRoutes() {
+  try {
+    const filePath = path.join(DATA_DIR, '99_Names_Of_Allah_detailed.json.gz');
+    const compressedBuffer = fs.readFileSync(filePath);
+    const decompressedBuffer = gunzipSync(compressedBuffer);
+    const jsonString = decompressedBuffer.toString('utf-8');
+    const data = JSON.parse(jsonString);
+    const names = data.names || [];
+    const routes = [];
+    
+    for (const name of names) {
+      if (name.slug) {
+        routes.push(`/asmaul-husna/${name.slug}`);
+      }
+    }
+    return routes;
+  } catch (error) {
+    console.warn('⚠️  Could not load Asmaul Husna data for sitemap:', error.message);
+    return [];
+  }
+}
+
+// Generate dynamic Duas categories routes
+function generateDuaCategoryRoutes() {
+  const categories = [
+    'etiquette-of-supplication',
+    'praise-and-glorification',
+    'duas-in-prayer',
+    'seeking-refuge',
+    'morning-adhkar',
+    'evening-adhkar',
+    'ruqya-healing'
+  ];
+  return categories.map(slug => `/duas/${slug}`);
+}
+
 // Generate sitemap XML
 function generateSitemap() {
   const prophetRoutes = generateProphetRoutes();
@@ -271,7 +333,22 @@ function generateSitemap() {
   const reciterRoutes = generateReciterRoutes();
   const bukhariBookRoutes = generateBukhariBookRoutes();
   const bukhariChapterRoutes = generateBukhariChapterRoutes();
-  const urls = [...staticRoutes, ...surahRoutes, ...verseRoutes, ...prophetRoutes, ...prophetDuaRoutes, ...reciterRoutes, ...bukhariBookRoutes, ...bukhariChapterRoutes];
+  const farziAynRoutes = generateFarziAynRoutes();
+  const asmaulHusnaRoutes = generateAsmaulHusnaRoutes();
+  const duaCategoryRoutes = generateDuaCategoryRoutes();
+  const urls = [
+    ...staticRoutes,
+    ...surahRoutes,
+    ...verseRoutes,
+    ...prophetRoutes,
+    ...prophetDuaRoutes,
+    ...reciterRoutes,
+    ...bukhariBookRoutes,
+    ...bukhariChapterRoutes,
+    ...farziAynRoutes,
+    ...asmaulHusnaRoutes,
+    ...duaCategoryRoutes
+  ];
   
   const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
@@ -313,6 +390,26 @@ ${urls.map(url => {
       // Bukhari chapter pages
       priority = '0.7';
       changefreq = 'monthly';
+    } else if (url === '/farzi-ayn') {
+      // Farzi Ayn main page
+      priority = '0.8';
+      changefreq = 'weekly';
+    } else if (url.startsWith('/farzi-ayn/')) {
+      // Farzi Ayn subpages
+      priority = '0.7';
+      changefreq = 'monthly';
+    } else if (url === '/asmaul-husna') {
+      // Asmaul Husna main page
+      priority = '0.8';
+      changefreq = 'weekly';
+    } else if (url.startsWith('/asmaul-husna/')) {
+      // Asmaul Husna subpages
+      priority = '0.7';
+      changefreq = 'monthly';
+    } else if (url.startsWith('/duas/') && !url.includes('/duas/rabbano') && !url.includes('/duas/prophets')) {
+      // Daily Adhkar dynamic subpages
+      priority = '0.7';
+      changefreq = 'monthly';
     }
     
     return `  <url>
@@ -335,6 +432,9 @@ ${urls.map(url => {
   console.log(`   - Reciter pages: ${reciterRoutes.length}`);
   console.log(`   - Bukhari book pages: ${bukhariBookRoutes.length}`);
   console.log(`   - Bukhari chapter pages: ${bukhariChapterRoutes.length}`);
+  console.log(`   - Farzi Ayn subtopic pages: ${farziAynRoutes.length}`);
+  console.log(`   - Asmaul Husna detail pages: ${asmaulHusnaRoutes.length}`);
+  console.log(`   - Daily Adhkar category pages: ${duaCategoryRoutes.length}`);
 }
 
 // Run if called directly

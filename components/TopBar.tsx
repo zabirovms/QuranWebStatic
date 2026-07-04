@@ -54,6 +54,7 @@ export default function TopBar() {
     { href: '/prophets', label: 'Пайғамбарон', icon: 'people', id: 'prophets' },
     { href: '/duas', label: 'Дуоҳо', icon: 'heart', id: 'duas' },
     { href: '/asmaul-husna', label: 'Асмоул Ҳусно', icon: 'star', id: 'asmaul-husna' },
+    { href: '/farzi-ayn', label: 'Фарзи айн', icon: 'journal', id: 'farzi-ayn' },
     { href: '/gallery', label: 'Галерея', icon: 'images', id: 'gallery' },
     { href: '/downloads', label: 'Махзани Маърифат', icon: 'download', id: 'downloads' },
     { href: 'https://play.google.com/store/apps/details?id=com.quran.tj.quranapp', label: 'Барномаи мобилӣ', icon: 'logo-android', id: 'mobile-app', external: true },

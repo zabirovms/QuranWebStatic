@@ -35,3 +35,8 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
+# local developer logs/plans
+implementation_plan.md
+disk_space_cleanup_findings.md
+
+

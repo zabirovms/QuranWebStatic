@@ -29,7 +29,7 @@ export async function getAllSurahs(): Promise<Surah[]> {
     return cachedSurahs;
   }
   try {
-    const data = await loadCompressedJson<AlQuranCloudData>('alquran_cloud_complete_quran.json.gz');
+    const data = await loadCompressedJson<AlQuranCloudData>('quran_metadata.json.gz');
     
     const surahs = data.data.surahs.map((surah): Surah => {
     const ayahs = surah.ayahs || [];

@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useMemo, useCallback, memo } from 'react';
+import Link from 'next/link';
 import { ImageData } from '@/lib/services/image-api-service';
 
 interface StandardGalleryLayoutProps {
@@ -110,7 +111,8 @@ const ImageThumbnail = memo(({
 }) => {
   const [isHovered, setIsHovered] = useState(false);
 
-  const handleClick = useCallback(() => {
+  const handleClick = useCallback((e: React.MouseEvent) => {
+    e.preventDefault(); // Prevent standard page transition to keep fast modal flow
     onClick(image, index);
   }, [onClick, image, index]);
 
@@ -125,6 +127,7 @@ const ImageThumbnail = memo(({
     transition: 'transform 0.2s ease, box-shadow 0.2s ease',
     flex: '1',
     minHeight: 0,
+    display: 'block',
   }), [isHovered]);
 
   const figureStyle = useMemo(() => ({
@@ -138,7 +141,8 @@ const ImageThumbnail = memo(({
 
   return (
     <figure style={figureStyle}>
-      <div
+      <Link
+        href={`/gallery/${image.slug}`}
         onClick={handleClick}
         style={thumbnailWrapperStyle}
         onMouseEnter={() => setIsHovered(true)}
@@ -147,16 +151,19 @@ const ImageThumbnail = memo(({
         <img
           src={image.url}
           alt={image.name}
+          width="1"
+          height="1"
           style={{
             width: '100%',
             height: '100%',
             objectFit: 'cover',
             display: 'block',
           }}
-          loading="lazy"
+          loading={index < 8 ? 'eager' : 'lazy'}
+          fetchPriority={index === 0 ? 'high' : 'auto'}
           decoding="async"
         />
-      </div>
+      </Link>
       {image.name.trim() ? (
         <figcaption
           style={{

@@ -1,9 +1,11 @@
+import { getAllFarziAynSections } from '@/lib/data/farzi-ayn-data';
 import FarziAynPageWrapper from './page-wrapper';
 
 /**
- * Server component that renders static content
- * The wrapper handles client-side TopBar visibility
+ * Server component that fetches Farzi Ayn sections at build time
+ * for static site generation.
  */
-export default function FarziAynPage() {
-  return <FarziAynPageWrapper />;
+export default async function FarziAynPage() {
+  const sections = await getAllFarziAynSections();
+  return <FarziAynPageWrapper sections={sections} />;
 }
